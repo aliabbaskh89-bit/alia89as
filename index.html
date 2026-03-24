@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>علي عباس | مصمم ومدرب گرافيك</title>
+    <meta name="description" content="كورسات، شروحات، وخدمات تصميم احترافية — كل شيء في مكان واحد.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<div id="scroll-progress"></div>
+<!-- Header & Navbar -->
+<header class="header" id="header">
+    <div class="container nav-wrapper">
+        <a href="#home" class="logo">Ali <span>Abbas</span></a>
+        <nav class="navbar" id="navbar">
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active">الرئيسية</a></li>
+                <li><a href="#about" class="nav-link">عني</a></li>
+                <li><a href="#courses" class="nav-link">كورساتي</a></li>
+                <li><a href="#services" class="nav-link">خدماتي</a></li>
+                <li><a href="#tutorials" class="nav-link">شروحاتي</a></li>
+                <li><a href="#lectures" class="nav-link">محاضراتي</a></li>
+                <li><a href="#portfolio" class="nav-link">أعمالي</a></li>
+            </ul>
+
+            <div class="header-controls">
+                <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="en.html" class="btn-icon text-bold" aria-label="Switch to English">EN</a>
+                <a href="#consulting" class="btn btn-primary d-none-mobile">احجز استشارة</a>
+            </div>
+        </nav>
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+<main>
+    <!-- Hero Section -->
+    <section id="home" class="hero section">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title reveal reveal-up">علي عباس <br> <span class="text-accent">مصمم ومدرب كرافيك</span>
+                </h1>
+                <h2 class="hero-subtitle reveal reveal-up typewriter"
+                    data-text="أساعدك تتعلم التصميم بشكل عملي وتبني هوية قوية لمشروعك.">أساعدك تتعلم التصميم بشكل عملي
+                    وتبني هوية قوية لمشروعك.</h2>
+                <p class="hero-text reveal reveal-up" style="transition-delay: 0.2s;">كورسات، شروحات، وخدمات تصميم
+                    احترافية — كل شيء في مكان واحد.</p>
+                <div class="hero-actions">
+                    <a href="#courses" class="btn btn-primary">شاهد الكورسات</a>
+                    <a href="#consulting" class="btn btn-outline">احجز استشارة</a>
+                </div>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@AliAbbas-89" target="_blank" rel="noopener"
+                        aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://instagram.com/ali_a89as" target="_blank" rel="noopener" aria-label="Instagram"><i
+                            class="fa-brands fa-instagram"></i></a>
+                    <a href="https://t.me/ali_a89ass" target="_blank" rel="noopener" aria-label="Telegram"><i
+                            class="fa-brands fa-telegram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61581891595860&ref=PROFILE_EDIT_xav_ig_profile_page_web"
+                        target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://wa.me/9647718669939" target="_blank" rel="noopener" aria-label="WhatsApp"><i
+                            class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <!-- Profile Image -->
+            <div class="hero-image reveal reveal-left">
+                <div class="image-wrapper">
+                    <img src="profile.jpg" alt="Ali Abbas - Graphic Designer" class="profile-img"
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/400x400/1f2937/a7ff0d?text=Profile'">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    <section id="highlights" class="highlights">
+        <div class="container">
+            <div class="highlights-container">
+                <!-- Highlight 1 -->
+                <div class="highlight-item" data-highlight="baghdad-course">
+                    <div class="highlight-img-wrapper">
+                        <img src="highlight-gallery/highlight-baghdad-1.jpg" alt="كورس بغداد" class="highlight-img">
+                    </div>
+                    <span class="highlight-title">كورس بغداد</span>
+                    <div class="highlight-gallery" style="display:none">
+                        <img src="highlight-gallery/highlight-baghdad-1.jpg">
+                        <img src="highlight-gallery/highlight-baghdad-2.jpg">
+                        <img src="highlight-gallery/highlight-baghdad-3.jpg">
+                        <img src="highlight-gallery/highlight-baghdad-4.jpg">
+                        <img src="highlight-gallery/highlight-baghdad-5.jpg">
+                        <img src="highlight-gallery/highlight-baghdad-6.jpg">
+                        <img src="highlight-gallery/highlight-baghdad-7.jpg">
+                    </div>
+                </div><!-- Highlight 2 -->
+                <div class="highlight-item" data-highlight="students-work">
+                    <div class="highlight-img-wrapper">
+                        <img src="highlight-gallery/highlight-work-1.png" alt="أعمال المشتركين" class="highlight-img">
+                    </div>
+                    <span class="highlight-title">أعمال المشتركين</span>
+                    <div class="highlight-gallery" style="display:none">
+                        <img src="highlight-gallery/highlight-work-1.png">
+                        <img src="highlight-gallery/highlight-work-2.png">
+                        <img src="highlight-gallery/highlight-work-3.png">
+                        <img src="highlight-gallery/highlight-work-4.png">
+                        <img src="highlight-gallery/highlight-work-5.png">
+                        <img src="highlight-gallery/highlight-work-6.png">
+                        <img src="highlight-gallery/highlight-work-7.jpg">
+                        <img src="highlight-gallery/highlight-work-8.jpg">
+                        <img src="highlight-gallery/highlight-work-9.jpg">
+                        <img src="highlight-gallery/highlight-work-10.png">
+                        <img src="highlight-gallery/highlight-work-11.png">
+                        <img src="highlight-gallery/highlight-work-13.png">
+                        <img src="highlight-gallery/highlight-work-14.png">
+                        <img src="highlight-gallery/highlight-work-15.png">
+                        <img src="highlight-gallery/highlight-work-16.png">
+                        <img src="highlight-gallery/highlight-work-17.png">
+                        <img src="highlight-gallery/highlight-work-18.png">
+                        <img src="highlight-gallery/highlight-work-19.jpg">
+                        <img src="highlight-gallery/highlight-work-20.jpg">
+
+                    </div>
+                </div>
+                <!-- Highlight 3: Merged Reviews -->
+                <div class="highlight-item" data-highlight="reviews">
+                    <div class="highlight-img-wrapper">
+                        <img src="h1.png" alt="ماذا يقولون عنا؟" class="highlight-img">
+                    </div>
+                    <span class="highlight-title">ماذا يقولون عنا؟</span>
+                    <div class="highlight-gallery" style="display:none">
+                        <!-- أضف كافة صور الآراء هنا (عملاء ومشتركين) -->
+                        <img src="h1.png">
+                        <img src="h20.png">
+                        <img src="h3.png">
+                        <img src="h4.png">
+                        <img src="h5.png">
+                        <img src="h6.png">
+                        <img src="h7.png">
+                        <img src="h8.png">
+                        <img src="h9.png">
+                        <img src="h10.png">
+                        <img src="h11.png">
+                        <img src="h12.png">
+                        <img src="h13.png">
+                        <img src="h14.png">
+                        <img src="h15.png">
+                        <img src="h16.png">
+                        <img src="h17.png"><img src="h18.png"><img src="h19.png"><img src="h20.png"><img
+                            src="h21.png"><img src="h22.png"><img src="h23.png"><img src="h24.png"><img
+                            src="h25.png"><img src="h26.png"><img src="h27.png"><img src="h2.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about section bg-light">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>عنّي</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="about-content text-center max-w-700 mx-auto">
+                <p class="text-lg mb-4">أنا علي عباس، مصمم گرافيك ومدرب شغوف بتطوير مجتمع التصميم. أسعى دائماً
+                    لتقديم محتوى تعليمي يبسط المفاهيم المعقدة، وأقدم خدمات تصميم احترافية تساعد المشاريع التجارية
+                    على التميز والمنافسة بقوة في السوق.</p>
+                <div class="skills mb-5 reveal reveal-up" style="transition-delay: 0.2s;">
+                    <span class="skill-tag">تصميم هويات بصرية</span>
+                    <span class="skill-tag">تصميم سوشيال ميديا</span>
+                    <span class="skill-tag">تصميم إعلانات</span>
+                    <span class="skill-tag">تدريب وتوجيه</span>
+                </div>
+            </div>
+            <div class="features mt-5">
+                <h3 class="text-center mb-4 reveal reveal-up">لماذا تتعلم معي؟</h3>
+                <div class="features-grid reveal reveal-stagger">
+                    <div class="feature-card reveal reveal-up">
+                        <i class="fa-solid fa-laptop-code feature-icon"></i>
+                        <h4>تطبيق عملي</h4>
+                        <p>أركز على التطبيق الفوري للمفاهيم لنضمن استيعابك للمهارات واستخدامها في مشاريع حقيقية.</p>
+                    </div>
+                    <div class="feature-card reveal reveal-up">
+                        <i class="fa-solid fa-headset feature-icon"></i>
+                        <h4>متابعة ودعم</h4>
+                        <p>لن تكون وحدك، نوفر لك دعماً مستمراً ومتابعة لتقييم مستواك وتوجيهك للطريق الصحيح.</p>
+                    </div>
+                    <div class="feature-card reveal reveal-up">
+                        <i class="fa-solid fa-briefcase feature-icon"></i>
+                        <h4>تأهيل لسوق العمل</h4>
+                        <p>محتوى الكورسات مصمم خصيصاً ليحاكي متطلبات سوق العمل الفعلي وبناء معرض أعمال قوي.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="courses section">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>كورساتي</h2>
+                <div class="divider"></div>
+                <p class="section-desc">مجموعة من الدورات التدريبية المصممة لنقلك من الصفر إلى الاحتراف.</p>
+            </div>
+            <div class="courses-grid reveal reveal-stagger" id="courses-container">
+                <!-- Course 1 -->
+                <div class="course-card">
+                    <img src="course-graphic.png" alt="كورس الجرافيك الشامل" class="course-img" loading="lazy">
+                    <div class="course-content">
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-layer-group"></i> مبتدئ إلى متقدم</span>
+                            <span><i class="fa-solid fa-clock"></i> 6 أسابيع</span>
+                            <span class="price-tag">250,000 د.ع</span>
+                        </div>
+                        <h3>كورس الجرافيك الشامل</h3>
+                        <p>تعلم أساسيات التصميم الجرافيكي باستخدام Corel Draw و Photoshop و Illustrator.</p>
+                        <div class="course-actions mt-3">
+                            <button class="btn btn-outline-primary btn-sm btn-details"
+                                data-full-desc="هذا الكورس مصمم ليأخذك من الصفر في عالم التصميم الجرافيكي وحتى الاحتراف. ستتعلم فيه كيفية استخدام الأدوات الأساسية في برامج أدوبي تطبيقاً على مشاريع واقعية مثل تصميم اللوجو، بوسترات السوشيال ميديا والمطبوعات في الاسبوع ٣ محاضرات ومدة المحاضرة الواحدة ساعتين .">تفاصيل</button>
+                            <a href="#consulting" class="btn btn-primary btn-sm w-100">احجز الآن</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Course 2 -->
+                <div class="course-card">
+                    <img src="Untitled-1.png" alt="احتراف السوشيال ميديا" class="course-img" loading="lazy">
+                    <div class="course-content">
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-layer-group"></i> متوسط</span>
+                            <span><i class="fa-solid fa-clock"></i> 3 اسابيع</span>
+                            <span class="price-tag">150,000 د.ع</span>
+                        </div>
+                        <h3>احتراف السوشيال ميديا</h3>
+                        <p>كيفية تصميم بوسترات وإعلانات جذابة لمنصات التواصل الاجتماعي.</p>
+                        <div class="course-actions mt-3">
+                            <button class="btn btn-outline-primary btn-sm btn-details"
+                                data-full-desc="  دورة مكثفة تركز فقط على متطلبات السوشيال ميديا. ستتعلم سيكولوجية الألوان، التكوين البصري وتصميم إعلانات ممولة تحقق أعلى نسبة نقر CTA في الاسبوع ٣ محاضرات ومدة المحاضرة الواحدة ساعتين .">تفاصيل</button>
+                            <a href="#consulting" class="btn btn-primary btn-sm w-100">احجز الآن</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Course 3 -->
+                <div class="course-card">
+                    <img src="Untitled-2.png" alt="تصميم الهويات البصرية" class="course-img" loading="lazy">
+                    <div class="course-content">
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-layer-group"></i> متقدم</span>
+                            <span><i class="fa-solid fa-clock"></i> 3 أسابيع</span>
+                            <span class="price-tag">175,000 د.ع</span>
+                        </div>
+                        <h3>تصميم الهويات البصرية (Branding)</h3>
+                        <p>السر وراء بناء علامات تجارية تعلق في أذهان العملاء.</p>
+                        <div class="course-actions mt-3">
+                            <button class="btn btn-outline-primary btn-sm btn-details"
+                                data-full-desc="دورة احترافية تشرح خطوات بناء الهوية من البحث والتحليل، إلى رسم الاسكتشات، واختيار الخطوط والألوان، وتصميم دليل الهوية (Brand Guidelines) الكامل في الاسبوع ٣ محاضرات ومدة المحاضرة الواحدة ساعتين ..">تفاصيل</button>
+                            <a href="#consulting" class="btn btn-primary btn-sm w-100">احجز الآن</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Course 4 -->
+                <div class="course-card">
+                    <img src="Untitled-3.png" alt="كورس الاندزاين" class="course-img" loading="lazy">
+                    <div class="course-content">
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-layer-group"></i> مبتدئ إلى متقدم</span>
+                            <span><i class="fa-solid fa-clock"></i> 3 أسابيع</span>
+                            <span class="price-tag">150,000 د.ع</span>
+                        </div>
+                        <h3>كورس الاندزاين</h3>
+                        <p>تعلم برنامج Adobe InDesign باحتراف لتصميم المطبوعات والكتب والمجلات.</p>
+                        <div class="course-actions mt-3">
+                            <button class="btn btn-outline-primary btn-sm btn-details"
+                                data-full-desc="كورس شامل في برنامج Adobe InDesign، في الاسبوع ٣ محاضرات ومدة المحاضرة الواحدة ساعتين .ستتعلم فيه كيفية إنشاء المطبوعات الاحترافية من كتب ومجلات وبروشورات، وتنسيق النصوص والصور، وإتقان فنون التخطيط ومهارات التصدير للطباعة والنشر الرقمي.">تفاصيل</button>
+                            <a href="#consulting" class="btn btn-primary btn-sm w-100">احجز الآن</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services section bg-light">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>خدماتي</h2>
+                <div class="divider"></div>
+                <p class="section-desc">بناء وصناعة هويات العلامات التجارية وتصاميم السوشيال ميديا الاحترافية.</p>
+            </div>
+            <div class="services-grid reveal reveal-stagger">
+                <div class="service-card">
+                    <i class="fa-solid fa-compass service-icon"></i>
+                    <h3>تصميم الهوية البصرية</h3>
+                    <p>بناء علامة تجارية متكاملة تشمل الشعار، الألوان، الخطوط، والمطبوعات لتميز مشروعك.</p>
+                    <a href="#consulting" class="btn btn-outline-primary btn-sm mt-3">اطلب الخدمة</a>
+                </div>
+                <div class="service-card">
+                    <i class="fa-solid fa-hashtag service-icon"></i>
+                    <h3>تصاميم السوشيال ميديا</h3>
+                    <p>تصميم بوسترات وإعلانات تجذب الانتباه وتعكس احترافية حساباتك على المنصات المختلفة.</p>
+                    <a href="#consulting" class="btn btn-outline-primary btn-sm mt-3">اطلب الخدمة</a>
+                </div>
+                <div class="service-card">
+                    <i class="fa-solid fa-pen-nib service-icon"></i>
+                    <h3>تصاميم المطبوعات</h3>
+                    <p>بروشورات، بزنس كارد، رول أب، والبانرات المصممة بأعلى جودة للطباعة والتوزيع.</p>
+                    <a href="#consulting" class="btn btn-outline-primary btn-sm mt-3">اطلب الخدمة</a>
+                </div>
+                <div class="service-card">
+                    <i class="fa-solid fa-chalkboard-user service-icon"></i>
+                    <h3>استشارات وتدريب خاص</h3>
+                    <p>جلسات تدريبية خاصة للأفراد والشركات للارتقاء بمستوى التصميم أو بناء أقسام التصميم.</p>
+                    <a href="#consulting" class="btn btn-outline-primary btn-sm mt-3">اطلب الخدمة</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutorials Section -->
+    <section id="tutorials" class="tutorials section">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>شروحاتي</h2>
+                <div class="divider"></div>
+                <p class="section-desc">مكتبة متجددة لشروحات مجانية حول التصميم وأدواته.</p>
+            </div>
+            <div class="tutorials-tools mb-4">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="tutorial-search" placeholder="ابحث عن شرح...">
+                </div>
+            </div>
+
+            <div class="tutorials-grid" id="tutorials-container">
+                <!-- Tutorial 1 -->
+                <div class="tutorial-card">
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="tutor-thumb">
+                        <img src="p.png" alt="أسرار أداة البن تول">
+                        <i class="fa-brands fa-youtube play-icon"></i>
+                    </a>
+                    <div class="tutor-info">
+                        <h4>أسرار أداة البن تول في الإليستريتور</h4>
+                        <p>في هذا الشرح المبسط نوضح كيف تتقن أداة الـ Pen Tool في 10 دقائق فقط.</p>
+                    </div>
+                </div>
+                <!-- Tutorial 2 -->
+                <div class="tutorial-card">
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="tutor-thumb">
+                        <img src="pp.png" alt="اختيار الألوان">
+                        <i class="fa-brands fa-youtube play-icon"></i>
+                    </a>
+                    <div class="tutor-info">
+                        <h4>كيف تختار ألوان متناسقة لمشروعك</h4>
+                        <p>طرق عملية لاستخراج لوحة ألوان جذابة لأي تصميم باستخدام أدوات مجانية.</p>
+                    </div>
+                </div>
+                <!-- Tutorial 3 -->
+                <div class="tutorial-card">
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="tutor-thumb">
+                        <img src="d.png" alt="دمج احترافي">
+                        <i class="fa-brands fa-youtube play-icon"></i>
+                    </a>
+                    <div class="tutor-info">
+                        <h4>تصميم دمج احترافي بالفوتوشوب</h4>
+                        <p>خطوة بخطوة نتعلم دمج الصور وضبط الإضاءة التلاعب بالألوان.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lectures Section -->
+    <section id="lectures" class="tutorials section bg-light">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>محاضراتي</h2>
+                <div class="divider"></div>
+                <p class="section-desc">مقتطفات ومقاطع فيديو من محاضرات الكورسات الخاصة بي المرفوعة على تليجرام.</p>
+            </div>
+
+            <div class="tutorials-tools mb-4">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="lecture-search" placeholder="ابحث عن محاضرة...">
+                </div>
+            </div>
+
+            <div class="tutorials-grid" id="lectures-container">
+                <!-- Lecture 1 -->
+                <div class="tutorial-card">
+                    <a href="https://t.me/mylectures89/2" target="_blank" rel="noopener" class="tutor-thumb">
+                        <img src="m.png" alt="مقدمة الكورس">
+                        <i class="fa-brands fa-telegram play-icon"></i>
+                    </a>
+                    <div class="tutor-info">
+                        <h4 style="margin: 0;">مقدمة الكورس</h4>
+                    </div>
+                </div>
+                <!-- Lecture 2 -->
+                <div class="tutorial-card">
+                    <a href="https://t.me/mylectures89/3" target="_blank" rel="noopener" class="tutor-thumb">
+                        <img src="c.png" alt="محاضرة جديدة">
+                        <i class="fa-brands fa-telegram play-icon"></i>
+                    </a>
+                    <div class="tutor-info">
+                        <h4 style="margin: 0;">انظمة الالوان RGB & CMYK
+                            شنو هو البكسل ؟ وشنو الفيكتور ؟ ومامعنى Resolution ؟</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio section bg-light">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>بعض من أعمالي</h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="portfolio-filters reveal reveal-up" id="portfolio-filters" style="transition-delay: 0.2s;">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="branding">هويات بصرية</button>
+                <button class="filter-btn" data-filter="social">سوشيال ميديا</button>
+                <button class="filter-btn" data-filter="posters">بوسترات</button>
+            </div>
+            <div class="portfolio-grid reveal reveal-stagger" id="portfolio-grid">
+                <!-- Category 1: Visual Identity -->
+                <div class="portfolio-item reveal reveal-up" data-category="branding"
+                    data-images='["Asset 1.png","26.png","27.png"]' tabindex="0">
+                    <img src="Asset 1.png" alt="هويات بصرية">
+                    <div class="portfolio-overlay">
+                        <h3 class="portfolio-title">قسم الهويات البصرية</h3>
+                        <span class="portfolio-cat">انقر لمشاهدة كافة الأعمال</span>
+                    </div>
+                </div>
+                <!-- Category 2: Social Media -->
+                <div class="portfolio-item reveal reveal-up" data-category="social"
+                    data-images='["1.png","2.png","3.png","4.png","5.png","6.png","7.png","8.png","9.png","10.png","11.png","12.png","13.png","14.png","15.png","16.png","17.png","18.png","19.png","20.jpg","21.jpg"]'
+                    tabindex="0">
+                    <img src="1.png" alt="سوشيال ميديا">
+                    <div class="portfolio-overlay">
+                        <h3 class="portfolio-title">قسم السوشيال ميديا</h3>
+                        <span class="portfolio-cat">انقر لمشاهدة كافة الأعمال</span>
+                    </div>
+                </div>
+                <!-- Category 3: Posters & Others -->
+                <div class="portfolio-item reveal reveal-up" data-category="posters"
+                    data-images='["22.png","22.png","23.png","24.png","25.png"]' tabindex="0">
+                    <img src="22.png" alt="بوسترات وأخرى">
+                    <div class="portfolio-overlay">
+                        <h3 class="portfolio-title">قسم المطبوعات والبوسترات</h3>
+                        <span class="portfolio-cat">انقر لمشاهدة كافة الأعمال</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consulting / Booking Section -->
+    <section id="consulting" class="consulting section">
+        <div class="container">
+            <div class="consulting-wrapper">
+                <div class="consulting-info">
+                    <h2>احجز استشارة أو اطلب خدمة</h2>
+                    <p>جاهز لتطوير مهاراتك أو بناء هوية مميزة لمشروعك؟ املأ النموذج وسأتواصل معك في أقرب وقت.</p>
+                    <ul class="contact-info">
+                        <li><i class="fa-solid fa-envelope"></i> ali.abbas.kh89@gmail.com</li>
+                        <li><i class="fa-solid fa-clock"></i> الرد خلال 24 - 48 ساعة</li>
+                    </ul>
+                </div>
+                <div class="consulting-form-container">
+                    <form id="consulting-form" class="card-form" novalidate>
+                        <div class="form-group row">
+                            <div class="col-half">
+                                <label for="c-name">الاسم الكريم *</label>
+                                <input type="text" id="c-name" name="name" required>
+                            </div>
+                            <div class="col-half">
+                                <label for="c-phone">رقم الهاتف *</label>
+                                <input type="tel" id="c-phone" name="phone" required minlength="8"
+                                    placeholder="مثال: 07xxxxxx">
+                                <small class="error-msg" id="phone-error">رقم الهاتف غير صالح</small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="c-email">البريد الإلكتروني *</label>
+                            <input type="email" id="c-email" name="email" required>
+                            <small class="error-msg" id="email-error">بريد إلكتروني غير صالح</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="c-type">نوع الطلب *</label>
+                            <select id="c-type" name="service_type" required>
+                                <option value="" disabled selected>اختر الخدمة...</option>
+                                <option value="استشارة تصميم">استشارة تصميم</option>
+                                <option value="الاشتراك في كورس">الاشتراك في كورس</option>
+                                <option value="طلب تصميم هوية">طلب تصميم هوية بصرية</option>
+                                <option value="طلب تصاميم سوشيال ميديا">تصاميم سوشيال ميديا</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="c-msg">رسالتك / تفاصيل الطلب *</label>
+                            <textarea id="c-msg" name="message" rows="4" required
+                                placeholder="اكتب تفاصيل مشروعك أو سؤالك هنا..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">إرسال الطلب</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container footer-content">
+        <div class="footer-logo">
+            <a href="#home">Ali <span>Abbas</span></a>
+            <p>Graphic Designer & Trainer</p>
+        </div>
+        <div class="footer-social">
+            <a href="https://www.youtube.com/@AliAbbas-89" target="_blank" rel="noopener" aria-label="YouTube"><i
+                    class="fa-brands fa-youtube"></i></a>
+            <a href="https://instagram.com/ali_a89as" target="_blank" rel="noopener" aria-label="Instagram"><i
+                    class="fa-brands fa-instagram"></i></a>
+            <a href="https://t.me/ali_a89ass" target="_blank" rel="noopener" aria-label="Telegram"><i
+                    class="fa-brands fa-telegram"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61581891595860&ref=PROFILE_EDIT_xav_ig_profile_page_web"
+                target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://wa.me/9647718669939" target="_blank" rel="noopener" aria-label="WhatsApp"><i
+                    class="fa-brands fa-whatsapp"></i></a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; <span id="year"></span> Ali Abbas. جميع الحقوق محفوظة.</p>
+    </div>
+    <a href="#home" class="back-to-top" id="back-to-top" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </a>
+</footer>
+
+<!-- Course Modal -->
+<div id="course-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" id="close-course-modal">&times;</span>
+        <div id="modal-body" class="modal-body"></div>
+    </div>
+</div>
+
+<!-- Lightbox for Portfolio -->
+<div id="lightbox" class="lightbox">
+    <span class="close-lightbox" id="close-lightbox">&times;</span>
+    <button class="story-nav prev" id="lightbox-prev" aria-label="Previous image" style="display: none;"><i
+            class="fa-solid fa-chevron-right"></i></button>
+    <img class="lightbox-content" id="lightbox-img" alt="Enlarged Portfolio Image">
+    <button class="story-nav next" id="lightbox-next" aria-label="Next image" style="display: none;"><i
+            class="fa-solid fa-chevron-left"></i></button>
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+</div>
+
+<!-- Story Viewer Modal -->
+<div id="story-modal" class="story-modal">
+    <span class="close-story" id="close-story">&times;</span>
+    <button class="story-nav prev" id="story-prev" aria-label="Previous image"><i
+            class="fa-solid fa-chevron-right"></i></button>
+    <div class="story-content">
+        <img id="story-img" src="" alt="Highlight Story">
+    </div>
+    <button class="story-nav next" id="story-next" aria-label="Next image"><i
+            class="fa-solid fa-chevron-left"></i></button>
+
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">
+    <i class="fa-solid fa-check-circle"></i>
+    <span id="toast-msg">تم الإرسال بنجاح!</span>
+</div>
+
+<script src="script.js"></script>
+</body>
+
+</html>

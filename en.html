@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali Abbas | Graphic Designer & Trainer</title>
+    <meta name="description" content="Courses, tutorials, and professional design services — all in one place.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+    <div id="scroll-progress"></div>
+    <!-- Header & Navbar -->
+    <header class="header" id="header">
+        <div class="container nav-wrapper">
+            <a href="#home" class="logo">Ali <span>Abbas</span></a>
+            <nav class="navbar" id="navbar">
+                <ul class="nav-links">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#courses" class="nav-link">Courses</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#tutorials" class="nav-link">Tutorials</a></li>
+                    <li><a href="#lectures" class="nav-link">Lectures</a></li>
+                    <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                </ul>
+
+                <div class="header-controls">
+                    <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <a href="index.html" class="btn-icon text-bold" aria-label="Switch to Arabic">AR</a>
+                    <a href="#consulting" class="btn btn-primary d-none-mobile">Book Callback</a>
+                </div>
+            </nav>
+            <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero section">
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <h1 class="hero-title reveal reveal-up">Ali Abbas <br> <span class="text-accent">Graphic Designer & Trainer</span>
+                    </h1>
+                    <h2 class="hero-subtitle reveal reveal-up typewriter" data-text="I help you learn design practically and build a strong identity for your project.">I help you learn design practically and build a strong identity for your project.</h2>
+                    <p class="hero-text reveal reveal-up" style="transition-delay: 0.2s;">Courses, tutorials, and professional design services — all in one place.</p>
+                    <div class="hero-actions">
+                        <a href="#courses" class="btn btn-primary">View Courses</a>
+                        <a href="#consulting" class="btn btn-outline">Consultation</a>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://www.youtube.com/@AliAbbas-89" target="_blank" rel="noopener"
+                            aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://instagram.com/ali_a89as" target="_blank" rel="noopener"
+                            aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://t.me/ali_a89ass" target="_blank" rel="noopener" aria-label="Telegram"><i
+                                class="fa-brands fa-telegram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61581891595860&ref=PROFILE_EDIT_xav_ig_profile_page_web"
+                            target="_blank" rel="noopener" aria-label="Facebook"><i
+                                class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://wa.me/9647718669939" target="_blank" rel="noopener" aria-label="WhatsApp"><i
+                                class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <!-- Profile Image -->
+                <div class="hero-image reveal reveal-right">
+                    <div class="image-wrapper">
+                        <img src="profile.jpg" alt="Ali Abbas - Graphic Designer" class="profile-img"
+                            onerror="this.onerror=null; this.src='https://via.placeholder.com/400x400/1f2937/a7ff0d?text=Profile'">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Highlights Section -->
+        <section id="highlights" class="highlights">
+            <div class="container">
+                <div class="highlights-container">
+                    <div class="highlight-item" data-highlight="baghdad-course">
+                        <div class="highlight-img-wrapper">
+                            <img src="highlight-gallery/highlight-baghdad-1.jpg" alt="Baghdad Course"
+                                class="highlight-img">
+                        </div>
+                        <span class="highlight-title">Baghdad Course</span>
+                        <div class="highlight-gallery" style="display:none">
+                            <img src="highlight-gallery/highlight-baghdad-1.jpg">
+                            <img src="highlight-gallery/highlight-baghdad-2.jpg">
+                            <img src="highlight-gallery/highlight-baghdad-3.jpg">
+                            <img src="highlight-gallery/highlight-baghdad-4.jpg">
+                            <img src="highlight-gallery/highlight-baghdad-5.jpg">
+                            <img src="highlight-gallery/highlight-baghdad-6.jpg">
+                            <img src="highlight-gallery/highlight-baghdad-7.jpg">
+                        </div>
+                    </div>
+                    <div class="highlight-item" data-highlight="students-work">
+                        <div class="highlight-img-wrapper">
+                            <img src="highlight-gallery/highlight-work-1.png" alt="Students Work" class="highlight-img">
+                        </div>
+                        <span class="highlight-title">Students Work</span>
+                        <div class="highlight-gallery" style="display:none">
+                            <img src="highlight-gallery/highlight-work-1.png">
+                            <img src="highlight-gallery/highlight-work-2.png">
+                            <img src="highlight-gallery/highlight-work-3.png">
+                            <img src="highlight-gallery/highlight-work-4.png">
+                            <img src="highlight-gallery/highlight-work-5.png">
+                            <img src="highlight-gallery/highlight-work-6.png">
+                            <img src="highlight-gallery/highlight-work-7.jpg">
+                            <img src="highlight-gallery/highlight-work-8.jpg">
+                            <img src="highlight-gallery/highlight-work-9.jpg">
+                            <img src="highlight-gallery/highlight-work-10.png">
+                            <img src="highlight-gallery/highlight-work-11.png">
+                            <img src="highlight-gallery/highlight-work-13.png">
+                            <img src="highlight-gallery/highlight-work-14.png">
+                            <img src="highlight-gallery/highlight-work-15.png">
+                            <img src="highlight-gallery/highlight-work-16.png">
+                            <img src="highlight-gallery/highlight-work-17.png">
+                            <img src="highlight-gallery/highlight-work-18.png">
+                            <img src="highlight-gallery/highlight-work-19.jpg">
+                            <img src="highlight-gallery/highlight-work-20.jpg">
+                        </div>
+                    </div>
+                    <!-- Highlight 3: Merged Reviews -->
+                    <div class="highlight-item" data-highlight="reviews">
+                        <div class="highlight-img-wrapper">
+                            <img src="h1.png" alt="What They Say" class="highlight-img">
+                        </div>
+                        <span class="highlight-title">What They Say</span>
+                        <div class="highlight-gallery" style="display:none">
+                            <img src="h1.png">
+                            <img src="h20.png">
+                            <img src="h3.png">
+                            <img src="h4.png">
+                            <img src="h5.png">
+                            <img src="h6.png">
+                            <img src="h7.png">
+                            <img src="h8.png">
+                            <img src="h9.png">
+                            <img src="h10.png">
+                            <img src="h11.png">
+                            <img src="h12.png">
+                            <img src="h13.png">
+                            <img src="h14.png">
+                            <img src="h15.png">
+                            <img src="h16.png">
+                            <img src="h17.png"><img src="h18.png"><img src="h19.png"><img src="h20.png"><img
+                                src="h21.png"><img src="h22.png"><img src="h23.png"><img src="h24.png"><img
+                                src="h25.png"><img src="h26.png"><img src="h27.png"><img src="h2.png">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about section bg-light">
+            <div class="container">
+                <div class="section-title text-center reveal reveal-up">
+                    <h2>About Me</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="about-content text-center max-w-700 mx-auto">
+                    <p class="text-lg mb-4">I'm Ali Abbas, a graphic designer and trainer passionate about developing
+                        the design community. I always strive to provide educational content that simplifies complex
+                        concepts, and offer professional design services that help commercial projects stand out and
+                        compete strongly.</p>
+                    <div class="skills mb-5 reveal reveal-up" style="transition-delay: 0.2s;">
+                        <span class="skill-tag">Visual Identity</span>
+                        <span class="skill-tag">Social Media Design</span>
+                        <span class="skill-tag">Ad Design</span>
+                        <span class="skill-tag">Training & Mentoring</span>
+                    </div>
+                </div>
+                <div class="features mt-5">
+                    <h3 class="text-center mb-4 reveal reveal-up">Why Learn With Me?</h3>
+                    <div class="features-grid reveal reveal-stagger">
+                        <div class="feature-card reveal reveal-up">
+                            <i class="fa-solid fa-laptop-code feature-icon"></i>
+                            <h4>Practical Application</h4>
+                            <p>I focus on immediate application of concepts to guarantee you understand and use these
+                                skills in real projects.</p>
+                        </div>
+                        <div class="feature-card reveal reveal-up">
+                            <i class="fa-solid fa-headset feature-icon"></i>
+                            <h4>Support & Follow-up</h4>
+                            <p>You are never alone. We provide continuous support and evaluate your level to guide you
+                                on the right track.</p>
+                        </div>
+                        <div class="feature-card reveal reveal-up">
+                            <i class="fa-solid fa-briefcase feature-icon"></i>
+                            <h4>Job Market Readiness</h4>
+                            <p>Course content is specifically designed to simulate actual market needs and to build a
+                                strong portfolio.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Section -->
+        <section id="courses" class="courses section">
+            <div class="container">
+                <div class="section-title text-center reveal reveal-up">
+                    <h2>My Courses</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">Training programs crafted to take you from a beginner to an expert.</p>
+                </div>
+                <div class="courses-grid reveal reveal-stagger" id="courses-container">
+                    <!-- Course 1 -->
+                    <div class="course-card">
+                        <img src="course-graphic.png" alt="Comprehensive Graphic Design" class="course-img"
+                            loading="lazy">
+                        <div class="course-content">
+                            <div class="course-meta">
+                                <span><i class="fa-solid fa-layer-group"></i> Beginner to Pro</span>
+                                <span><i class="fa-solid fa-clock"></i> 6 Weeks</span>
+                                <span class="price-tag">250,000 IQD</span>
+                            </div>
+                            <h3>Comprehensive Graphic Design</h3>
+                            <p>Learn the fundamentals of graphic design using Photoshop and Illustrator.</p>
+                            <div class="course-actions mt-3">
+                                <button class="btn btn-outline-primary btn-sm btn-details"
+                                    data-full-desc="This course is designed to take you from scratch to professionalism. Learn to use Adobe tools applied to real projects like logos, social media posters, and print materials. (3 lectures per week, 2 hours per lecture).">Details</button>
+                                <a href="#consulting" class="btn btn-primary btn-sm w-100">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Course 2 -->
+                    <div class="course-card">
+                        <img src="Untitled-1.png" alt="Social Media Mastery" class="course-img" loading="lazy">
+                        <div class="course-content">
+                            <div class="course-meta">
+                                <span><i class="fa-solid fa-layer-group"></i> Intermediate</span>
+                                <span><i class="fa-solid fa-clock"></i> 3 Weeks</span>
+                                <span class="price-tag">150,000 IQD</span>
+                            </div>
+                            <h3>Social Media Professionalism</h3>
+                            <p>How to design attractive posters and ads for social media platforms.</p>
+                            <div class="course-actions mt-3">
+                                <button class="btn btn-outline-primary btn-sm btn-details"
+                                    data-full-desc="An intensive course focusing purely on social media requirements. You will learn color psychology, visual composition, and designing sponsored ads that land high CTR. (3 lectures per week, 2 hours per lecture).">Details</button>
+                                <a href="#consulting" class="btn btn-primary btn-sm w-100">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Course 3 -->
+                    <div class="course-card">
+                        <img src="Untitled-2.png" alt="Visual Identity & Branding" class="course-img" loading="lazy">
+                        <div class="course-content">
+                            <div class="course-meta">
+                                <span><i class="fa-solid fa-layer-group"></i> Advanced</span>
+                                <span><i class="fa-solid fa-clock"></i> 3 Weeks</span>
+                                <span class="price-tag">175,000 IQD</span>
+                            </div>
+                            <h3>Visual Identity & Branding</h3>
+                            <p>The secret behind creating memorable commercial brands.</p>
+                            <div class="course-actions mt-3">
+                                <button class="btn btn-outline-primary btn-sm btn-details"
+                                    data-full-desc="A professional course explaining the steps of building an identity from research and analysis, to sketching, selecting typography and colors, to designing complete brand guidelines. (3 lectures per week, 2 hours per lecture).">Details</button>
+                                <a href="#consulting" class="btn btn-primary btn-sm w-100">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Course 4 -->
+                    <div class="course-card">
+                        <img src="Untitled-3.png" alt="InDesign Course" class="course-img" loading="lazy">
+                        <div class="course-content">
+                            <div class="course-meta">
+                                <span><i class="fa-solid fa-layer-group"></i> Beginner to Pro</span>
+                                <span><i class="fa-solid fa-clock"></i> 3 Weeks</span>
+                                <span class="price-tag">150,000 IQD</span>
+                            </div>
+                            <h3>InDesign Course</h3>
+                            <p>Master Adobe InDesign for designing professional publications, books, and magazines.</p>
+                            <div class="course-actions mt-3">
+                                <button class="btn btn-outline-primary btn-sm btn-details"
+                                    data-full-desc="A comprehensive course in Adobe InDesign. You will learn how to create professional publications — books, magazines, and brochures — format text and images, master layout design, and export for both print and digital publishing. (3 lectures per week, 2 hours per lecture).">Details</button>
+                                <a href="#consulting" class="btn btn-primary btn-sm w-100">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="services section bg-light">
+            <div class="container">
+                <div class="section-title text-center reveal reveal-up">
+                    <h2>My Services</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">Building visual brand identities and professional social media designs.</p>
+                </div>
+                <div class="services-grid reveal reveal-stagger">
+                    <div class="service-card">
+                        <i class="fa-solid fa-compass service-icon"></i>
+                        <h3>Visual Identity</h3>
+                        <p>Complete branding including logo creation, colors, typography, and print layouts.</p>
+                        <a href="#consulting" class="btn btn-outline-primary btn-sm mt-3">Request Service</a>
+                    </div>
+                    <div class="service-card">
+                        <i class="fa-solid fa-hashtag service-icon"></i>
+                        <h3>Social Media Design</h3>
+                        <p>Posts and ads that catch attention and reflect high professionalism across platforms.</p>
+                        <a href="#consulting" class="btn btn-outline-primary btn-sm mt-3">Request Service</a>
+                    </div>
+                    <div class="service-card">
+                        <i class="fa-solid fa-pen-nib service-icon"></i>
+                        <h3>Print Design</h3>
+                        <p>Brochures, business cards, roll-ups, and banners designed with highest print quality.</p>
+                        <a href="#consulting" class="btn btn-outline-primary btn-sm mt-3">Request Service</a>
+                    </div>
+                    <div class="service-card">
+                        <i class="fa-solid fa-chalkboard-user service-icon"></i>
+                        <h3>1-on-1 Coaching</h3>
+                        <p>Private sessions for individuals and companies to elevate design levels.</p>
+                        <a href="#consulting" class="btn btn-outline-primary btn-sm mt-3">Request Service</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tutorials Section -->
+        <section id="tutorials" class="tutorials section">
+            <div class="container">
+                <div class="section-title text-center reveal reveal-up">
+                    <h2>Tutorials</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">A constantly updated library of free design tutorials and tool guides.</p>
+                </div>
+                <div class="tutorials-tools mb-4">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="tutorial-search" placeholder="Search tutorials...">
+                    </div>
+                </div>
+
+                <div class="tutorials-grid" id="tutorials-container">
+                    <!-- Tutorial 1 -->
+                    <div class="tutorial-card">
+                        <a href="https://youtube.com" target="_blank" rel="noopener" class="tutor-thumb">
+                            <img src="p.png"
+                                alt="Pen Tool Secrets">
+                            <i class="fa-brands fa-youtube play-icon"></i>
+                        </a>
+                        <div class="tutor-info">
+                            <h4>Secrets of the Pen Tool in Illustrator</h4>
+                            <p>In this simplified tutorial we explain how to master the Pen Tool in 10 minutes.</p>
+                        </div>
+                    </div>
+                    <!-- Tutorial 2 -->
+                    <div class="tutorial-card">
+                        <a href="https://youtube.com" target="_blank" rel="noopener" class="tutor-thumb">
+                            <img src="pp.png"
+                                alt="Color Palette">
+                            <i class="fa-brands fa-youtube play-icon"></i>
+                        </a>
+                        <div class="tutor-info">
+                            <h4>How to Choose a Harmonious Palette</h4>
+                            <p>Practical ways to extract an attractive color palette for any design using free tools.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Tutorial 3 -->
+                    <div class="tutorial-card">
+                        <a href="https://youtube.com" target="_blank" rel="noopener" class="tutor-thumb">
+                            <img src="d.png"
+                                alt="Photoshop Manipulation">
+                            <i class="fa-brands fa-youtube play-icon"></i>
+                        </a>
+                        <div class="tutor-info">
+                            <h4>Professional Photoshop Manipulation</h4>
+                            <p>Step by step, we learn image manipulation, lighting adjustment, and color grading.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lectures Section -->
+        <section id="lectures" class="tutorials section bg-light">
+            <div class="container">
+                <div class="section-title text-center reveal reveal-up">
+                    <h2>My Lectures</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">Excerpts and video clips from my courses uploaded on Telegram.</p>
+                </div>
+
+                <div class="tutorials-tools mb-4">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="lecture-search" placeholder="Search lectures...">
+                    </div>
+                </div>
+
+                <div class="tutorials-grid" id="lectures-container">
+                    <!-- Lecture 1 -->
+                    <div class="tutorial-card">
+                        <a href="https://t.me/mylectures89/2" target="_blank" rel="noopener" class="tutor-thumb">
+                            <img src="m.png" alt="Course Intro">
+                            <i class="fa-brands fa-telegram play-icon"></i>
+                        </a>
+                        <div class="tutor-info">
+                            <h4 style="margin: 0;">Course Intro</h4>
+                        </div>
+                    </div>
+                    <!-- Lecture 2 -->
+                    <div class="tutorial-card">
+                        <a href="https://t.me/mylectures89/3" target="_blank" rel="noopener" class="tutor-thumb">
+                            <img src="c.png"
+                                alt="New Lecture">
+                            <i class="fa-brands fa-telegram play-icon"></i>
+                        </a>
+                        <div class="tutor-info">
+                            <h4 style="margin: 0;">Color Systems RGB & CMYK. What is Pixel? What is Vector? And what does Resolution mean?</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section id="portfolio" class="portfolio section bg-light">
+            <div class="container">
+                <div class="section-title text-center reveal reveal-up">
+                    <h2>My Portfolio</h2>
+                    <div class="divider"></div>
+                </div>
+
+                <div class="portfolio-filters reveal reveal-up" id="portfolio-filters" style="transition-delay: 0.2s;">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="branding">Branding</button>
+                    <button class="filter-btn" data-filter="social">Social Media</button>
+                    <button class="filter-btn" data-filter="posters">Posters</button>
+                </div>
+                <div class="portfolio-grid reveal reveal-stagger" id="portfolio-grid">
+                    <!-- Category 1: Visual Identity -->
+                    <div class="portfolio-item reveal reveal-up" data-category="branding" data-images='["Asset 1.png","26.png","27.png"]'
+                        tabindex="0">
+                        <img src="Asset 1.png" alt="Visual Identity">
+                        <div class="portfolio-overlay">
+                            <h3 class="portfolio-title">Visual Identity Section</h3>
+                            <span class="portfolio-cat">Click to view all works</span>
+                        </div>
+                    </div>
+                    <!-- Category 2: Social Media -->
+                    <div class="portfolio-item reveal reveal-up" data-category="social"
+                        data-images='["1.png","2.png","3.png","4.png","5.png","6.png","7.png","8.png","9.png","10.png","11.png","12.png","13.png","14.png","15.png","16.png","17.png","18.png","19.png","20.jpg","21.jpg"]'
+                        tabindex="0">
+                        <img src="1.png" alt="Social Media">
+                        <div class="portfolio-overlay">
+                            <h3 class="portfolio-title">Social Media Section</h3>
+                            <span class="portfolio-cat">Click to view all works</span>
+                        </div>
+                    </div>
+                    <!-- Category 3: Posters & Others -->
+                    <div class="portfolio-item reveal reveal-up" data-category="posters"
+                        data-images='["22.png","23.png","24.png","25.png"]' tabindex="0">
+                        <img src="22.png" alt="Posters & Others">
+                        <div class="portfolio-overlay">
+                            <h3 class="portfolio-title">Posters & Print Section</h3>
+                            <span class="portfolio-cat">Click to view all works</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Consulting / Booking Section -->
+        <section id="consulting" class="consulting section">
+            <div class="container">
+                <div class="consulting-wrapper">
+                    <div class="consulting-info">
+                        <h2>Book a Consultation or Service</h2>
+                        <p>Ready to improve your skills or build a unique project identity? Fill out the form and I'll
+                            get back to you shortly.</p>
+                        <ul class="contact-info">
+                            <li><i class="fa-solid fa-envelope"></i> ali.abbas.kh89@gmail.com</li>
+                            <li><i class="fa-solid fa-clock"></i> Reply within 24 - 48 hours</li>
+                        </ul>
+                    </div>
+                    <div class="consulting-form-container">
+                        <form id="consulting-form" class="card-form" novalidate>
+                            <div class="form-group row">
+                                <div class="col-half">
+                                    <label for="c-name">Full Name *</label>
+                                    <input type="text" id="c-name" name="name" required>
+                                </div>
+                                <div class="col-half">
+                                    <label for="c-phone">Phone Number *</label>
+                                    <input type="tel" id="c-phone" name="phone" required minlength="8"
+                                        placeholder="e.g. 07xxxxxx">
+                                    <small class="error-msg" id="phone-error">Invalid phone number</small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="c-email">Email Address *</label>
+                                <input type="email" id="c-email" name="email" required>
+                                <small class="error-msg" id="email-error">Invalid email</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="c-type">Request Type *</label>
+                                <select id="c-type" name="service_type" required>
+                                    <option value="" disabled selected>Select service...</option>
+                                    <option value="Consultation">Design Consultation</option>
+                                    <option value="Course Registration">Course Registration</option>
+                                    <option value="Branding Request">Branding Service</option>
+                                    <option value="Social Media">Social Media Designs</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="c-msg">Message Summary *</label>
+                                <textarea id="c-msg" name="message" rows="4" required
+                                    placeholder="Write details about your project or inquiry..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Submit Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <a href="#home">Ali <span>Abbas</span></a>
+                <p>Graphic Designer & Trainer</p>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.youtube.com/@AliAbbas-89" target="_blank" rel="noopener" aria-label="YouTube"><i
+                        class="fa-brands fa-youtube"></i></a>
+                <a href="https://instagram.com/ali_a89as" target="_blank" rel="noopener" aria-label="Instagram"><i
+                        class="fa-brands fa-instagram"></i></a>
+                <a href="https://t.me/ali_a89ass" target="_blank" rel="noopener" aria-label="Telegram"><i
+                        class="fa-brands fa-telegram"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61581891595860&ref=PROFILE_EDIT_xav_ig_profile_page_web"
+                    target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://wa.me/9647718669939" target="_blank" rel="noopener" aria-label="WhatsApp"><i
+                        class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> Ali Abbas. All rights reserved.</p>
+        </div>
+        <a href="#home" class="back-to-top" id="back-to-top" aria-label="Back to top">
+            <i class="fa-solid fa-arrow-up"></i>
+        </a>
+    </footer>
+
+    <!-- Course Modal -->
+    <div id="course-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-course-modal">&times;</span>
+            <div id="modal-body" class="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Lightbox for Portfolio -->
+    <div id="lightbox" class="lightbox">
+        <span class="close-lightbox" id="close-lightbox">&times;</span>
+        <button class="story-nav prev" id="lightbox-prev" aria-label="Previous image" style="display: none;"><i
+                class="fa-solid fa-chevron-left"></i></button>
+        <img class="lightbox-content" id="lightbox-img" alt="Enlarged Portfolio Image">
+        <button class="story-nav next" id="lightbox-next" aria-label="Next image" style="display: none;"><i
+                class="fa-solid fa-chevron-right"></i></button>
+        <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
+
+    <!-- Story Viewer Modal -->
+    <div id="story-modal" class="story-modal">
+        <span class="close-story" id="close-story">&times;</span>
+        <button class="story-nav prev" id="story-prev" aria-label="Previous image"><i
+                class="fa-solid fa-chevron-left"></i></button>
+        <div class="story-content">
+            <img id="story-img" src="" alt="Highlight Story">
+        </div>
+        <button class="story-nav next" id="story-next" aria-label="Next image"><i
+                class="fa-solid fa-chevron-right"></i></button>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-check-circle"></i>
+        <span id="toast-msg">Sent successfully!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
