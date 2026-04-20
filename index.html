@@ -42,6 +42,7 @@
                 <li><a href="#services" class="nav-link">خدماتي</a></li>
                 <li><a href="#tutorials" class="nav-link">شروحاتي</a></li>
                 <li><a href="#lectures" class="nav-link">محاضراتي</a></li>
+                <li><a href="#portfolio" class="nav-link">أعمالي</a></li>
             </ul>
 
             <div class="header-controls">
@@ -525,6 +526,51 @@
         </div>
     </section>
 
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio section bg-light">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>بعض من أعمالي</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="portfolio-filters reveal reveal-up" style="transition-delay:0.2s;">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="branding">هويات بصرية</button>
+                <button class="filter-btn" data-filter="social">سوشيال ميديا</button>
+                <button class="filter-btn" data-filter="posters">مطبوعات</button>
+            </div>
+            <div class="portfolio-grid reveal reveal-stagger">
+                <!-- هويات بصرية -->
+                <div class="portfolio-item reveal reveal-up" data-category="branding" tabindex="0"
+                    onclick="lbOpen(['26.webp','27.webp','28.webp'],'هويات بصرية')">
+                    <img src="26.webp" alt="هويات بصرية" loading="lazy" decoding="async">
+                    <div class="portfolio-overlay">
+                        <h3 class="portfolio-title">هويات بصرية</h3>
+                        <span class="portfolio-cat">انقر لمشاهدة الأعمال</span>
+                    </div>
+                </div>
+                <!-- سوشيال ميديا -->
+                <div class="portfolio-item reveal reveal-up" data-category="social" tabindex="0"
+                    onclick="lbOpen(['1.webp','2.webp','3.webp','4.webp','5.webp','6.webp','7.webp','8.webp','9.webp','10.webp','11.webp','12.webp','13.webp','14.webp','15.webp','16.webp','17.webp','18.webp','19.webp'],'سوشيال ميديا')">
+                    <img src="1.webp" alt="سوشيال ميديا" loading="lazy" decoding="async">
+                    <div class="portfolio-overlay">
+                        <h3 class="portfolio-title">سوشيال ميديا</h3>
+                        <span class="portfolio-cat">انقر لمشاهدة الأعمال</span>
+                    </div>
+                </div>
+                <!-- مطبوعات -->
+                <div class="portfolio-item reveal reveal-up" data-category="posters" tabindex="0"
+                    onclick="lbOpen(['22.webp','23.webp','24.webp','25.webp'],'مطبوعات')">
+                    <img src="22.webp" alt="مطبوعات" loading="lazy" decoding="async">
+                    <div class="portfolio-overlay">
+                        <h3 class="portfolio-title">مطبوعات</h3>
+                        <span class="portfolio-cat">انقر لمشاهدة الأعمال</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Consulting / Booking Section -->
     <section id="consulting" class="consulting section">
