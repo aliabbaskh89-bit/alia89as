@@ -160,9 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function lbOpen(images, index, title) {
         lbImages = images;
         lbIndex  = index;
-        // Create slides with empty src — load lazily
+        const slideW = lbTrack.parentElement.offsetWidth;
         lbTrack.innerHTML = images.map(() =>
-            `<div class="lb-slide"><img src="" alt=""></div>`
+            `<div class="lb-slide" style="min-width:${slideW}px"><img src="" alt=""></div>`
         ).join('');
         lbGoTo(index, false);
         lbCaption.textContent = title;
@@ -185,7 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function lbGoTo(idx, animate = true) {
         lbIndex = Math.max(0, Math.min(idx, lbImages.length - 1));
         if (!animate) lbTrack.style.transition = 'none';
-        lbTrack.style.transform = `translateX(${-(lbIndex * 100)}%)`;
+        const sw = lbTrack.parentElement.offsetWidth;
+        lbTrack.style.transform = `translateX(${-(lbIndex * sw)}px)`;
         if (!animate) requestAnimationFrame(() => lbTrack.style.transition = '');
         lbCounter.textContent = `${lbIndex + 1} / ${lbImages.length}`;
         lbPrev.style.opacity = lbIndex === 0 ? '0.3' : '1';
