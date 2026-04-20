@@ -169,6 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
         lbImg.onerror = reveal;
         lbImg.src = src;
         if (lbImg.complete) reveal();
+        // Preload adjacent images
+        [lbIndex + 1, lbIndex - 1].forEach(i => {
+            if (i >= 0 && i < lbImages.length) { new Image().src = lbImages[i]; }
+        });
     }
 
     function lbOpen(images, title) {
