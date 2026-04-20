@@ -7,8 +7,8 @@ node_modules/
 # Videos (large binary files — don't commit to git)
 videos/
 
-# Keep data structure but protect student privacy
-# data/students.json  ← keep in git as empty template
+# Protect all data files from git reset overwrites
+data/
 
 # Environment variables
 .env
