@@ -304,6 +304,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage,
+    limits: { fileSize: 2 * 1024 * 1024 * 1024 }, // 2 GB
     fileFilter: (_req, file, cb) => {
         const allowed = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime', 'video/x-m4v'];
         allowed.includes(file.mimetype)
@@ -312,7 +313,12 @@ const upload = multer({
     }
 });
 
-app.post('/api/admin/videos/:courseId', adminAuth, upload.single('video'), (req, res) => {
+app.post('/api/admin/videos/:courseId', adminAuth, (req, res, next) => {
+    upload.single('video')(req, res, (err) => {
+        if (err) return res.status(400).json({ error: err.message || 'فشل رفع الملف' });
+        next();
+    });
+}, (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'لم يتم رفع أي ملف' });
 
     const { title } = req.body;

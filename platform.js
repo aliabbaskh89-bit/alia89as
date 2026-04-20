@@ -725,18 +725,19 @@ if (document.getElementById('adminPage')) {
         };
 
         xhr.onload = () => {
-            const data = JSON.parse(xhr.responseText);
-            if (xhr.status === 200) {
-                showToast('✅ ' + data.message);
-                document.getElementById('uploadVideoForm').reset();
-                window.updateFileName(document.getElementById('videoFileInput'));
-            } else {
-                showToast(data.error || 'فشل الرفع', 'error');
-            }
             progressEl.style.display  = 'none';
             progressBar.style.width   = '0%';
             submitBtn.disabled        = false;
             submitBtn.textContent     = 'رفع الفيديو';
+            let data = {};
+            try { data = JSON.parse(xhr.responseText); } catch (_) {}
+            if (xhr.status === 200) {
+                showToast('✅ ' + (data.message || 'تم الرفع بنجاح'));
+                document.getElementById('uploadVideoForm').reset();
+                window.updateFileName(document.getElementById('videoFileInput'));
+            } else {
+                showToast(data.error || ('فشل الرفع — كود: ' + xhr.status), 'error');
+            }
         };
 
         xhr.onerror = () => {
