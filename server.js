@@ -61,10 +61,25 @@ for (const [file, seed] of Object.entries(seedFiles)) {
 
 app.use(express.json());
 
+// gzip compression for all responses
+try {
+    const compression = require('compression');
+    app.use(compression());
+} catch(e) {}
+
 // Block direct access to data/ and videos/ directories
 app.use(['/data', '/videos'], (_req, res) => res.status(403).end());
 
-app.use(express.static(path.join(__dirname)));
+// Serve static files — cache images for 7 days, no-cache for HTML/JS/CSS
+app.use(express.static(path.join(__dirname), {
+    setHeaders(res, filePath) {
+        if (/\.(png|jpg|jpeg|gif|webp|svg|ico)$/i.test(filePath)) {
+            res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+        } else if (/\.(html|js|css)$/i.test(filePath)) {
+            res.setHeader('Cache-Control', 'no-cache');
+        }
+    }
+}));
 
 // ─── Data helpers ──────────────────────────────────────────────────────────
 function readJSON(file) {
