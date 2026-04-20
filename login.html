@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | منصة علي عباس</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2EJSHP00Q"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-B2EJSHP00Q');</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="platform.css">
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+
+        <div class="login-logo">
+            <img src="profile.jpg" alt="علي عباس" class="login-avatar">
+            <h1>علي عباس</h1>
+            <p>منصة الكورسات المسجلة</p>
+        </div>
+
+        <div class="login-card">
+            <h2>أدخل كود الوصول</h2>
+            <p class="login-hint">الكود يُرسل إليك من المدرب بعد التسجيل في الكورس</p>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="codeInput"
+                        placeholder="أدخل الكود هنا"
+                        autocomplete="off"
+                        autocapitalize="characters"
+                        spellcheck="false"
+                        maxlength="20"
+                        required
+                    >
+                </div>
+
+                <p id="loginError" class="error-msg" style="display:none"></p>
+
+                <button type="submit" id="loginBtn" class="btn-primary">
+                    دخول
+                </button>
+            </form>
+
+            <a href="index.html" class="back-link">← العودة للموقع الرئيسي</a>
+        </div>
+
+    </div>
+
+    <script src="platform.js"></script>
+</body>
+</html>

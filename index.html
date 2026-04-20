@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>علي عباس | مصمم ومدرب گرافيك</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2EJSHP00Q"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-B2EJSHP00Q');</script>
     <meta name="description" content="كورسات، شروحات، وخدمات تصميم احترافية — كل شيء في مكان واحد.">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#c8f135">
+    <link rel="apple-touch-icon" href="/profile.jpg">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +21,14 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
+<body>
 <div id="scroll-progress"></div>
+<div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+</div>
 <!-- Header & Navbar -->
 <header class="header" id="header">
     <div class="container nav-wrapper">
@@ -26,6 +38,7 @@
                 <li><a href="#home" class="nav-link active">الرئيسية</a></li>
                 <li><a href="#about" class="nav-link">عني</a></li>
                 <li><a href="#courses" class="nav-link">كورساتي</a></li>
+                <li><a href="#subscribe" class="nav-link">الاشتراك</a></li>
                 <li><a href="#services" class="nav-link">خدماتي</a></li>
                 <li><a href="#tutorials" class="nav-link">شروحاتي</a></li>
                 <li><a href="#lectures" class="nav-link">محاضراتي</a></li>
@@ -37,7 +50,8 @@
                     <i class="fa-solid fa-moon"></i>
                 </button>
                 <a href="en.html" class="btn-icon text-bold" aria-label="Switch to English">EN</a>
-                <a href="#consulting" class="btn btn-primary d-none-mobile">احجز استشارة</a>
+                <a href="login.html" class="btn btn-primary d-none-mobile">🎬 منصة الكورسات</a>
+                <a href="#consulting" class="btn btn-outline d-none-mobile">احجز استشارة</a>
             </div>
         </nav>
         <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
@@ -79,7 +93,8 @@
             <div class="hero-image reveal reveal-left">
                 <div class="image-wrapper">
                     <img src="profile.jpg" alt="Ali Abbas - Graphic Designer" class="profile-img"
-                        onerror="this.onerror=null; this.src='https://via.placeholder.com/400x400/1f2937/a7ff0d?text=Profile'">
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/400x400/1f2937/a7ff0d?text=Profile'"
+                        id="secretAdminImg" ondblclick="window.location.href='/admin.html'" style="cursor:default">
                 </div>
             </div>
         </div>
@@ -215,6 +230,15 @@
                 <div class="divider"></div>
                 <p class="section-desc">مجموعة من الدورات التدريبية المصممة لنقلك من الصفر إلى الاحتراف.</p>
             </div>
+            <!-- Platform Banner -->
+            <div class="reveal reveal-up" style="margin-bottom:32px; padding:20px 28px; background:var(--primary-light); border:1.5px solid var(--primary); border-radius:16px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+                <div>
+                    <p style="font-weight:800; font-size:1.05rem; margin-bottom:4px;">🎬 هل سجّلت في كورس؟</p>
+                    <p style="color:var(--text-muted); font-size:.875rem;">ادخل منصة الكورسات المسجلة وشاهد محاضراتك بكودك الخاص</p>
+                </div>
+                <a href="login.html" class="btn btn-primary" style="white-space:nowrap; flex-shrink:0;">دخول المنصة ←</a>
+            </div>
+
             <div class="courses-grid reveal reveal-stagger" id="courses-container">
                 <!-- Course 1 -->
                 <div class="course-card">
@@ -230,7 +254,7 @@
                         <div class="course-actions mt-3">
                             <button class="btn btn-outline-primary btn-sm btn-details"
                                 data-full-desc="هذا الكورس مصمم ليأخذك من الصفر في عالم التصميم الجرافيكي وحتى الاحتراف. ستتعلم فيه كيفية استخدام الأدوات الأساسية في برامج أدوبي تطبيقاً على مشاريع واقعية مثل تصميم اللوجو، بوسترات السوشيال ميديا والمطبوعات في الاسبوع ٣ محاضرات ومدة المحاضرة الواحدة ساعتين .">تفاصيل</button>
-                            <a href="#consulting" class="btn btn-primary btn-sm w-100">احجز الآن</a>
+                            <a href="#subscribe" class="btn btn-primary btn-sm w-100">احجز الآن</a>
                         </div>
                     </div>
                 </div>
@@ -248,7 +272,7 @@
                         <div class="course-actions mt-3">
                             <button class="btn btn-outline-primary btn-sm btn-details"
                                 data-full-desc="  دورة مكثفة تركز فقط على متطلبات السوشيال ميديا. ستتعلم سيكولوجية الألوان، التكوين البصري وتصميم إعلانات ممولة تحقق أعلى نسبة نقر CTA في الاسبوع ٣ محاضرات ومدة المحاضرة الواحدة ساعتين .">تفاصيل</button>
-                            <a href="#consulting" class="btn btn-primary btn-sm w-100">احجز الآن</a>
+                            <a href="#subscribe" class="btn btn-primary btn-sm w-100">احجز الآن</a>
                         </div>
                     </div>
                 </div>
@@ -266,7 +290,7 @@
                         <div class="course-actions mt-3">
                             <button class="btn btn-outline-primary btn-sm btn-details"
                                 data-full-desc="دورة احترافية تشرح خطوات بناء الهوية من البحث والتحليل، إلى رسم الاسكتشات، واختيار الخطوط والألوان، وتصميم دليل الهوية (Brand Guidelines) الكامل في الاسبوع ٣ محاضرات ومدة المحاضرة الواحدة ساعتين ..">تفاصيل</button>
-                            <a href="#consulting" class="btn btn-primary btn-sm w-100">احجز الآن</a>
+                            <a href="#subscribe" class="btn btn-primary btn-sm w-100">احجز الآن</a>
                         </div>
                     </div>
                 </div>
@@ -284,10 +308,79 @@
                         <div class="course-actions mt-3">
                             <button class="btn btn-outline-primary btn-sm btn-details"
                                 data-full-desc="كورس شامل في برنامج Adobe InDesign، في الاسبوع ٣ محاضرات ومدة المحاضرة الواحدة ساعتين .ستتعلم فيه كيفية إنشاء المطبوعات الاحترافية من كتب ومجلات وبروشورات، وتنسيق النصوص والصور، وإتقان فنون التخطيط ومهارات التصدير للطباعة والنشر الرقمي.">تفاصيل</button>
-                            <a href="#consulting" class="btn btn-primary btn-sm w-100">احجز الآن</a>
+                            <a href="#subscribe" class="btn btn-primary btn-sm w-100">احجز الآن</a>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscribe / Payment Section -->
+    <section id="subscribe" class="section">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>كيفية الاشتراك</h2>
+                <div class="divider"></div>
+                <p class="section-desc">أربع خطوات بسيطة وتبدأ رحلتك التعليمية</p>
+            </div>
+
+            <!-- Steps -->
+            <div class="sub-steps reveal reveal-stagger">
+                <div class="sub-step">
+                    <div class="sub-step-num">١</div>
+                    <h4>اختر كورسك</h4>
+                    <p>اختر الكورس المناسب لك من القائمة أعلاه</p>
+                </div>
+                <div class="sub-step-arrow">&#8592;</div>
+                <div class="sub-step">
+                    <div class="sub-step-num">٢</div>
+                    <h4>أرسل المبلغ</h4>
+                    <p>ادفع عبر إحدى طرق الدفع أدناه</p>
+                </div>
+                <div class="sub-step-arrow">&#8592;</div>
+                <div class="sub-step">
+                    <div class="sub-step-num">٣</div>
+                    <h4>أرسل الإيصال</h4>
+                    <p>أرسل صورة الإيصال مع اسمك على واتساب</p>
+                </div>
+                <div class="sub-step-arrow">&#8592;</div>
+                <div class="sub-step">
+                    <div class="sub-step-num">٤</div>
+                    <h4>استلم كودك</h4>
+                    <p>يصلك كود الدخول للمنصة خلال ساعات</p>
+                </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <h3 class="text-center reveal reveal-up" style="margin:44px 0 24px; font-size:1.15rem;">💳 طرق الدفع المتاحة</h3>
+            <div class="pay-methods reveal reveal-stagger">
+                <div class="pay-card">
+                    <div class="pay-icon">⚡</div>
+                    <div class="pay-name">ZainCash</div>
+                    <div class="pay-num">07801667005</div>
+                    <button class="btn-pay-copy" onclick="copyPayNum('07801667005', this)">📋 نسخ الرقم</button>
+                </div>
+                <div class="pay-card">
+                    <div class="pay-icon">💳</div>
+                    <div class="pay-name">Master Qi</div>
+                    <div class="pay-num">3654976079</div>
+                    <button class="btn-pay-copy" onclick="copyPayNum('3654976079', this)">📋 نسخ الرقم</button>
+                </div>
+                <div class="pay-card">
+                    <div class="pay-icon">💳</div>
+                    <div class="pay-name">Super Qi</div>
+                    <div class="pay-num">7718669939</div>
+                    <button class="btn-pay-copy" onclick="copyPayNum('7718669939', this)">📋 نسخ الرقم</button>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center reveal reveal-up" style="margin-top:40px">
+                <p style="color:var(--text-muted); margin-bottom:16px; font-size:.95rem;">بعد الدفع أرسل الإيصال مع اسمك والكورس على واتساب:</p>
+                <a href="https://wa.me/9647718669939" target="_blank" rel="noopener" class="btn btn-primary" style="font-size:1rem; padding:12px 32px;">
+                    <i class="fa-brands fa-whatsapp"></i> تواصل على واتساب
+                </a>
             </div>
         </div>
     </section>
@@ -388,7 +481,7 @@
             <div class="section-title text-center reveal reveal-up">
                 <h2>محاضراتي</h2>
                 <div class="divider"></div>
-                <p class="section-desc">مقتطفات ومقاطع فيديو من محاضرات الكورسات الخاصة بي المرفوعة على تليجرام.</p>
+                <p class="section-desc">مقتطفات ومقاطع فيديو من محاضرات الكورسات الخاصة بي.</p>
             </div>
 
             <div class="tutorials-tools mb-4">
@@ -401,23 +494,32 @@
             <div class="tutorials-grid" id="lectures-container">
                 <!-- Lecture 1 -->
                 <div class="tutorial-card">
-                    <a href="https://t.me/mylectures89/2" target="_blank" rel="noopener" class="tutor-thumb">
+                    <div class="tutor-thumb" style="cursor:pointer;position:relative;" onclick="this.nextElementSibling.style.display='block';this.style.display='none'">
                         <img src="m.png" alt="مقدمة الكورس">
-                        <i class="fa-brands fa-telegram play-icon"></i>
-                    </a>
+                        <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;">▶</span>
+                    </div>
+                    <div style="display:none">
+                        <video controls autoplay style="width:100%;border-radius:12px" controlsList="nodownload" oncontextmenu="return false">
+                            <source src="/api/public/video/intro.mp4" type="video/mp4">
+                        </video>
+                    </div>
                     <div class="tutor-info">
                         <h4 style="margin: 0;">مقدمة الكورس</h4>
                     </div>
                 </div>
                 <!-- Lecture 2 -->
                 <div class="tutorial-card">
-                    <a href="https://t.me/mylectures89/3" target="_blank" rel="noopener" class="tutor-thumb">
-                        <img src="c.png" alt="محاضرة جديدة">
-                        <i class="fa-brands fa-telegram play-icon"></i>
-                    </a>
+                    <div class="tutor-thumb" style="cursor:pointer;position:relative;" onclick="this.nextElementSibling.style.display='block';this.style.display='none'">
+                        <img src="c.png" alt="انظمة الالوان">
+                        <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;">▶</span>
+                    </div>
+                    <div style="display:none">
+                        <video controls autoplay style="width:100%;border-radius:12px" controlsList="nodownload" oncontextmenu="return false">
+                            <source src="/api/public/video/colors.mp4" type="video/mp4">
+                        </video>
+                    </div>
                     <div class="tutor-info">
-                        <h4 style="margin: 0;">انظمة الالوان RGB & CMYK
-                            شنو هو البكسل ؟ وشنو الفيكتور ؟ ومامعنى Resolution ؟</h4>
+                        <h4 style="margin: 0;">انظمة الالوان RGB & CMYK — شنو هو البكسل ؟ وشنو الفيكتور ؟ ومامعنى Resolution ؟</h4>
                     </div>
                 </div>
             </div>
@@ -563,14 +665,22 @@
 </div>
 
 <!-- Lightbox for Portfolio -->
-<div id="lightbox" class="lightbox">
-    <span class="close-lightbox" id="close-lightbox">&times;</span>
-    <button class="story-nav prev" id="lightbox-prev" aria-label="Previous image" style="display: none;"><i
-            class="fa-solid fa-chevron-right"></i></button>
-    <img class="lightbox-content" id="lightbox-img" alt="Enlarged Portfolio Image">
-    <button class="story-nav next" id="lightbox-next" aria-label="Next image" style="display: none;"><i
-            class="fa-solid fa-chevron-left"></i></button>
-    <div id="lightbox-caption" class="lightbox-caption"></div>
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true">
+    <div class="lb-backdrop" id="lb-backdrop"></div>
+    <button class="lb-close" id="close-lightbox" aria-label="إغلاق">✕</button>
+    <div class="lb-counter" id="lb-counter">1 / 1</div>
+    <button class="lb-arrow lb-arrow-prev" id="lightbox-prev" aria-label="السابق">
+        <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    <div class="lb-track-wrap">
+        <div class="lb-track" id="lb-track">
+            <!-- slides injected by JS -->
+        </div>
+    </div>
+    <button class="lb-arrow lb-arrow-next" id="lightbox-next" aria-label="التالي">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <div class="lb-caption" id="lightbox-caption"></div>
 </div>
 
 <!-- Story Viewer Modal -->

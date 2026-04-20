@@ -1,0 +1,15 @@
+{
+  "name": "لوحة التحكم | علي عباس",
+  "short_name": "تحكم",
+  "description": "لوحة تحكم منصة علي عباس",
+  "start_url": "/admin.html",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#c8f135",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/logocopy.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/logocopy.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}

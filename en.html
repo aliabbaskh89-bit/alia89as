@@ -4,8 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2EJSHP00Q"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-B2EJSHP00Q');</script>
     <title>Ali Abbas | Graphic Designer & Trainer</title>
     <meta name="description" content="Courses, tutorials, and professional design services — all in one place.">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#c8f135">
+    <link rel="apple-touch-icon" href="/profile.jpg">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,6 +31,7 @@
                     <li><a href="#home" class="nav-link active">Home</a></li>
                     <li><a href="#about" class="nav-link">About</a></li>
                     <li><a href="#courses" class="nav-link">Courses</a></li>
+                    <li><a href="#subscribe" class="nav-link">Subscribe</a></li>
                     <li><a href="#services" class="nav-link">Services</a></li>
                     <li><a href="#tutorials" class="nav-link">Tutorials</a></li>
                     <li><a href="#lectures" class="nav-link">Lectures</a></li>
@@ -37,7 +43,8 @@
                         <i class="fa-solid fa-moon"></i>
                     </button>
                     <a href="index.html" class="btn-icon text-bold" aria-label="Switch to Arabic">AR</a>
-                    <a href="#consulting" class="btn btn-primary d-none-mobile">Book Callback</a>
+                    <a href="login.html" class="btn btn-primary d-none-mobile">🎬 Course Platform</a>
+                    <a href="#consulting" class="btn btn-outline d-none-mobile">Book Callback</a>
                 </div>
             </nav>
             <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
@@ -215,6 +222,15 @@
                     <div class="divider"></div>
                     <p class="section-desc">Training programs crafted to take you from a beginner to an expert.</p>
                 </div>
+                <!-- Platform Banner -->
+                <div class="reveal reveal-up" style="margin-bottom:32px; padding:20px 28px; background:var(--primary-light); border:1.5px solid var(--primary); border-radius:16px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+                    <div>
+                        <p style="font-weight:800; font-size:1.05rem; margin-bottom:4px;">🎬 Already enrolled in a course?</p>
+                        <p style="color:var(--text-muted); font-size:.875rem;">Access the course platform and watch your lectures using your personal code</p>
+                    </div>
+                    <a href="login.html" class="btn btn-primary" style="white-space:nowrap; flex-shrink:0;">Enter Platform →</a>
+                </div>
+
                 <div class="courses-grid reveal reveal-stagger" id="courses-container">
                     <!-- Course 1 -->
                     <div class="course-card">
@@ -231,7 +247,7 @@
                             <div class="course-actions mt-3">
                                 <button class="btn btn-outline-primary btn-sm btn-details"
                                     data-full-desc="This course is designed to take you from scratch to professionalism. Learn to use Adobe tools applied to real projects like logos, social media posters, and print materials. (3 lectures per week, 2 hours per lecture).">Details</button>
-                                <a href="#consulting" class="btn btn-primary btn-sm w-100">Book Now</a>
+                                <a href="#subscribe" class="btn btn-primary btn-sm w-100">Book Now</a>
                             </div>
                         </div>
                     </div>
@@ -249,7 +265,7 @@
                             <div class="course-actions mt-3">
                                 <button class="btn btn-outline-primary btn-sm btn-details"
                                     data-full-desc="An intensive course focusing purely on social media requirements. You will learn color psychology, visual composition, and designing sponsored ads that land high CTR. (3 lectures per week, 2 hours per lecture).">Details</button>
-                                <a href="#consulting" class="btn btn-primary btn-sm w-100">Book Now</a>
+                                <a href="#subscribe" class="btn btn-primary btn-sm w-100">Book Now</a>
                             </div>
                         </div>
                     </div>
@@ -267,7 +283,7 @@
                             <div class="course-actions mt-3">
                                 <button class="btn btn-outline-primary btn-sm btn-details"
                                     data-full-desc="A professional course explaining the steps of building an identity from research and analysis, to sketching, selecting typography and colors, to designing complete brand guidelines. (3 lectures per week, 2 hours per lecture).">Details</button>
-                                <a href="#consulting" class="btn btn-primary btn-sm w-100">Book Now</a>
+                                <a href="#subscribe" class="btn btn-primary btn-sm w-100">Book Now</a>
                             </div>
                         </div>
                     </div>
@@ -285,10 +301,79 @@
                             <div class="course-actions mt-3">
                                 <button class="btn btn-outline-primary btn-sm btn-details"
                                     data-full-desc="A comprehensive course in Adobe InDesign. You will learn how to create professional publications — books, magazines, and brochures — format text and images, master layout design, and export for both print and digital publishing. (3 lectures per week, 2 hours per lecture).">Details</button>
-                                <a href="#consulting" class="btn btn-primary btn-sm w-100">Book Now</a>
+                                <a href="#subscribe" class="btn btn-primary btn-sm w-100">Book Now</a>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subscribe / Payment Section -->
+        <section id="subscribe" class="section">
+            <div class="container">
+                <div class="section-title text-center reveal reveal-up">
+                    <h2>How to Subscribe</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">Four simple steps to start your learning journey</p>
+                </div>
+
+                <!-- Steps -->
+                <div class="sub-steps reveal reveal-stagger">
+                    <div class="sub-step">
+                        <div class="sub-step-num">1</div>
+                        <h4>Choose Your Course</h4>
+                        <p>Pick the course that suits you from the list above</p>
+                    </div>
+                    <div class="sub-step-arrow">&#8594;</div>
+                    <div class="sub-step">
+                        <div class="sub-step-num">2</div>
+                        <h4>Send Payment</h4>
+                        <p>Pay via any of the methods below</p>
+                    </div>
+                    <div class="sub-step-arrow">&#8594;</div>
+                    <div class="sub-step">
+                        <div class="sub-step-num">3</div>
+                        <h4>Send Receipt</h4>
+                        <p>Send a screenshot of the receipt with your name on WhatsApp</p>
+                    </div>
+                    <div class="sub-step-arrow">&#8594;</div>
+                    <div class="sub-step">
+                        <div class="sub-step-num">4</div>
+                        <h4>Receive Your Code</h4>
+                        <p>Your platform access code will be sent within hours</p>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <h3 class="text-center reveal reveal-up" style="margin:44px 0 24px; font-size:1.15rem;">💳 Payment Methods</h3>
+                <div class="pay-methods reveal reveal-stagger">
+                    <div class="pay-card">
+                        <div class="pay-icon">⚡</div>
+                        <div class="pay-name">ZainCash</div>
+                        <div class="pay-num">07801667005</div>
+                        <button class="btn-pay-copy" onclick="copyPayNum('07801667005', this)">📋 Copy Number</button>
+                    </div>
+                    <div class="pay-card">
+                        <div class="pay-icon">💳</div>
+                        <div class="pay-name">Master Qi</div>
+                        <div class="pay-num">3654976079</div>
+                        <button class="btn-pay-copy" onclick="copyPayNum('3654976079', this)">📋 Copy Number</button>
+                    </div>
+                    <div class="pay-card">
+                        <div class="pay-icon">💳</div>
+                        <div class="pay-name">Super Qi</div>
+                        <div class="pay-num">7718669939</div>
+                        <button class="btn-pay-copy" onclick="copyPayNum('7718669939', this)">📋 Copy Number</button>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="text-center reveal reveal-up" style="margin-top:40px">
+                    <p style="color:var(--text-muted); margin-bottom:16px; font-size:.95rem;">After payment, send your receipt with your name and course via WhatsApp:</p>
+                    <a href="https://wa.me/9647718669939" target="_blank" rel="noopener" class="btn btn-primary" style="font-size:1rem; padding:12px 32px;">
+                        <i class="fa-brands fa-whatsapp"></i> Contact on WhatsApp
+                    </a>
                 </div>
             </div>
         </section>

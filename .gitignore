@@ -3,3 +3,12 @@ highlight-gallery/highlight-work-12.tif
 .DS_Store
 node_modules/
 .next/
+
+# Videos (large binary files — don't commit to git)
+videos/
+
+# Keep data structure but protect student privacy
+# data/students.json  ← keep in git as empty template
+
+# Environment variables
+.env

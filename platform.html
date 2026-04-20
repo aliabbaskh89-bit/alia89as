@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الكورسات | علي عباس</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2EJSHP00Q"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-B2EJSHP00Q');</script>
+    <link rel="manifest" href="/manifest-platform.json">
+    <meta name="theme-color" content="#c8f135">
+    <link rel="apple-touch-icon" href="/profile.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="platform.css">
+</head>
+<body id="platformPage">
+
+    <!-- ── Replies Drawer (slide in from right) ─── -->
+    <div id="repliesDrawer" class="replies-drawer">
+        <div class="drawer-header">
+            <h3>📬 ردود المدرب على أسئلتي</h3>
+            <button onclick="closeReplies()" class="drawer-close">✕</button>
+        </div>
+        <div id="repliesList" class="replies-list"></div>
+    </div>
+    <div id="drawerOverlay" class="drawer-overlay" onclick="closeReplies()"></div>
+
+    <!-- ── Header ──────────────────────────────────── -->
+    <header class="platform-header">
+        <div class="header-brand">
+            <img src="profile.jpg" alt="علي عباس" class="header-avatar">
+            <span>منصة علي عباس</span>
+        </div>
+        <div class="header-student">
+            <button id="repliesBtn" class="btn-replies" onclick="openReplies()" title="ردود المدرب">
+                📬
+                <span id="repliesBadge" class="replies-badge" style="display:none">0</span>
+            </button>
+            <span>مرحباً، <strong id="studentName"></strong></span>
+            <button id="logoutBtn" class="btn-logout">خروج</button>
+        </div>
+    </header>
+
+    <!-- ── Main Layout ──────────────────────────────── -->
+    <div class="platform-layout">
+
+        <!-- Sidebar -->
+        <aside class="platform-sidebar">
+            <p class="sidebar-title">كورساتي</p>
+            <div id="coursesList"></div>
+        </aside>
+
+        <!-- Main area -->
+        <main class="platform-main">
+
+            <!-- Welcome screen -->
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-icon">🎬</div>
+                <h2 id="welcomeTitle">اختر محاضرة للبدء</h2>
+                <p id="welcomeSub">اختر الكورس من القائمة على اليمين ثم اضغط على المحاضرة</p>
+            </div>
+
+            <!-- Video player -->
+            <div id="playerArea" style="display:none">
+                <h2 id="lessonTitle" class="current-lesson-title"></h2>
+
+                <div class="video-wrapper" id="videoPlayerContainer">
+                    <video
+                        id="videoPlayer"
+                        controls
+                        controlslist="nodownload"
+                        oncontextmenu="return false"
+                    ></video>
+                    <div id="videoWatermark" class="video-watermark"></div>
+                </div>
+
+                <!-- Notes & Questions -->
+                <div class="notes-section">
+                    <div class="notes-header">
+                        <h3>📝 ملاحظاتي وأسئلتي</h3>
+                        <p>خاصة بك فقط — تصل مباشرة للمدرب ولا يراها أحد غيرك</p>
+                    </div>
+                    <div id="notesList" class="notes-list"></div>
+                    <form id="addNoteForm" class="add-note-form">
+                        <textarea id="noteText" placeholder="اكتب ملاحظتك أو سؤالك هنا..." rows="3"></textarea>
+                        <button type="submit" id="noteSubmitBtn" class="btn-primary" style="max-width:180px; align-self:flex-start">
+                            إرسال للمدرب
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lessons list -->
+            <div id="lessonsList" class="lessons-list" style="display:none"></div>
+
+        </main>
+    </div>
+
+    <script src="platform.js"></script>
+</body>
+</html>

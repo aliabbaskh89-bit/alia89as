@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | علي عباس</title>
+    <link rel="manifest" href="/manifest-admin.json">
+    <meta name="theme-color" content="#c8f135">
+    <link rel="apple-touch-icon" href="/profile.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="platform.css">
+    <style>
+        /* ── Modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            animation: popIn .25s ease;
+        }
+        @keyframes popIn {
+            from { transform: scale(.9); opacity: 0; }
+            to   { transform: scale(1);  opacity: 1; }
+        }
+        .modal-icon { font-size: 3rem; margin-bottom: 12px; }
+        .modal-box h3 { font-size: 1.1rem; margin-bottom: 6px; }
+        .modal-box p  { color: var(--text-muted); font-size: .875rem; margin-bottom: 20px; }
+        .generated-code {
+            background: var(--bg-main);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: 6px;
+            margin-bottom: 16px;
+            word-break: break-all;
+        }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-actions button { flex: 1; }
+        .btn-secondary {
+            padding: 10px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-family: 'Cairo', sans-serif;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .btn-secondary:hover { border-color: var(--text-main); color: var(--text-main); }
+
+        /* ── Stats bar ── */
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            flex: 1;
+            min-width: 100px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 18px;
+            text-align: center;
+        }
+        .stat-num  { font-size: 1.6rem; font-weight: 900; color: var(--primary); }
+        .stat-lbl  { font-size: .75rem; color: var(--text-muted); margin-top: 2px; }
+    </style>
+</head>
+<body id="adminPage">
+
+    <!-- ── Edit Courses Modal ──────────────────────── -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">✏️</div>
+            <h3 id="editModalTitle">تعديل كورسات الطالب</h3>
+            <p id="editModalSub" style="margin-bottom:16px;"></p>
+            <input type="hidden" id="editStudentCode">
+            <div class="courses-checkboxes" id="editCourseCheckboxes" style="justify-content:center; margin-bottom:20px;">
+                <label><input type="checkbox" class="edit-checkbox" value="graphics"> الكورس الشامل</label>
+                <label><input type="checkbox" class="edit-checkbox" value="social"> السوشيال ميديا</label>
+                <label><input type="checkbox" class="edit-checkbox" value="branding"> الهوية البصرية</label>
+                <label><input type="checkbox" class="edit-checkbox" value="indesign"> InDesign</label>
+                <label><input type="checkbox" class="edit-checkbox" value="recorded"> الكورس المسجل (مقاطع)</label>
+                <label><input type="checkbox" class="edit-checkbox" value="baghdad1"> كورس بغداد الحضوري ١</label>
+                <label><input type="checkbox" class="edit-checkbox" value="all"> ⭐ جميع الكورسات</label>
+            </div>
+            <p id="editError" class="error-msg" style="display:none"></p>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveEditCourses()">حفظ التعديل</button>
+                <button class="btn-secondary" onclick="closeEditModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Generated Code Modal ────────────────────── -->
+    <div id="codeModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">🎉</div>
+            <h3>تم إضافة الطالب بنجاح!</h3>
+            <p>أرسل هذا الكود للطالب — يستخدمه لدخول المنصة</p>
+            <div class="generated-code" id="modalCode">—</div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="copyModalCode()">📋 نسخ الكود</button>
+                <button class="btn-secondary" onclick="closeModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Admin Login Gate ─────────────────────────── -->
+    <div id="adminLogin" class="admin-gate">
+        <div class="login-card" style="max-width:400px; margin:auto;">
+            <h2 style="text-align:center; margin-bottom:6px;">⚙️ لوحة التحكم</h2>
+            <p style="text-align:center; color:var(--text-muted); font-size:.85rem; margin-bottom:20px;">
+                منصة كورسات علي عباس
+            </p>
+            <div class="input-group">
+                <input type="password" id="adminKeyInput"
+                    placeholder="أدخل مفتاح الأدمن"
+                    style="letter-spacing:0; text-align:right; font-size:1rem;">
+            </div>
+            <p id="adminKeyError" class="error-msg" style="display:none">❌ المفتاح غير صحيح</p>
+            <p id="adminNetError" class="error-msg" style="display:none">⚠️ تأكد من تشغيل السيرفر أولاً</p>
+            <button id="adminLoginBtn" class="btn-primary">دخول</button>
+        </div>
+    </div>
+
+    <!-- ── Admin Panel ──────────────────────────────── -->
+    <div id="adminPanel" style="display:none">
+
+        <header class="platform-header">
+            <div class="header-brand">⚙️ لوحة التحكم — علي عباس</div>
+            <a href="index.html" class="btn-logout" style="text-decoration:none">العودة للموقع</a>
+        </header>
+
+        <div class="admin-layout">
+
+            <!-- Stats -->
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <div class="stat-num" id="statTotal">0</div>
+                    <div class="stat-lbl">إجمالي الطلاب</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statActive">0</div>
+                    <div class="stat-lbl">طلاب مفعّلين</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statInactive">0</div>
+                    <div class="stat-lbl">موقوفين</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="showTab('students', this)">👥 الطلاب</button>
+                <button class="admin-tab" onclick="showTab('questions', this)">📩 أسئلة الطلاب <span id="qBadge" class="q-badge" style="display:none"></span></button>
+                <button class="admin-tab" onclick="showTab('upload', this)">📤 رفع فيديو</button>
+                <button class="admin-tab" onclick="showTab('videos', this)">🎬 إدارة الفيديوهات</button>
+            </div>
+
+            <!-- ── Students Tab ─────────────────────── -->
+            <div id="tab-students" class="admin-tab-content">
+
+                <div class="admin-section">
+                    <h3>➕ إضافة طالب جديد</h3>
+                    <form id="addStudentForm" class="add-student-form">
+                        <input type="text" id="studentNameInput"
+                            placeholder="اسم الطالب الكامل" required>
+
+                        <div style="font-size:.85rem; color:var(--text-muted); margin-bottom:-4px;">اختر الكورس:</div>
+                        <div class="courses-checkboxes">
+                            <label><input type="checkbox" class="course-checkbox" value="graphics"> الكورس الشامل في الجرافيك</label>
+                            <label><input type="checkbox" class="course-checkbox" value="social"> تصميم السوشيال ميديا</label>
+                            <label><input type="checkbox" class="course-checkbox" value="branding"> الهوية البصرية</label>
+                            <label><input type="checkbox" class="course-checkbox" value="indesign"> Adobe InDesign</label>
+                            <label><input type="checkbox" class="course-checkbox" value="recorded"> الكورس المسجل (مقاطع)</label>
+                            <label><input type="checkbox" class="course-checkbox" value="baghdad1"> كورس بغداد الحضوري ١</label>
+                            <label><input type="checkbox" class="course-checkbox" value="all"> ⭐ جميع الكورسات</label>
+                        </div>
+
+                        <button type="submit" id="addStudentBtn" class="btn-primary" style="max-width:220px">
+                            إضافة وتوليد كود
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Students List -->
+                <div class="admin-section">
+                    <h3>📋 قائمة الطلاب</h3>
+                    <div class="table-wrapper">
+                        <table class="students-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>الكود</th>
+                                    <th>الكورسات</th>
+                                    <th>آخر دخول</th>
+                                    <th>الحالة</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── Questions Tab ────────────────────── -->
+            <div id="tab-questions" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>📩 أسئلة وملاحظات الطلاب</h3>
+                    <div id="questionsList">
+                        <p class="empty-table">جاري التحميل...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Upload Tab ───────────────────────── -->
+            <div id="tab-upload" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>📤 رفع فيديو جديد</h3>
+                    <form id="uploadVideoForm" class="upload-form">
+                        <select id="uploadCourseSelect" required>
+                            <option value="">اختر الكورس</option>
+                            <option value="graphics">الكورس الشامل في الجرافيك</option>
+                            <option value="social">تصميم السوشيال ميديا</option>
+                            <option value="branding">الهوية البصرية والبراند</option>
+                            <option value="indesign">Adobe InDesign</option>
+                            <option value="recorded">الكورس المسجل (مقاطع)</option>
+                            <option value="baghdad1">كورس بغداد الحضوري ١</option>
+                        </select>
+
+                        <input type="text" id="videoTitleInput"
+                            placeholder="عنوان الدرس — مثال: المحاضرة الأولى" required>
+
+                        <div class="file-upload-area"
+                            onclick="document.getElementById('videoFileInput').click()">
+                            <input type="file" id="videoFileInput"
+                                accept="video/mp4,video/webm,video/quicktime"
+                                style="display:none" onchange="updateFileName(this)">
+                            <div class="upload-icon">🎬</div>
+                            <p id="fileNameDisplay">اضغط هنا لاختيار ملف الفيديو</p>
+                            <small>MP4 أو WebM — بدون حد للحجم</small>
+                        </div>
+
+                        <div id="uploadProgress" class="progress-container" style="display:none">
+                            <div id="progressBar" class="progress-bar">0%</div>
+                        </div>
+
+                        <button type="submit" id="uploadSubmitBtn" class="btn-primary" style="max-width:200px">
+                            رفع الفيديو
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ── Videos Management Tab ───────────── -->
+            <div id="tab-videos" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>🎬 إدارة الفيديوهات</h3>
+                    <select id="manageCourseSel" onchange="loadCourseVideos()" style="margin-bottom:16px;width:100%;padding:10px;border-radius:8px;background:var(--card);color:var(--text);border:1px solid #333">
+                        <option value="">اختر الكورس</option>
+                        <option value="graphics">الكورس الشامل في الجرافيك</option>
+                        <option value="social">تصميم السوشيال ميديا</option>
+                        <option value="branding">الهوية البصرية والبراند</option>
+                        <option value="indesign">Adobe InDesign</option>
+                            <option value="recorded">الكورس المسجل (مقاطع)</option>
+                            <option value="baghdad1">كورس بغداد الحضوري ١</option>
+                    </select>
+                    <div id="manageVideosList"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="platform.js"></script>
+</body>
+</html>

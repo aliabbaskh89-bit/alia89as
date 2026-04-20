@@ -1,5 +1,7 @@
 const currentLang = document.documentElement.lang || 'ar';
 
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+
 // =============================================================
 // LOGIC — الموقع الآن يدار بالكامل من ملف الـ HTML
 // =============================================================
@@ -141,29 +143,49 @@ document.addEventListener('DOMContentLoaded', () => {
     filterItems('lectures-container', 'lecture-search');
 
     // --- Portfolio Filter & Lightbox ---
-    const filterBtns = document.querySelectorAll('.filter-btn');
+    const filterBtns     = document.querySelectorAll('.filter-btn');
     const portfolioItems = document.querySelectorAll('.portfolio-item');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxCaption = document.getElementById('lightbox-caption');
-    const closeLightboxBtn = document.getElementById('close-lightbox');
-    const lightboxPrev = document.getElementById('lightbox-prev');
-    const lightboxNext = document.getElementById('lightbox-next');
+    const lightbox       = document.getElementById('lightbox');
+    const lbTrack        = document.getElementById('lb-track');
+    const lbCaption      = document.getElementById('lightbox-caption');
+    const lbCounter      = document.getElementById('lb-counter');
+    const lbPrev         = document.getElementById('lightbox-prev');
+    const lbNext         = document.getElementById('lightbox-next');
+    const lbBackdrop     = document.getElementById('lb-backdrop');
+    const lbCloseBtn     = document.getElementById('close-lightbox');
 
-    let currentLightboxImages = [];
-    let currentLightboxIndex = 0;
+    let lbImages = [];
+    let lbIndex  = 0;
 
-    function updateLightbox() {
-        if (!currentLightboxImages || currentLightboxImages.length === 0) return;
-        lightboxImg.src = currentLightboxImages[currentLightboxIndex];
-        if (lightboxPrev && lightboxNext) {
-            const hasMultiple = currentLightboxImages.length > 1;
-            lightboxPrev.style.display = hasMultiple ? 'flex' : 'none';
-            lightboxNext.style.display = hasMultiple ? 'flex' : 'none';
+    function lbOpen(images, index, title) {
+        lbImages = images;
+        lbIndex  = index;
+        lbTrack.innerHTML = images.map(src =>
+            `<div class="lb-slide"><img src="${src}" alt=""></div>`
+        ).join('');
+        lbGoTo(index, false);
+        lbCaption.textContent = title;
+        const multi = images.length > 1;
+        lbPrev.style.display = multi ? 'flex' : 'none';
+        lbNext.style.display = multi ? 'flex' : 'none';
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 
-            lightboxPrev.style.opacity = currentLightboxIndex === 0 ? '0.3' : '1';
-            lightboxNext.style.opacity = currentLightboxIndex === currentLightboxImages.length - 1 ? '0.3' : '1';
-        }
+    function lbGoTo(idx, animate = true) {
+        lbIndex = Math.max(0, Math.min(idx, lbImages.length - 1));
+        if (!animate) lbTrack.style.transition = 'none';
+        // RTL: positive translateX moves right → use negative to slide left
+        lbTrack.style.transform = `translateX(${-(lbIndex * 100)}%)`;
+        if (!animate) requestAnimationFrame(() => lbTrack.style.transition = '');
+        lbCounter.textContent = `${lbIndex + 1} / ${lbImages.length}`;
+        lbPrev.style.opacity = lbIndex === 0 ? '0.3' : '1';
+        lbNext.style.opacity = lbIndex === lbImages.length - 1 ? '0.3' : '1';
+    }
+
+    function lbClose() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = 'auto';
     }
 
     filterBtns.forEach(btn => {
@@ -172,65 +194,49 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.add('active');
             const filter = btn.getAttribute('data-filter');
             portfolioItems.forEach(item => {
-                if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
+                item.style.display = (filter === 'all' || item.getAttribute('data-category') === filter)
+                    ? 'block' : 'none';
             });
         });
     });
 
     portfolioItems.forEach(item => {
         item.addEventListener('click', () => {
-            const mainImg = item.querySelector('img').src;
-            const title = item.querySelector('.portfolio-title').textContent;
-            const extraImgsAttr = item.getAttribute('data-images');
-
+            const mainSrc = item.querySelector('img').getAttribute('src');
+            const title   = item.querySelector('.portfolio-title')?.textContent || '';
+            let images;
             try {
-                const extraImgs = extraImgsAttr ? JSON.parse(extraImgsAttr) : [];
-                // الحصول على المسار النسبي فقط للصورة الأساسية (لتجنب التكرار إذا كان مكتوباً في المصفوفة)
-                const mainImgSrc = item.querySelector('img').getAttribute('src');
-
-                if (extraImgs.length > 0) {
-                    // إذا كانت الصورة الأساسية غير موجودة في القائمة، أضفها في البداية
-                    if (!extraImgs.includes(mainImgSrc)) {
-                        currentLightboxImages = [mainImgSrc, ...extraImgs];
-                    } else {
-                        currentLightboxImages = extraImgs;
-                    }
-                } else {
-                    currentLightboxImages = [mainImgSrc];
-                }
-            } catch (e) {
-                currentLightboxImages = [item.querySelector('img').src];
-            }
-
-            currentLightboxIndex = 0;
-            updateLightbox();
-            lightboxCaption.textContent = title;
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
+                const raw = JSON.parse(item.getAttribute('data-images') || '[]');
+                images = raw.length ? (raw.includes(mainSrc) ? raw : [mainSrc, ...raw]) : [mainSrc];
+            } catch { images = [mainSrc]; }
+            lbOpen(images, 0, title);
         });
     });
 
-    if (lightboxPrev) {
-        lightboxPrev.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (currentLightboxIndex > 0) { currentLightboxIndex--; updateLightbox(); }
-        });
-    }
-    if (lightboxNext) {
-        lightboxNext.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (currentLightboxIndex < currentLightboxImages.length - 1) { currentLightboxIndex++; updateLightbox(); }
-        });
-    }
+    lbPrev?.addEventListener('click', e => { e.stopPropagation(); lbGoTo(lbIndex - 1); });
+    lbNext?.addEventListener('click', e => { e.stopPropagation(); lbGoTo(lbIndex + 1); });
+    lbCloseBtn?.addEventListener('click', lbClose);
+    lbBackdrop?.addEventListener('click', lbClose);
 
-    closeLightboxBtn.addEventListener('click', () => {
-        lightbox.classList.remove('active');
-        document.body.style.overflow = 'auto';
+    // keyboard
+    document.addEventListener('keydown', e => {
+        if (!lightbox?.classList.contains('active')) return;
+        if (e.key === 'Escape')      lbClose();
+        if (e.key === 'ArrowRight')  lbGoTo(lbIndex - 1);
+        if (e.key === 'ArrowLeft')   lbGoTo(lbIndex + 1);
     });
+
+    // touch swipe
+    (function () {
+        let startX = 0;
+        lightbox?.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+        lightbox?.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - startX;
+            if (Math.abs(dx) < 40) return;
+            // RTL: swipe right = next, swipe left = prev
+            dx < 0 ? lbGoTo(lbIndex - 1) : lbGoTo(lbIndex + 1);
+        });
+    })();
 
     // --- Highlights / Stories ---
     const highlightItems = document.querySelectorAll('.highlight-item');
@@ -297,29 +303,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (consultingForm) {
         consultingForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const submitBtn = consultingForm.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = currentLang === 'ar' ? 'جاري الإرسال...' : 'Sending...';
+            const name    = document.getElementById('c-name')?.value.trim() || '';
+            const phone   = document.getElementById('c-phone')?.value.trim() || '';
+            const email   = document.getElementById('c-email')?.value.trim() || '';
+            const type    = document.getElementById('c-type')?.value || '';
+            const message = document.getElementById('c-msg')?.value.trim() || '';
 
-            fetch('https://formspree.io/f/xreajwrb', {
-                method: 'POST',
-                body: new FormData(consultingForm),
-                headers: { 'Accept': 'application/json' }
-            })
-                .then(resp => {
-                    if (resp.ok) {
-                        showToast(currentLang === 'ar' ? 'تم الإرسال بنجاح!' : 'Sent successfully!');
-                        consultingForm.reset();
-                    } else {
-                        showToast(currentLang === 'ar' ? 'حدث خطأ!' : 'Error occurred!');
-                    }
-                })
-                .catch(() => showToast('Check connection'))
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalBtnText;
-                });
+            const text = `مرحباً علي،\n\n*الاسم:* ${name}\n*الهاتف:* ${phone}\n*البريد:* ${email}\n*نوع الطلب:* ${type}\n*التفاصيل:* ${message}`;
+            window.open(`https://wa.me/9647718669939?text=${encodeURIComponent(text)}`, '_blank');
+            consultingForm.reset();
         });
     }
 
@@ -367,3 +359,132 @@ document.addEventListener('DOMContentLoaded', () => {
         revealObserver.observe(el);
     });
 });
+
+function copyPayNum(num, btn) {
+    navigator.clipboard.writeText(num).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✅ تم النسخ';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+    });
+}
+
+// ══════════════════════════════════════════════
+// ── Interactive Effects ──
+// ══════════════════════════════════════════════
+(function initEffects() {
+    const isTouchDevice = () => window.matchMedia('(pointer: coarse)').matches;
+
+    // ── 2. Magnetic Buttons ───────────────────
+    if (!isTouchDevice()) {
+        document.querySelectorAll('.btn-primary, .btn-outline').forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const r = btn.getBoundingClientRect();
+                const x = (e.clientX - r.left - r.width  / 2) * 0.35;
+                const y = (e.clientY - r.top  - r.height / 2) * 0.35;
+                btn.style.transform = `translate(${x}px, ${y}px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = '';
+            });
+        });
+    }
+
+    // ── 3. Card 3D Tilt ───────────────────────
+    if (!isTouchDevice()) {
+        document.querySelectorAll('.course-card, .portfolio-item').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const r = card.getBoundingClientRect();
+                const x = (e.clientX - r.left) / r.width  - 0.5;
+                const y = (e.clientY - r.top)  / r.height - 0.5;
+                card.style.transform = `perspective(900px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) scale(1.03)`;
+                card.style.boxShadow = `${-x * 20}px ${-y * 20}px 40px rgba(167,255,13,0.08)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+                card.style.boxShadow = '';
+            });
+        });
+    }
+
+    // ── 4. Text Scramble on Reveal ────────────
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZابتثجحخدذرزسشصضطظعغفقكلمنهوي0123456789';
+
+    function scramble(el) {
+        const original = el.dataset.original || el.textContent;
+        el.dataset.original = original;
+        let iter = 0;
+        clearInterval(el._scrambleTimer);
+        el._scrambleTimer = setInterval(() => {
+            el.textContent = original.split('').map((ch, i) => {
+                if (ch === ' ') return ' ';
+                if (i < iter) return original[i];
+                return CHARS[Math.floor(Math.random() * CHARS.length)];
+            }).join('');
+            if (iter >= original.length) {
+                clearInterval(el._scrambleTimer);
+                el.textContent = original;
+            }
+            iter += 0.7;
+        }, 28);
+    }
+
+    const scrambleObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                scramble(entry.target);
+                scrambleObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.section-title h2, .section-title h3').forEach(el => {
+        scrambleObserver.observe(el);
+    });
+
+    // ── 5. Scroll Progress Bar ────────────────
+    const bar = document.getElementById('scroll-progress');
+    if (bar) {
+        window.addEventListener('scroll', () => {
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            bar.style.width = (window.scrollY / h * 100) + '%';
+        }, { passive: true });
+    }
+
+    // ── 6. Interactive Blobs ──────────────────
+    const blobs = [
+        { el: document.querySelector('.blob-1'), speedX: 0.025, speedY: 0.018 },
+        { el: document.querySelector('.blob-2'), speedX: -0.02, speedY: -0.015 },
+        { el: document.querySelector('.blob-3'), speedX: 0.015, speedY: -0.022 },
+        { el: document.querySelector('.blob-4'), speedX: -0.03, speedY: 0.012 },
+    ].filter(b => b.el);
+
+    if (blobs.length && !('ontouchstart' in window)) {
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let cx = mouseX, cy = mouseY;
+
+        window.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        }, { passive: true });
+
+        function animateBlobs() {
+            cx += (mouseX - cx) * 0.06;
+            cy += (mouseY - cy) * 0.06;
+
+            const dx = cx - window.innerWidth / 2;
+            const dy = cy - window.innerHeight / 2;
+
+            blobs.forEach(b => {
+                const tx = dx * b.speedX * 100;
+                const ty = dy * b.speedY * 100;
+                b.el.style.transform = `translate(${tx}px, ${ty}px)`;
+            });
+
+            requestAnimationFrame(animateBlobs);
+        }
+        animateBlobs();
+    }
+
+})();
