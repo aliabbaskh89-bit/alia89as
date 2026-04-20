@@ -160,38 +160,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function lbOpen(images, index, title) {
         lbImages = images;
         lbIndex  = index;
-        const slideW = lbTrack.parentElement.offsetWidth;
-        lbTrack.innerHTML = images.map(() =>
-            `<div class="lb-slide" style="min-width:${slideW}px"><img src="" alt=""></div>`
+        // show lightbox first so offsetWidth is calculated correctly
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        const slideW = lbTrack.parentElement.offsetWidth || window.innerWidth * 0.9;
+        lbTrack.innerHTML = images.map(src =>
+            `<div class="lb-slide" style="min-width:${slideW}px"><img src="${src}" alt="" loading="lazy"></div>`
         ).join('');
         lbGoTo(index, false);
         lbCaption.textContent = title;
         const multi = images.length > 1;
         lbPrev.style.display = multi ? 'flex' : 'none';
         lbNext.style.display = multi ? 'flex' : 'none';
-        lightbox.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function lbLoadAround(idx) {
-        // Load current + preload prev and next
-        [idx - 1, idx, idx + 1].forEach(i => {
-            if (i < 0 || i >= lbImages.length) return;
-            const img = lbTrack.children[i]?.querySelector('img');
-            if (img && !img.src) img.src = lbImages[i];
-        });
     }
 
     function lbGoTo(idx, animate = true) {
         lbIndex = Math.max(0, Math.min(idx, lbImages.length - 1));
         if (!animate) lbTrack.style.transition = 'none';
-        const sw = lbTrack.parentElement.offsetWidth;
+        const sw = lbTrack.parentElement.offsetWidth || window.innerWidth * 0.9;
         lbTrack.style.transform = `translateX(${-(lbIndex * sw)}px)`;
         if (!animate) requestAnimationFrame(() => lbTrack.style.transition = '');
         lbCounter.textContent = `${lbIndex + 1} / ${lbImages.length}`;
         lbPrev.style.opacity = lbIndex === 0 ? '0.3' : '1';
         lbNext.style.opacity = lbIndex === lbImages.length - 1 ? '0.3' : '1';
-        lbLoadAround(lbIndex);
     }
 
     function lbClose() {
