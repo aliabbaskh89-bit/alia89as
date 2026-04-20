@@ -451,40 +451,5 @@ function copyPayNum(num, btn) {
         }, { passive: true });
     }
 
-    // ── 6. Interactive Blobs ──────────────────
-    const blobs = [
-        { el: document.querySelector('.blob-1'), speedX: 0.025, speedY: 0.018 },
-        { el: document.querySelector('.blob-2'), speedX: -0.02, speedY: -0.015 },
-        { el: document.querySelector('.blob-3'), speedX: 0.015, speedY: -0.022 },
-        { el: document.querySelector('.blob-4'), speedX: -0.03, speedY: 0.012 },
-    ].filter(b => b.el);
-
-    if (blobs.length && !('ontouchstart' in window)) {
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let cx = mouseX, cy = mouseY;
-
-        window.addEventListener('mousemove', e => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        }, { passive: true });
-
-        function animateBlobs() {
-            cx += (mouseX - cx) * 0.06;
-            cy += (mouseY - cy) * 0.06;
-
-            const dx = cx - window.innerWidth / 2;
-            const dy = cy - window.innerHeight / 2;
-
-            blobs.forEach(b => {
-                const tx = dx * b.speedX * 100;
-                const ty = dy * b.speedY * 100;
-                b.el.style.transform = `translate(${tx}px, ${ty}px)`;
-            });
-
-            requestAnimationFrame(animateBlobs);
-        }
-        animateBlobs();
-    }
 
 })();
