@@ -346,8 +346,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('click', function(e) {
         if (e.target.id === 'close-lightbox' || e.target.id === 'lb-backdrop') window.lbClose();
-        if (e.target.id === 'lightbox-prev' || e.target.closest('#lightbox-prev')) window.lbNav(-1);
-        if (e.target.id === 'lightbox-next' || e.target.closest('#lightbox-next')) window.lbNav(1);
     });
 })();
 
