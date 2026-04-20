@@ -1074,18 +1074,12 @@ html[lang="en"] .search-box input {
     position: fixed !important;
     inset: 0;
     z-index: 9999 !important;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 .lightbox.active {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+    display: flex !important;
 }
 .lb-backdrop {
     position: absolute;
