@@ -180,7 +180,7 @@ app.get('/api/my-videos', auth, (req, res) => {
     const { students } = readJSON('students.json');
     const student = students.find(s => s.code === req.student.code);
     if (!student || !student.active) return res.status(403).json({ error: 'غير مصرح' });
-    const studentCourses = student.courses;
+    const studentCourses = student.courses || [];
 
     const available = studentCourses.includes('all')
         ? allCourses
