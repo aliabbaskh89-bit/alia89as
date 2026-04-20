@@ -160,8 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function lbOpen(images, index, title) {
         lbImages = images;
         lbIndex  = index;
-        lbTrack.innerHTML = images.map(src =>
-            `<div class="lb-slide"><img src="${src}" alt=""></div>`
+        // Create slides with empty src — load lazily
+        lbTrack.innerHTML = images.map(() =>
+            `<div class="lb-slide"><img src="" alt=""></div>`
         ).join('');
         lbGoTo(index, false);
         lbCaption.textContent = title;
@@ -172,15 +173,24 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'hidden';
     }
 
+    function lbLoadAround(idx) {
+        // Load current + preload prev and next
+        [idx - 1, idx, idx + 1].forEach(i => {
+            if (i < 0 || i >= lbImages.length) return;
+            const img = lbTrack.children[i]?.querySelector('img');
+            if (img && !img.src) img.src = lbImages[i];
+        });
+    }
+
     function lbGoTo(idx, animate = true) {
         lbIndex = Math.max(0, Math.min(idx, lbImages.length - 1));
         if (!animate) lbTrack.style.transition = 'none';
-        // RTL: positive translateX moves right → use negative to slide left
         lbTrack.style.transform = `translateX(${-(lbIndex * 100)}%)`;
         if (!animate) requestAnimationFrame(() => lbTrack.style.transition = '');
         lbCounter.textContent = `${lbIndex + 1} / ${lbImages.length}`;
         lbPrev.style.opacity = lbIndex === 0 ? '0.3' : '1';
         lbNext.style.opacity = lbIndex === lbImages.length - 1 ? '0.3' : '1';
+        lbLoadAround(lbIndex);
     }
 
     function lbClose() {
