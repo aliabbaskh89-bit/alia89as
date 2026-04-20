@@ -160,10 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function lbShow(idx) {
         lbIndex = Math.max(0, Math.min(idx, lbImages.length - 1));
         lbImg.style.opacity = '0';
-        setTimeout(() => {
-            lbImg.src = lbImages[lbIndex];
-            lbImg.style.opacity = '1';
-        }, 150);
+        lbImg.src = lbImages[lbIndex];
+        lbImg.onload = () => { lbImg.style.opacity = '1'; };
+        lbImg.onerror = () => { lbImg.style.opacity = '1'; };
         lbCounter.textContent = `${lbIndex + 1} / ${lbImages.length}`;
         if (lbPrev) lbPrev.style.opacity = lbIndex === 0 ? '0.3' : '1';
         if (lbNext) lbNext.style.opacity = lbIndex === lbImages.length - 1 ? '0.3' : '1';
