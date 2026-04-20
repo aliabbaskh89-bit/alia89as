@@ -1145,34 +1145,17 @@ html[lang="en"] .search-box input {
 .lb-arrow-prev { right: 20px; }
 .lb-arrow-next { left: 20px; }
 
-.lb-track-wrap {
+.lb-img {
     position: relative;
     z-index: 5;
-    width: min(90vw, 900px);
-    max-height: 82vh;
-    overflow: hidden;
-    border-radius: 12px;
-}
-.lb-track {
-    display: flex;
-    direction: ltr;
-    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-}
-.lb-slide {
-    min-width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.lb-slide img {
-    max-width: 100%;
+    max-width: 90vw;
     max-height: 82vh;
     object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+    border-radius: 10px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.7);
     user-select: none;
     -webkit-user-drag: none;
+    transition: opacity 0.25s ease;
 }
 
 .lb-caption {

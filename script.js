@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterBtns     = document.querySelectorAll('.filter-btn');
     const portfolioItems = document.querySelectorAll('.portfolio-item');
     const lightbox       = document.getElementById('lightbox');
-    const lbTrack        = document.getElementById('lb-track');
+    const lbImg          = document.getElementById('lb-img');
     const lbCaption      = document.getElementById('lightbox-caption');
     const lbCounter      = document.getElementById('lb-counter');
     const lbPrev         = document.getElementById('lightbox-prev');
@@ -157,37 +157,33 @@ document.addEventListener('DOMContentLoaded', () => {
     let lbImages = [];
     let lbIndex  = 0;
 
-    function lbOpen(images, index, title) {
-        lbImages = images;
-        lbIndex  = index;
-        // show lightbox first so offsetWidth is calculated correctly
-        lightbox.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        const slideW = lbTrack.parentElement.offsetWidth || window.innerWidth * 0.9;
-        lbTrack.innerHTML = images.map(src =>
-            `<div class="lb-slide" style="min-width:${slideW}px"><img src="${src}" alt="" loading="lazy"></div>`
-        ).join('');
-        lbGoTo(index, false);
-        lbCaption.textContent = title;
-        const multi = images.length > 1;
-        lbPrev.style.display = multi ? 'flex' : 'none';
-        lbNext.style.display = multi ? 'flex' : 'none';
+    function lbShow(idx) {
+        lbIndex = Math.max(0, Math.min(idx, lbImages.length - 1));
+        lbImg.style.opacity = '0';
+        setTimeout(() => {
+            lbImg.src = lbImages[lbIndex];
+            lbImg.style.opacity = '1';
+        }, 150);
+        lbCounter.textContent = `${lbIndex + 1} / ${lbImages.length}`;
+        if (lbPrev) lbPrev.style.opacity = lbIndex === 0 ? '0.3' : '1';
+        if (lbNext) lbNext.style.opacity = lbIndex === lbImages.length - 1 ? '0.3' : '1';
     }
 
-    function lbGoTo(idx, animate = true) {
-        lbIndex = Math.max(0, Math.min(idx, lbImages.length - 1));
-        if (!animate) lbTrack.style.transition = 'none';
-        const sw = lbTrack.parentElement.offsetWidth || window.innerWidth * 0.9;
-        lbTrack.style.transform = `translateX(${-(lbIndex * sw)}px)`;
-        if (!animate) requestAnimationFrame(() => lbTrack.style.transition = '');
-        lbCounter.textContent = `${lbIndex + 1} / ${lbImages.length}`;
-        lbPrev.style.opacity = lbIndex === 0 ? '0.3' : '1';
-        lbNext.style.opacity = lbIndex === lbImages.length - 1 ? '0.3' : '1';
+    function lbOpen(images, title) {
+        lbImages = images;
+        const multi = images.length > 1;
+        if (lbPrev) lbPrev.style.display = multi ? 'flex' : 'none';
+        if (lbNext) lbNext.style.display = multi ? 'flex' : 'none';
+        lbCaption.textContent = title;
+        lbShow(0);
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
 
     function lbClose() {
         lightbox.classList.remove('active');
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = '';
+        lbImg.src = '';
     }
 
     filterBtns.forEach(btn => {
@@ -211,34 +207,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 const raw = JSON.parse(item.getAttribute('data-images') || '[]');
                 images = raw.length ? (raw.includes(mainSrc) ? raw : [mainSrc, ...raw]) : [mainSrc];
             } catch { images = [mainSrc]; }
-            lbOpen(images, 0, title);
+            lbOpen(images, title);
         });
     });
 
-    lbPrev?.addEventListener('click', e => { e.stopPropagation(); lbGoTo(lbIndex - 1); });
-    lbNext?.addEventListener('click', e => { e.stopPropagation(); lbGoTo(lbIndex + 1); });
+    lbPrev?.addEventListener('click', e => { e.stopPropagation(); lbShow(lbIndex - 1); });
+    lbNext?.addEventListener('click', e => { e.stopPropagation(); lbShow(lbIndex + 1); });
     lbCloseBtn?.addEventListener('click', lbClose);
     lbBackdrop?.addEventListener('click', lbClose);
 
-    // keyboard
     document.addEventListener('keydown', e => {
         if (!lightbox?.classList.contains('active')) return;
-        if (e.key === 'Escape')      lbClose();
-        if (e.key === 'ArrowRight')  lbGoTo(lbIndex - 1);
-        if (e.key === 'ArrowLeft')   lbGoTo(lbIndex + 1);
+        if (e.key === 'Escape')     lbClose();
+        if (e.key === 'ArrowRight') lbShow(lbIndex - 1);
+        if (e.key === 'ArrowLeft')  lbShow(lbIndex + 1);
     });
 
-    // touch swipe
-    (function () {
-        let startX = 0;
-        lightbox?.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-        lightbox?.addEventListener('touchend', e => {
-            const dx = e.changedTouches[0].clientX - startX;
-            if (Math.abs(dx) < 40) return;
-            // RTL: swipe right = next, swipe left = prev
-            dx < 0 ? lbGoTo(lbIndex - 1) : lbGoTo(lbIndex + 1);
-        });
-    })();
+    let lbTouchX = 0;
+    lightbox?.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+    lightbox?.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - lbTouchX;
+        if (Math.abs(dx) < 40) return;
+        dx < 0 ? lbShow(lbIndex - 1) : lbShow(lbIndex + 1);
+    });
 
     // --- Highlights / Stories ---
     const highlightItems = document.querySelectorAll('.highlight-item');

@@ -499,7 +499,7 @@
                         <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;">▶</span>
                     </div>
                     <div style="display:none">
-                        <video controls style="width:100%;border-radius:12px" controlsList="nodownload" oncontextmenu="return false">
+                        <video controls preload="none" style="width:100%;border-radius:12px" controlsList="nodownload" oncontextmenu="return false">
                             <source src="/api/public/video/intro.mp4" type="video/mp4">
                         </video>
                     </div>
@@ -514,7 +514,7 @@
                         <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;">▶</span>
                     </div>
                     <div style="display:none">
-                        <video controls style="width:100%;border-radius:12px" controlsList="nodownload" oncontextmenu="return false">
+                        <video controls preload="none" style="width:100%;border-radius:12px" controlsList="nodownload" oncontextmenu="return false">
                             <source src="/api/public/video/colors.mp4" type="video/mp4">
                         </video>
                     </div>
@@ -672,11 +672,7 @@
     <button class="lb-arrow lb-arrow-prev" id="lightbox-prev" aria-label="السابق">
         <i class="fa-solid fa-chevron-right"></i>
     </button>
-    <div class="lb-track-wrap">
-        <div class="lb-track" id="lb-track">
-            <!-- slides injected by JS -->
-        </div>
-    </div>
+    <img id="lb-img" class="lb-img" src="" alt="">
     <button class="lb-arrow lb-arrow-next" id="lightbox-next" aria-label="التالي">
         <i class="fa-solid fa-chevron-left"></i>
     </button>
