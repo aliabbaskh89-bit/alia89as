@@ -542,8 +542,8 @@
             </div>
             <div class="portfolio-grid reveal reveal-stagger" id="portfolio-grid">
                 <!-- Category 1: Visual Identity -->
-                <div class="portfolio-item reveal reveal-up" data-category="branding"
-                    data-images='["26.webp","27.webp"]' tabindex="0">
+                <div class="portfolio-item reveal reveal-up" data-category="branding" tabindex="0"
+                    onclick="lbOpen(['26.webp','27.webp'],'قسم الهويات البصرية')">
                     <img src="26.webp" alt="هويات بصرية" loading="lazy" decoding="async">
                     <div class="portfolio-overlay">
                         <h3 class="portfolio-title">قسم الهويات البصرية</h3>
@@ -551,9 +551,8 @@
                     </div>
                 </div>
                 <!-- Category 2: Social Media -->
-                <div class="portfolio-item reveal reveal-up" data-category="social"
-                    data-images='["1.webp","2.webp","3.webp","4.webp","5.webp","6.webp","7.webp","8.webp","9.webp","10.webp","11.webp","12.webp","13.webp","14.webp","15.webp","16.webp","17.webp","18.webp","19.webp","20.webp","21.webp"]'
-                    tabindex="0">
+                <div class="portfolio-item reveal reveal-up" data-category="social" tabindex="0"
+                    onclick="lbOpen(['1.webp','2.webp','3.webp','4.webp','5.webp','6.webp','7.webp','8.webp','9.webp','10.webp','11.webp','12.webp','13.webp','14.webp','15.webp','16.webp','17.webp','18.webp','19.webp','20.webp','21.webp'],'قسم السوشيال ميديا')">
                     <img src="1.webp" alt="سوشيال ميديا" loading="lazy" decoding="async">
                     <div class="portfolio-overlay">
                         <h3 class="portfolio-title">قسم السوشيال ميديا</h3>
@@ -561,8 +560,8 @@
                     </div>
                 </div>
                 <!-- Category 3: Posters & Others -->
-                <div class="portfolio-item reveal reveal-up" data-category="posters"
-                    data-images='["22.webp","23.webp","24.webp","25.webp"]' tabindex="0">
+                <div class="portfolio-item reveal reveal-up" data-category="posters" tabindex="0"
+                    onclick="lbOpen(['22.webp','23.webp','24.webp','25.webp'],'قسم المطبوعات والبوسترات')">
                     <img src="22.webp" alt="بوسترات وأخرى" loading="lazy" decoding="async">
                     <div class="portfolio-overlay">
                         <h3 class="portfolio-title">قسم المطبوعات والبوسترات</h3>
@@ -666,14 +665,14 @@
 
 <!-- Lightbox for Portfolio -->
 <div id="lightbox" class="lightbox" role="dialog" aria-modal="true">
-    <div class="lb-backdrop" id="lb-backdrop"></div>
-    <button class="lb-close" id="close-lightbox" aria-label="إغلاق">✕</button>
+    <div class="lb-backdrop" id="lb-backdrop" onclick="lbClose()"></div>
+    <button class="lb-close" id="close-lightbox" aria-label="إغلاق" onclick="lbClose()">✕</button>
     <div class="lb-counter" id="lb-counter">1 / 1</div>
-    <button class="lb-arrow lb-arrow-prev" id="lightbox-prev" aria-label="السابق">
+    <button class="lb-arrow lb-arrow-prev" id="lightbox-prev" aria-label="السابق" onclick="lbNav(-1)">
         <i class="fa-solid fa-chevron-right"></i>
     </button>
     <img id="lb-img" class="lb-img" src="" alt="">
-    <button class="lb-arrow lb-arrow-next" id="lightbox-next" aria-label="التالي">
+    <button class="lb-arrow lb-arrow-next" id="lightbox-next" aria-label="التالي" onclick="lbNav(1)">
         <i class="fa-solid fa-chevron-left"></i>
     </button>
     <div class="lb-caption" id="lightbox-caption"></div>
