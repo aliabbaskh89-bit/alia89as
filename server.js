@@ -270,6 +270,18 @@ app.patch('/api/admin/students/:code/courses', adminAuth, (req, res) => {
     res.json({ message: `تم تحديث كورسات ${student.name} بنجاح ✅` });
 });
 
+// ─── Admin: Update student name ───────────────────────────────────────────
+app.patch('/api/admin/students/:code/name', adminAuth, (req, res) => {
+    const { name } = req.body;
+    if (!name?.trim()) return res.status(400).json({ error: 'يرجى إدخال اسم صحيح' });
+    const data    = readJSON('students.json');
+    const student = data.students.find(s => s.code === req.params.code);
+    if (!student) return res.status(404).json({ error: 'الطالب غير موجود' });
+    student.name = name.trim();
+    writeJSON('students.json', data);
+    res.json({ message: 'تم تحديث الاسم بنجاح ✅' });
+});
+
 // ─── Admin: Toggle student active/inactive ─────────────────────────────────
 app.patch('/api/admin/students/:code', adminAuth, (req, res) => {
     const data    = readJSON('students.json');

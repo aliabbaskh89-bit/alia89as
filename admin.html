@@ -95,9 +95,12 @@
     <div id="editModal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-icon">✏️</div>
-            <h3 id="editModalTitle">تعديل كورسات الطالب</h3>
-            <p id="editModalSub" style="margin-bottom:16px;"></p>
+            <h3 id="editModalTitle">تعديل بيانات الطالب</h3>
             <input type="hidden" id="editStudentCode">
+            <div style="margin-bottom:14px;text-align:right">
+                <label style="font-size:.82rem;color:var(--text-muted);display:block;margin-bottom:4px">الاسم</label>
+                <input type="text" id="editStudentName" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:.95rem;text-align:right">
+            </div>
             <div class="courses-checkboxes" id="editCourseCheckboxes" style="justify-content:center; margin-bottom:20px;">
                 <label><input type="checkbox" class="edit-checkbox" value="graphics"> الكورس الشامل</label>
                 <label><input type="checkbox" class="edit-checkbox" value="social"> السوشيال ميديا</label>
@@ -210,6 +213,7 @@
                 <!-- Students List -->
                 <div class="admin-section">
                     <h3>📋 قائمة الطلاب</h3>
+                    <input type="text" id="studentSearch" placeholder="🔍 ابحث عن طالب بالاسم أو الكود..." oninput="filterStudents(this.value)" style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:.9rem;text-align:right;margin-bottom:12px;box-sizing:border-box">
                     <div class="table-wrapper">
                         <table class="students-table">
                             <thead>

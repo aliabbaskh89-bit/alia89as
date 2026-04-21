@@ -539,7 +539,18 @@ if (document.getElementById('adminPage')) {
         }
     }
 
-    function renderStudents(students) {
+    let _allStudents = [];
+
+    window.filterStudents = function(q) {
+        const term = q.trim().toLowerCase();
+        const filtered = term
+            ? _allStudents.filter(s => s.name.toLowerCase().includes(term) || s.code.toLowerCase().includes(term))
+            : _allStudents;
+        renderStudents(filtered, false);
+    };
+
+    function renderStudents(students, save = true) {
+        if (save) _allStudents = students;
         const tbody = document.getElementById('studentsTable');
         if (!students.length) {
             tbody.innerHTML = '<tr><td colspan="6" class="empty-table">لا يوجد طلاب مسجلين بعد — أضف أول طالب من الأعلى</td></tr>';
@@ -598,7 +609,7 @@ if (document.getElementById('adminPage')) {
         const name           = el.dataset.name;
         const currentCourses = JSON.parse(el.dataset.courses);
         document.getElementById('editStudentCode').value = code;
-        document.getElementById('editModalSub').textContent = name;
+        document.getElementById('editStudentName').value = name;
         document.querySelectorAll('.edit-checkbox').forEach(cb => {
             cb.checked = currentCourses.includes(cb.value);
         });
@@ -612,27 +623,41 @@ if (document.getElementById('adminPage')) {
 
     window.saveEditCourses = async function() {
         const code    = document.getElementById('editStudentCode').value;
+        const newName = document.getElementById('editStudentName').value.trim();
         const courses = [...document.querySelectorAll('.edit-checkbox:checked')].map(c => c.value);
         const errEl   = document.getElementById('editError');
 
+        if (!newName) {
+            errEl.textContent = 'يرجى إدخال اسم الطالب';
+            errEl.style.display = 'block';
+            return;
+        }
         if (!courses.length) {
             errEl.textContent = 'يرجى اختيار كورس واحد على الأقل';
             errEl.style.display = 'block';
             return;
         }
 
-        const res = await aFetch(`/api/admin/students/${code}/courses`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ courses })
-        });
-        const data = await res.json();
-        if (res.ok) {
+        const [r1, r2] = await Promise.all([
+            aFetch(`/api/admin/students/${code}/name`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newName })
+            }),
+            aFetch(`/api/admin/students/${code}/courses`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ courses })
+            })
+        ]);
+
+        if (r1.ok && r2.ok) {
             closeEditModal();
-            showToast(data.message);
+            showToast('تم حفظ التعديلات ✅');
             loadStudents();
         } else {
-            errEl.textContent = data.error || 'حدث خطأ';
+            const d = await (r1.ok ? r2 : r1).json();
+            errEl.textContent = d.error || 'حدث خطأ';
             errEl.style.display = 'block';
         }
     };
