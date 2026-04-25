@@ -365,13 +365,15 @@ if (document.getElementById('platformPage')) {
             return;
         }
         list.innerHTML = notes.map(n => `
-            <div class="note-item ${n.reply ? 'has-reply' : ''}">
+            <div class="note-item ${n.reply || n.replyLink ? 'has-reply' : ''}">
                 <p class="note-text">${n.text}</p>
+                ${n.link ? `<a href="${n.link}" target="_blank" rel="noopener" style="font-size:.78rem; color:var(--primary); word-break:break-all;">🔗 ${n.link}</a>` : ''}
                 <p class="note-meta">${new Date(n.createdAt).toLocaleDateString('ar-IQ', { year:'numeric', month:'long', day:'numeric' })}</p>
-                ${n.reply ? `
+                ${n.reply || n.replyLink ? `
                     <div class="note-reply">
                         <p class="note-reply-label">رد المدرب:</p>
-                        <p>${n.reply}</p>
+                        ${n.reply ? `<p>${n.reply}</p>` : ''}
+                        ${n.replyLink ? `<a href="${n.replyLink}" target="_blank" rel="noopener" style="font-size:.82rem; color:var(--primary); word-break:break-all;">🔗 ${n.replyLink}</a>` : ''}
                     </div>
                 ` : '<p style="font-size:.72rem; color:var(--text-muted); margin-top:6px;">⏳ في انتظار رد المدرب</p>'}
             </div>
@@ -389,14 +391,16 @@ if (document.getElementById('platformPage')) {
         btn.textContent = 'جاري الإرسال...';
 
         try {
+            const link = document.getElementById('noteLink').value.trim();
             const res = await authFetch('/api/notes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...currentNote, text })
+                body: JSON.stringify({ ...currentNote, text, link: link || null })
             });
             const data = await res.json();
             if (res.ok) {
                 document.getElementById('noteText').value = '';
+                document.getElementById('noteLink').value = '';
                 showToast(data.message);
                 loadNotes();
             } else {
@@ -815,15 +819,18 @@ if (document.getElementById('adminPage')) {
                     <button class="btn-del-q" onclick="deleteQuestion(${q.id})">حذف</button>
                 </div>
                 <p class="question-text">${q.text}</p>
-                ${q.reply ? `
+                ${q.link ? `<a href="${q.link}" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--primary);word-break:break-all;display:block;margin:4px 0;">🔗 رابط الطالب: ${q.link}</a>` : ''}
+                ${q.reply || q.replyLink ? `
                     <div class="existing-reply">
                         <p class="existing-reply-label">ردك على الطالب:</p>
-                        <p>${q.reply}</p>
+                        ${q.reply ? `<p>${q.reply}</p>` : ''}
+                        ${q.replyLink ? `<a href="${q.replyLink}" target="_blank" rel="noopener" style="font-size:.82rem;color:var(--primary);word-break:break-all;">🔗 ${q.replyLink}</a>` : ''}
                     </div>
-                    <button class="btn-del-q" onclick="editReply(${q.id},'${q.reply.replace(/'/g,"\\'")}')">تعديل الرد</button>
+                    <button class="btn-del-q" onclick="editReply(${q.id},'${(q.reply||'').replace(/'/g,"\\'")}','${(q.replyLink||'').replace(/'/g,"\\'")}')">تعديل الرد</button>
                 ` : `
                     <div class="reply-form">
                         <textarea id="reply-${q.id}" placeholder="اكتب ردك على الطالب هنا..."></textarea>
+                        <input type="url" id="replyLink-${q.id}" placeholder="🔗 رابط (اختياري)" style="padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:.85rem;width:100%;box-sizing:border-box;direction:ltr;text-align:left;margin-top:6px;">
                         <button class="btn-reply" onclick="submitReply(${q.id})">إرسال الرد</button>
                     </div>
                 `}
@@ -832,21 +839,23 @@ if (document.getElementById('adminPage')) {
     }
 
     window.submitReply = async function(id) {
-        const textarea = document.getElementById(`reply-${id}`);
-        const reply    = textarea?.value.trim();
-        if (!reply) { showToast('يرجى كتابة الرد', 'error'); return; }
+        const textarea  = document.getElementById(`reply-${id}`);
+        const linkInput = document.getElementById(`replyLink-${id}`);
+        const reply     = textarea?.value.trim();
+        const replyLink = linkInput?.value.trim() || null;
+        if (!reply && !replyLink) { showToast('يرجى كتابة الرد أو إضافة رابط', 'error'); return; }
 
         const res  = await aFetch(`/api/admin/questions/${id}/reply`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reply })
+            body: JSON.stringify({ reply, replyLink })
         });
         const data = await res.json();
         if (res.ok) { showToast(data.message); loadQuestions(); }
         else        { showToast(data.error, 'error'); }
     };
 
-    window.editReply = function(id, currentReply) {
+    window.editReply = function(id, currentReply, currentReplyLink) {
         const card = document.getElementById(`qcard-${id}`);
         const existing = card.querySelector('.existing-reply');
         const editBtn  = card.querySelector('.btn-del-q:last-child');
@@ -857,6 +866,7 @@ if (document.getElementById('adminPage')) {
         form.className = 'reply-form';
         form.innerHTML = `
             <textarea id="reply-${id}">${currentReply}</textarea>
+            <input type="url" id="replyLink-${id}" value="${currentReplyLink || ''}" placeholder="🔗 رابط (اختياري)" style="padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:.85rem;width:100%;box-sizing:border-box;direction:ltr;text-align:left;margin-top:6px;">
             <button class="btn-reply" onclick="submitReply(${id})">تحديث الرد</button>
         `;
         card.appendChild(form);

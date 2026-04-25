@@ -445,7 +445,7 @@ app.get('/api/notes/:courseId/:videoId', auth, (req, res) => {
 
 // POST /api/notes — student submits a note or question
 app.post('/api/notes', auth, (req, res) => {
-    const { courseId, videoId, videoTitle, text } = req.body;
+    const { courseId, videoId, videoTitle, text, link } = req.body;
     if (!text?.trim()) return res.status(400).json({ error: 'يرجى كتابة ملاحظتك أو سؤالك' });
 
     const data = readJSON('questions.json');
@@ -457,7 +457,9 @@ app.post('/api/notes', auth, (req, res) => {
         videoId,
         videoTitle,
         text:        text.trim(),
+        link:        link?.trim() || null,
         reply:       null,
+        replyLink:   null,
         repliedAt:   null,
         createdAt:   new Date().toISOString()
     };
@@ -475,14 +477,15 @@ app.get('/api/admin/questions', adminAuth, (_req, res) => {
 
 // Admin: POST /api/admin/questions/:id/reply — reply to a note/question
 app.post('/api/admin/questions/:id/reply', adminAuth, (req, res) => {
-    const { reply } = req.body;
-    if (!reply?.trim()) return res.status(400).json({ error: 'يرجى كتابة الرد' });
+    const { reply, replyLink } = req.body;
+    if (!reply?.trim() && !replyLink?.trim()) return res.status(400).json({ error: 'يرجى كتابة الرد أو إضافة رابط' });
 
     const data = readJSON('questions.json');
     const q    = data.questions.find(q => q.id === parseInt(req.params.id));
     if (!q) return res.status(404).json({ error: 'السؤال غير موجود' });
 
-    q.reply     = reply.trim();
+    q.reply     = reply?.trim() || null;
+    q.replyLink = replyLink?.trim() || null;
     q.repliedAt = new Date().toISOString();
     writeJSON('questions.json', data);
     res.json({ message: 'تم إرسال الرد للطالب ✅' });
