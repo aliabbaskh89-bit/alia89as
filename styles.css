@@ -1,3 +1,14 @@
+/* ── Graphik Arabic Font ─────────────────────────────────────────────────── */
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Thin.woff2') format('woff2'), url('font/GraphikArabic-Thin.woff') format('woff'); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Extralight.woff2') format('woff2'), url('font/GraphikArabic-Extralight.woff') format('woff'); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Light.woff2') format('woff2'), url('font/GraphikArabic-Light.woff') format('woff'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Regular.woff2') format('woff2'), url('font/GraphikArabic-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Medium.woff2') format('woff2'), url('font/GraphikArabic-Medium.woff') format('woff'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Semibold.woff2') format('woff2'), url('font/GraphikArabic-Semibold.woff') format('woff'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Bold.woff2') format('woff2'), url('font/GraphikArabic-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Black.woff2') format('woff2'), url('font/GraphikArabic-Black.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Super.woff2') format('woff2'), url('font/GraphikArabic-Super.woff') format('woff'); font-weight: 900; font-style: normal; font-display: swap; }
+
 /* Base & Global Variables */
 :root {
     /* Dark Theme Default */
@@ -50,7 +61,7 @@ html {
 }
 
 body {
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     background-color: var(--bg-main);
     color: var(--text-main);
     line-height: 1.6;
@@ -1688,7 +1699,7 @@ html[lang="en"] .close-modal {
     display: inline-block; padding: 8px 20px;
     border: 1.5px solid var(--primary); border-radius: 8px;
     background: transparent; color: var(--primary);
-    font-family: 'Cairo', sans-serif; font-size: .85rem; font-weight: 600;
+    font-family: 'GraphikArabic', sans-serif; font-size: .85rem; font-weight: 600;
     cursor: pointer; transition: all .2s;
 }
 .btn-pay-copy:hover, .btn-pay-copy.copied { background: var(--primary); color: #000; }

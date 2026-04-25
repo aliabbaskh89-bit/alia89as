@@ -7,9 +7,8 @@
     <link rel="manifest" href="/manifest-admin.json">
     <meta name="theme-color" content="#c8f135">
     <link rel="apple-touch-icon" href="/profile.jpg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preload" href="font/GraphikArabic-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="font/GraphikArabic-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="platform.css">
     <style>
         /* ── Modal ── */
@@ -62,7 +61,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-muted);
-            font-family: 'Cairo', sans-serif;
+            font-family: 'GraphikArabic', sans-serif;
             font-size: .9rem;
             cursor: pointer;
             transition: all .2s;

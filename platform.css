@@ -1,8 +1,17 @@
 /* ═══════════════════════════════════════════════════
    Platform Pages — Login / Platform / Admin
-   Uses same design system as main site (Cairo font,
+   Uses same design system as main site (GraphikArabic font,
    dark theme, lime-green #a7ff0d accent)
    ═══════════════════════════════════════════════════ */
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Thin.woff2') format('woff2'), url('font/GraphikArabic-Thin.woff') format('woff'); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Extralight.woff2') format('woff2'), url('font/GraphikArabic-Extralight.woff') format('woff'); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Light.woff2') format('woff2'), url('font/GraphikArabic-Light.woff') format('woff'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Regular.woff2') format('woff2'), url('font/GraphikArabic-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Medium.woff2') format('woff2'), url('font/GraphikArabic-Medium.woff') format('woff'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Semibold.woff2') format('woff2'), url('font/GraphikArabic-Semibold.woff') format('woff'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Bold.woff2') format('woff2'), url('font/GraphikArabic-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Black.woff2') format('woff2'), url('font/GraphikArabic-Black.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'GraphikArabic'; src: url('font/GraphikArabic-Super.woff2') format('woff2'), url('font/GraphikArabic-Super.woff') format('woff'); font-weight: 900; font-style: normal; font-display: swap; }
 
 :root {
     --primary:       #a7ff0d;
@@ -23,7 +32,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     background: var(--bg-main);
     color: var(--text-main);
     min-height: 100vh;
@@ -105,7 +114,7 @@ body {
     border: 1.5px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-main);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: 1.1rem;
     text-align: center;
     letter-spacing: 3px;
@@ -142,7 +151,7 @@ body {
     color: #000;
     border: none;
     border-radius: var(--radius-md);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
@@ -211,7 +220,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-muted);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .85rem;
     cursor: pointer;
     transition: all .2s;
@@ -358,7 +367,7 @@ body {
     color: #000;
     border: none;
     border-radius: 10px;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .9rem;
     font-weight: 700;
     cursor: pointer;
@@ -509,7 +518,7 @@ body {
     border: none;
     border-bottom: 3px solid transparent;
     color: var(--text-muted);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .9rem;
     cursor: pointer;
     transition: all .2s;
@@ -559,7 +568,7 @@ body {
     border: 1.5px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-main);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .95rem;
     text-align: right;
     transition: border-color .2s;
@@ -658,7 +667,7 @@ body {
     border-radius: 6px;
     color: var(--primary);
     cursor: pointer;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .75rem;
     transition: all .2s;
 }
@@ -688,7 +697,7 @@ body {
     padding: 5px 12px;
     border-radius: 6px;
     cursor: pointer;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .78rem;
     transition: all .2s;
     margin-left: 4px;
@@ -957,7 +966,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0 4px;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
 }
 
 /* ══════════════════════════════════════
@@ -1064,7 +1073,7 @@ body {
     border: 1.5px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-main);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .9rem;
     resize: vertical;
     min-height: 80px;
@@ -1181,7 +1190,7 @@ body {
     border: 1.5px solid var(--border-color);
     border-radius: 8px;
     color: var(--text-main);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .875rem;
     resize: vertical;
     min-height: 60px;
@@ -1199,7 +1208,7 @@ body {
     color: #000;
     border: none;
     border-radius: 8px;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .85rem;
     font-weight: 700;
     cursor: pointer;
@@ -1215,7 +1224,7 @@ body {
     border: 1px solid var(--danger);
     border-radius: 6px;
     color: var(--danger);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-size: .75rem;
     cursor: pointer;
     transition: all .2s;
@@ -1231,7 +1240,7 @@ body {
     right: 28px;
     padding: 13px 20px;
     border-radius: var(--radius-md);
-    font-family: 'Cairo', sans-serif;
+    font-family: 'GraphikArabic', sans-serif;
     font-weight: 600;
     font-size: .875rem;
     opacity: 0;
