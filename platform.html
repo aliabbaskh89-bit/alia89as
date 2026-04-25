@@ -83,7 +83,13 @@
                     <div id="notesList" class="notes-list"></div>
                     <form id="addNoteForm" class="add-note-form">
                         <textarea id="noteText" placeholder="اكتب ملاحظتك أو سؤالك هنا..." rows="3"></textarea>
-                        <input type="url" id="noteLink" placeholder="🔗 رابط (اختياري — يمكنك إضافة رابط صورة أو ملف)" style="padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg-card); color:var(--text); font-size:.88rem; width:100%; box-sizing:border-box; direction:ltr; text-align:left;">
+                        <input type="url" id="noteLink" placeholder="🔗 رابط (اختياري)" style="padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg-card); color:var(--text); font-size:.88rem; width:100%; box-sizing:border-box; direction:ltr; text-align:left;">
+                        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                            <label style="cursor:pointer;padding:8px 14px;border-radius:8px;border:1px dashed var(--border);font-size:.85rem;color:var(--text-muted);flex:1;min-width:180px;">
+                                📎 <span id="attachLabel">إرفاق ملف أو صورة (PDF/PNG/JPG)</span>
+                                <input type="file" id="noteFile" accept="image/*,application/pdf" style="display:none" onchange="document.getElementById('attachLabel').textContent=this.files[0]?this.files[0].name:'إرفاق ملف أو صورة (PDF/PNG/JPG)'">
+                            </label>
+                        </div>
                         <button type="submit" id="noteSubmitBtn" class="btn-primary" style="max-width:180px; align-self:flex-start">
                             إرسال للمدرب
                         </button>

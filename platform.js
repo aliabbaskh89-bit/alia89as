@@ -368,12 +368,14 @@ if (document.getElementById('platformPage')) {
             <div class="note-item ${n.reply || n.replyLink ? 'has-reply' : ''}">
                 <p class="note-text">${n.text}</p>
                 ${n.link ? `<a href="${n.link}" target="_blank" rel="noopener" style="font-size:.78rem; color:var(--primary); word-break:break-all;">🔗 ${n.link}</a>` : ''}
+                ${n.attachment ? `<a href="${n.attachment}" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--primary);display:inline-block;margin-top:4px;">📎 ${n.attachment.split('/').pop()}</a>` : ''}
                 <p class="note-meta">${new Date(n.createdAt).toLocaleDateString('ar-IQ', { year:'numeric', month:'long', day:'numeric' })}</p>
-                ${n.reply || n.replyLink ? `
+                ${n.reply || n.replyLink || n.replyAttachment ? `
                     <div class="note-reply">
                         <p class="note-reply-label">رد المدرب:</p>
                         ${n.reply ? `<p>${n.reply}</p>` : ''}
                         ${n.replyLink ? `<a href="${n.replyLink}" target="_blank" rel="noopener" style="font-size:.82rem; color:var(--primary); word-break:break-all;">🔗 ${n.replyLink}</a>` : ''}
+                        ${n.replyAttachment ? `<a href="${n.replyAttachment}" target="_blank" rel="noopener" style="font-size:.82rem;color:var(--primary);display:block;margin-top:4px;">📎 ${n.replyAttachment.split('/').pop()}</a>` : ''}
                     </div>
                 ` : '<p style="font-size:.72rem; color:var(--text-muted); margin-top:6px;">⏳ في انتظار رد المدرب</p>'}
             </div>
@@ -391,16 +393,30 @@ if (document.getElementById('platformPage')) {
         btn.textContent = 'جاري الإرسال...';
 
         try {
-            const link = document.getElementById('noteLink').value.trim();
+            const link     = document.getElementById('noteLink').value.trim();
+            const fileEl   = document.getElementById('noteFile');
+            let attachment = null;
+
+            if (fileEl.files[0]) {
+                const fd = new FormData();
+                fd.append('file', fileEl.files[0]);
+                const up = await authFetch('/api/upload-attachment', { method: 'POST', body: fd });
+                const ud = await up.json();
+                if (!up.ok) { showToast(ud.error || 'فشل رفع الملف', 'error'); btn.disabled = false; btn.textContent = 'إرسال للمدرب'; return; }
+                attachment = ud.url;
+            }
+
             const res = await authFetch('/api/notes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...currentNote, text, link: link || null })
+                body: JSON.stringify({ ...currentNote, text, link: link || null, attachment })
             });
             const data = await res.json();
             if (res.ok) {
                 document.getElementById('noteText').value = '';
                 document.getElementById('noteLink').value = '';
+                fileEl.value = '';
+                document.getElementById('attachLabel').textContent = 'إرفاق ملف أو صورة (PDF/PNG/JPG)';
                 showToast(data.message);
                 loadNotes();
             } else {
@@ -820,17 +836,23 @@ if (document.getElementById('adminPage')) {
                 </div>
                 <p class="question-text">${q.text}</p>
                 ${q.link ? `<a href="${q.link}" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--primary);word-break:break-all;display:block;margin:4px 0;">🔗 رابط الطالب: ${q.link}</a>` : ''}
-                ${q.reply || q.replyLink ? `
+                ${q.attachment ? `<a href="${q.attachment}" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--primary);display:block;margin:4px 0;">📎 مرفق الطالب: ${q.attachment.split('/').pop()}</a>` : ''}
+                ${q.reply || q.replyLink || q.replyAttachment ? `
                     <div class="existing-reply">
                         <p class="existing-reply-label">ردك على الطالب:</p>
                         ${q.reply ? `<p>${q.reply}</p>` : ''}
                         ${q.replyLink ? `<a href="${q.replyLink}" target="_blank" rel="noopener" style="font-size:.82rem;color:var(--primary);word-break:break-all;">🔗 ${q.replyLink}</a>` : ''}
+                        ${q.replyAttachment ? `<a href="${q.replyAttachment}" target="_blank" rel="noopener" style="font-size:.82rem;color:var(--primary);display:block;margin-top:4px;">📎 ${q.replyAttachment.split('/').pop()}</a>` : ''}
                     </div>
                     <button class="btn-del-q" onclick="editReply(${q.id},'${(q.reply||'').replace(/'/g,"\\'")}','${(q.replyLink||'').replace(/'/g,"\\'")}')">تعديل الرد</button>
                 ` : `
                     <div class="reply-form">
                         <textarea id="reply-${q.id}" placeholder="اكتب ردك على الطالب هنا..."></textarea>
                         <input type="url" id="replyLink-${q.id}" placeholder="🔗 رابط (اختياري)" style="padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:.85rem;width:100%;box-sizing:border-box;direction:ltr;text-align:left;margin-top:6px;">
+                        <label style="cursor:pointer;padding:7px 12px;border-radius:8px;border:1px dashed var(--border);font-size:.82rem;color:var(--text-muted);display:block;margin-top:6px;">
+                            📎 <span id="rAttachLabel-${q.id}">إرفاق ملف أو صورة</span>
+                            <input type="file" id="replyFile-${q.id}" accept="image/*,application/pdf" style="display:none" onchange="document.getElementById('rAttachLabel-${q.id}').textContent=this.files[0]?this.files[0].name:'إرفاق ملف أو صورة'">
+                        </label>
                         <button class="btn-reply" onclick="submitReply(${q.id})">إرسال الرد</button>
                     </div>
                 `}
@@ -841,14 +863,26 @@ if (document.getElementById('adminPage')) {
     window.submitReply = async function(id) {
         const textarea  = document.getElementById(`reply-${id}`);
         const linkInput = document.getElementById(`replyLink-${id}`);
+        const fileInput = document.getElementById(`replyFile-${id}`);
         const reply     = textarea?.value.trim();
         const replyLink = linkInput?.value.trim() || null;
-        if (!reply && !replyLink) { showToast('يرجى كتابة الرد أو إضافة رابط', 'error'); return; }
+        let replyAttachment = null;
+
+        if (fileInput?.files[0]) {
+            const fd = new FormData();
+            fd.append('file', fileInput.files[0]);
+            const up = await aFetch('/api/admin/upload-attachment', { method: 'POST', body: fd });
+            const ud = await up.json();
+            if (!up.ok) { showToast(ud.error || 'فشل رفع الملف', 'error'); return; }
+            replyAttachment = ud.url;
+        }
+
+        if (!reply && !replyLink && !replyAttachment) { showToast('يرجى كتابة الرد أو إضافة رابط أو ملف', 'error'); return; }
 
         const res  = await aFetch(`/api/admin/questions/${id}/reply`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reply, replyLink })
+            body: JSON.stringify({ reply, replyLink, replyAttachment })
         });
         const data = await res.json();
         if (res.ok) { showToast(data.message); loadQuestions(); }

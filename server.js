@@ -301,6 +301,45 @@ app.delete('/api/admin/students/:code', adminAuth, (req, res) => {
     res.json({ message: 'تم حذف الطالب' });
 });
 
+// ─── Question attachments upload ──────────────────────────────────────────
+const attachDir = path.join(STORAGE_DIR, 'uploads', 'questions');
+fs.mkdirSync(attachDir, { recursive: true });
+
+const attachStorage = multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, attachDir),
+    filename:    (_req, file,  cb) => cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`)
+});
+const uploadAttach = multer({
+    storage: attachStorage,
+    limits: { fileSize: 50 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+        const ok = ['image/jpeg','image/png','image/gif','image/webp','application/pdf'];
+        ok.includes(file.mimetype) ? cb(null, true) : cb(new Error('يرجى رفع صورة أو PDF فقط'));
+    }
+});
+
+app.post('/api/upload-attachment', auth, (req, res, next) => {
+    uploadAttach.single('file')(req, res, (err) => {
+        if (err) return res.status(400).json({ error: err.message });
+        next();
+    });
+}, (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'لم يتم رفع أي ملف' });
+    res.json({ filename: req.file.filename, url: `/uploads/questions/${req.file.filename}` });
+});
+
+app.post('/api/admin/upload-attachment', adminAuth, (req, res, next) => {
+    uploadAttach.single('file')(req, res, (err) => {
+        if (err) return res.status(400).json({ error: err.message });
+        next();
+    });
+}, (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'لم يتم رفع أي ملف' });
+    res.json({ filename: req.file.filename, url: `/uploads/questions/${req.file.filename}` });
+});
+
+app.use('/uploads/questions', express.static(attachDir));
+
 // ─── Admin: Upload video ───────────────────────────────────────────────────
 const storage = multer.diskStorage({
     destination: (req, _file, cb) => {
@@ -456,10 +495,12 @@ app.post('/api/notes', auth, (req, res) => {
         courseId,
         videoId,
         videoTitle,
-        text:        text.trim(),
-        link:        link?.trim() || null,
-        reply:       null,
-        replyLink:   null,
+        text:            text.trim(),
+        link:            link?.trim() || null,
+        attachment:      req.body.attachment || null,
+        reply:           null,
+        replyLink:       null,
+        replyAttachment: null,
         repliedAt:   null,
         createdAt:   new Date().toISOString()
     };
@@ -484,9 +525,10 @@ app.post('/api/admin/questions/:id/reply', adminAuth, (req, res) => {
     const q    = data.questions.find(q => q.id === parseInt(req.params.id));
     if (!q) return res.status(404).json({ error: 'السؤال غير موجود' });
 
-    q.reply     = reply?.trim() || null;
-    q.replyLink = replyLink?.trim() || null;
-    q.repliedAt = new Date().toISOString();
+    q.reply           = reply?.trim() || null;
+    q.replyLink       = replyLink?.trim() || null;
+    q.replyAttachment = req.body.replyAttachment || null;
+    q.repliedAt       = new Date().toISOString();
     writeJSON('questions.json', data);
     res.json({ message: 'تم إرسال الرد للطالب ✅' });
 });
