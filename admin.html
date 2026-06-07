@@ -86,6 +86,152 @@
         }
         .stat-num  { font-size: 1.6rem; font-weight: 900; color: var(--primary); }
         .stat-lbl  { font-size: .75rem; color: var(--text-muted); margin-top: 2px; }
+
+        /* ── Receipt View Modal ── */
+        #receiptViewModal {
+            display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,.82); z-index:2000;
+            align-items:center; justify-content:center; padding:20px;
+        }
+        #receiptViewModal.open { display:flex; }
+        .rvm-box {
+            background:var(--bg-light); border-radius:20px; padding:24px;
+            max-width:480px; width:100%; max-height:90vh; overflow-y:auto;
+            display:flex; flex-direction:column; gap:14px;
+        }
+        .rvm-actions { display:flex; gap:10px; }
+        .rvm-actions button { flex:1; }
+
+        /* ── Custom Select ── */
+        .cs-wrap { position: relative; }
+        .cs-head {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-main);
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            font-family: 'GraphikArabic', sans-serif;
+            font-size: .93rem;
+        }
+        .cs-wrap.open .cs-head { border-color: var(--primary); }
+        .cs-arrow { color: var(--text-muted); font-size: .75rem; transition: transform .2s; flex-shrink: 0; margin-right: 8px; }
+        .cs-wrap.open .cs-arrow { transform: rotate(180deg); }
+        .cs-list {
+            position: absolute;
+            top: calc(100% + 4px);
+            right: 0; left: 0;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.4);
+            z-index: 9999;
+            overflow: hidden;
+            display: none;
+        }
+        .cs-wrap.open .cs-list { display: block; }
+        .cs-opt {
+            padding: 10px 14px;
+            cursor: pointer;
+            text-align: right;
+            font-family: 'GraphikArabic', sans-serif;
+            font-size: .9rem;
+            transition: background .12s;
+        }
+        .cs-opt:hover { background: var(--bg-main); }
+        .cs-opt.active { color: var(--primary); font-weight: 700; }
+
+        /* ── Receipt ── */
+        .receipt-layout {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 32px;
+            align-items: start;
+        }
+        @media (max-width: 900px) { .receipt-layout { grid-template-columns: 1fr; } }
+
+        .receipt-form-panel { display: flex; flex-direction: column; gap: 14px; }
+        .receipt-form-panel label { font-size:.82rem; color:var(--text-muted); display:block; margin-bottom:4px; }
+        .receipt-form-panel input,
+        .receipt-form-panel select,
+        .receipt-form-panel textarea {
+            width: 100%; box-sizing: border-box;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'GraphikArabic', sans-serif;
+            font-size: .93rem;
+            text-align: right;
+        }
+        .receipt-form-panel textarea { resize: vertical; min-height: 64px; }
+
+        /* The white receipt paper */
+        .receipt-paper {
+            background: #ffffff;
+            color: #1a1a1a;
+            border-radius: 16px;
+            padding: 40px 32px 36px;
+            font-family: 'GraphikArabic', sans-serif;
+            direction: rtl;
+            text-align: right;
+            box-shadow: 0 8px 40px rgba(0,0,0,.35);
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+        .receipt-paper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                -45deg,
+                transparent, transparent 18px,
+                rgba(200,241,53,.04) 18px, rgba(200,241,53,.04) 19px
+            );
+            pointer-events: none;
+        }
+        .receipt-header { text-align: center; margin-bottom: 20px; }
+        .receipt-logo { width: 72px; height: 72px; border-radius: 12px; margin-bottom: 10px; }
+        .receipt-title { font-size: 1.15rem; font-weight: 900; color: #111; margin: 0 0 2px; }
+        .receipt-subtitle { font-size: .78rem; color: #666; margin: 0; letter-spacing: .5px; }
+
+        .receipt-divider { height: 1px; background: #e5e7eb; margin: 16px 0; }
+        .receipt-dashed  { border: none; border-top: 2px dashed #d1d5db; margin: 16px 0; }
+
+        .receipt-meta { display: flex; justify-content: space-between; gap: 12px; }
+        .receipt-meta-item { text-align: center; }
+        .meta-label { display: block; font-size: .7rem; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: .6px; }
+        .meta-value { display: block; font-size: .95rem; font-weight: 800; color: #111; }
+
+        .receipt-row { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px dotted #e5e7eb; gap: 12px; }
+        .receipt-row:last-child { border-bottom: none; }
+        .r-label { font-size: .8rem; color: #6b7280; white-space: nowrap; }
+        .r-value { font-size: .92rem; font-weight: 700; color: #111; text-align: left; word-break: break-word; }
+        .receipt-row.highlight { background: #f0fdf4; border-radius: 8px; padding: 10px 12px; margin: 4px -4px; border: none; }
+        .receipt-row.highlight .r-value { font-size: 1.1rem; color: #166534; }
+
+        .receipt-footer { text-align: center; margin-top: 16px; font-size: .78rem; color: #6b7280; }
+        .receipt-stamp {
+            display: inline-block;
+            border: 2px solid #16a34a;
+            color: #16a34a;
+            border-radius: 50%;
+            width: 70px; height: 70px;
+            line-height: 66px;
+            font-size: .65rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 8px;
+            transform: rotate(-15deg);
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body id="adminPage">
@@ -113,6 +259,17 @@
             <div class="modal-actions">
                 <button class="btn-primary" onclick="saveEditCourses()">حفظ التعديل</button>
                 <button class="btn-secondary" onclick="closeEditModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Receipt View Modal ─────────────────────── -->
+    <div id="receiptViewModal">
+        <div class="rvm-box">
+            <div id="receiptViewContent"></div>
+            <div class="rvm-actions">
+                <button class="btn-primary" onclick="downloadFromView()">⬇️ تحميل كصورة</button>
+                <button class="btn-secondary" onclick="document.getElementById('receiptViewModal').classList.remove('open')">إغلاق</button>
             </div>
         </div>
     </div>
@@ -179,8 +336,11 @@
             <div class="admin-tabs">
                 <button class="admin-tab active" onclick="showTab('students', this)">👥 الطلاب</button>
                 <button class="admin-tab" onclick="showTab('questions', this)">📩 أسئلة الطلاب <span id="qBadge" class="q-badge" style="display:none"></span></button>
+                <button class="admin-tab" onclick="showTab('registrations', this)">📋 طلبات التسجيل</button>
                 <button class="admin-tab" onclick="showTab('upload', this)">📤 رفع فيديو</button>
                 <button class="admin-tab" onclick="showTab('videos', this)">🎬 إدارة الفيديوهات</button>
+                <button class="admin-tab" onclick="showTab('receipt', this)">🧾 إصدار وصل</button>
+                <button class="admin-tab" onclick="showTab('receipts-archive', this)">🗂️ أرشيف الوصولات</button>
             </div>
 
             <!-- ── Students Tab ─────────────────────── -->
@@ -243,6 +403,14 @@
             </div>
 
             <!-- ── Upload Tab ───────────────────────── -->
+            <!-- ── Registrations Tab ─────────────────── -->
+            <div id="tab-registrations" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>📋 طلبات التسجيل في الكورسات</h3>
+                    <div id="registrationsList"></div>
+                </div>
+            </div>
+
             <div id="tab-upload" class="admin-tab-content" style="display:none">
                 <div class="admin-section">
                     <h3>📤 رفع فيديو جديد</h3>
@@ -299,8 +467,731 @@
             </div>
 
         </div>
+
+            <!-- ── Receipt Tab ────────────────────── -->
+            <div id="tab-receipt" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>🧾 إصدار وصل قبض إلكتروني</h3>
+
+                    <!-- Receipt type switcher -->
+                    <div style="display:flex;gap:8px;margin-bottom:24px;">
+                        <button id="rtype-sub" onclick="switchReceiptType('sub')" class="btn-primary" style="padding:8px 20px;border-radius:8px;font-family:inherit;font-size:.88rem;border:none;cursor:pointer;">🎓 وصل اشتراك كورس</button>
+                        <button id="rtype-client" onclick="switchReceiptType('client')" style="padding:8px 20px;border-radius:8px;font-family:inherit;font-size:.88rem;border:1px solid var(--border-color);background:transparent;color:var(--text-muted);cursor:pointer;">🎨 وصل عميل خدمات</button>
+                    </div>
+                    <div class="receipt-layout">
+
+                        <!-- Form -->
+                        <div class="receipt-form-panel">
+                            <div>
+                                <label>اسم المشترك الثلاثي</label>
+                                <input type="text" id="rv-input-name" placeholder="مثال: أحمد محمد علي" oninput="updateReceiptPreview()">
+                            </div>
+                            <div>
+                                <label>الكورس</label>
+                                <div class="cs-wrap" id="cs-course">
+                                    <div class="cs-head" onclick="csToggle('cs-course')">
+                                        <span class="cs-text">اختر الكورس</span>
+                                        <span class="cs-arrow">▾</span>
+                                    </div>
+                                    <div class="cs-list">
+                                        <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">الكورس الشامل في الجرافيك</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">تصميم السوشيال ميديا</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">الهوية البصرية والبراند</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">Adobe InDesign</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">الكورس المسجل (مقاطع)</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">كورس بغداد الحضوري ١</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">⭐ جميع الكورسات</div>
+                                    </div>
+                                    <input type="hidden" id="rv-input-course" value="">
+                                </div>
+                            </div>
+                            <div>
+                                <label>نوع الكورس</label>
+                                <div class="cs-wrap" id="cs-type">
+                                    <div class="cs-head" onclick="csToggle('cs-type')">
+                                        <span class="cs-text">أونلاين تفاعلي</span>
+                                        <span class="cs-arrow">▾</span>
+                                    </div>
+                                    <div class="cs-list">
+                                        <div class="cs-opt active" onclick="csSelect('cs-type','rv-input-type','updateReceiptPreview')">أونلاين تفاعلي</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-type','rv-input-type','updateReceiptPreview')">حضوري</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-type','rv-input-type','updateReceiptPreview')">مسجل</div>
+                                    </div>
+                                    <input type="hidden" id="rv-input-type" value="أونلاين تفاعلي">
+                                </div>
+                            </div>
+                            <div>
+                                <label>تاريخ الاشتراك</label>
+                                <input type="date" id="rv-input-subdate" onchange="updateReceiptPreview()" style="font-family:inherit;">
+                            </div>
+                            <div>
+                                <label>المبلغ الكلي (دينار عراقي)</label>
+                                <input type="number" id="rv-input-amount" placeholder="مثال: 150000" min="0" step="500" oninput="updateReceiptPreview()">
+                            </div>
+                            <div>
+                                <label>المبلغ الواصل (دينار عراقي)</label>
+                                <input type="number" id="rv-input-paid" placeholder="مثال: 75000" min="0" step="500" oninput="updateReceiptPreview()">
+                            </div>
+                            <div>
+                                <label>طريقة الدفع</label>
+                                <div class="cs-wrap" id="cs-method">
+                                    <div class="cs-head" onclick="csToggle('cs-method')">
+                                        <span class="cs-text">تحويل بنكي</span>
+                                        <span class="cs-arrow">▾</span>
+                                    </div>
+                                    <div class="cs-list">
+                                        <div class="cs-opt active" onclick="csSelect('cs-method','rv-input-method','updateReceiptPreview')">تحويل بنكي</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-method','rv-input-method','updateReceiptPreview')">زين كاش</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-method','rv-input-method','updateReceiptPreview')">آسيا حوالة</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-method','rv-input-method','updateReceiptPreview')">ماستر كي</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-method','rv-input-method','updateReceiptPreview')">سوبر كي</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-method','rv-input-method','updateReceiptPreview')">نقداً</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-method','rv-input-method','updateReceiptPreview')">واتساب باي</div>
+                                    </div>
+                                    <input type="hidden" id="rv-input-method" value="تحويل بنكي">
+                                </div>
+                            </div>
+                            <div>
+                                <label>ملاحظات (اختياري)</label>
+                                <textarea id="rv-input-notes" placeholder="أي ملاحظات إضافية..." oninput="updateReceiptPreview()"></textarea>
+                            </div>
+                            <button class="btn-primary" onclick="downloadReceipt()" style="margin-top:4px">
+                                ⬇️ تحميل الوصل كصورة
+                            </button>
+                            <button class="btn-secondary" onclick="newReceipt()" style="margin-top:-4px">
+                                🔄 مسح وتجهيز وصل جديد
+                            </button>
+                        </div>
+
+                        <!-- Receipt Preview -->
+                        <div>
+                            <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:10px;text-align:center;">معاينة الوصل</p>
+                            <div id="receiptCanvas" style="width:400px;max-width:100%;">
+                                <div class="receipt-paper">
+                                    <div class="receipt-header">
+                                        <img src="logo.svg" class="receipt-logo" alt="شعار">
+                                        <h1 class="receipt-title">منصة علي عباس الالكترونية</h1>
+                                        <p class="receipt-subtitle">وصل قبض إلكتروني</p>
+                                        <p class="receipt-subtitle" style="direction:ltr;font-size:.7rem;opacity:.6;">Electronic Receipt</p>
+                                    </div>
+
+                                    <div class="receipt-divider"></div>
+
+                                    <div class="receipt-meta">
+                                        <div class="receipt-meta-item">
+                                            <span class="meta-label">رقم الوصل</span>
+                                            <span class="meta-value" id="rv-num">#0001</span>
+                                        </div>
+                                        <div class="receipt-meta-item">
+                                            <span class="meta-label">التاريخ</span>
+                                            <span class="meta-value" id="rv-date">—</span>
+                                        </div>
+                                    </div>
+
+                                    <hr class="receipt-dashed">
+
+                                    <div>
+                                        <div class="receipt-row">
+                                            <span class="r-label">اسم المشترك</span>
+                                            <span class="r-value" id="rv-name">—</span>
+                                        </div>
+                                        <div class="receipt-row">
+                                            <span class="r-label">الكورس</span>
+                                            <span class="r-value" id="rv-course">—</span>
+                                        </div>
+                                        <div class="receipt-row">
+                                            <span class="r-label">نوع الكورس</span>
+                                            <span class="r-value" id="rv-type">أونلاين تفاعلي</span>
+                                        </div>
+                                        <div class="receipt-row">
+                                            <span class="r-label">تاريخ الاشتراك</span>
+                                            <span class="r-value" id="rv-subdate">—</span>
+                                        </div>
+                                        <div class="receipt-row highlight">
+                                            <span class="r-label">المبلغ الكلي</span>
+                                            <span class="r-value" id="rv-amount">—</span>
+                                        </div>
+                                        <div class="receipt-row">
+                                            <span class="r-label">المبلغ الواصل</span>
+                                            <span class="r-value" id="rv-paid" style="color:#16a34a;">—</span>
+                                        </div>
+                                        <div class="receipt-row">
+                                            <span class="r-label">المبلغ الباقي</span>
+                                            <span class="r-value" id="rv-remaining" style="color:#dc2626;">—</span>
+                                        </div>
+                                        <div class="receipt-row">
+                                            <span class="r-label">طريقة الدفع</span>
+                                            <span class="r-value" id="rv-method">تحويل بنكي</span>
+                                        </div>
+                                        <div class="receipt-row" id="rv-notes-row" style="display:none">
+                                            <span class="r-label">ملاحظات</span>
+                                            <span class="r-value" id="rv-notes">—</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="receipt-divider"></div>
+
+                                    <div class="receipt-footer">
+                                        <div class="receipt-stamp">مدفوع</div>
+                                        <p style="margin:8px 0 0;font-size:.8rem;color:#374151;">
+                                            ✅ تم استلام المبلغ بنجاح<br>
+                                            شكراً لاشتراككم في منصة علي عباس
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- end receipt-layout sub -->
+
+                    <!-- ══ Client Receipt ══ -->
+                    <div id="receipt-client-panel" style="display:none">
+                        <div class="receipt-layout">
+
+                            <!-- Client Form -->
+                            <div class="receipt-form-panel">
+                                <div>
+                                    <label>اسم العميل الثلاثي</label>
+                                    <input type="text" id="rc-input-name" placeholder="مثال: محمد علي أحمد" oninput="updateClientPreview()">
+                                </div>
+                                <div>
+                                    <label>يوزر العميل</label>
+                                    <input type="text" id="rc-input-user" placeholder="مثال: @username" oninput="updateClientPreview()">
+                                </div>
+                                <div>
+                                    <label>تفاصيل العمل</label>
+                                    <textarea id="rc-input-details" rows="4" placeholder="مثال: تصميم هوية بصرية كاملة تشمل لوغو + بطاقة عمل..." oninput="updateClientPreview()"></textarea>
+                                </div>
+                                <div>
+                                    <label>الحساب الإجمالي (دينار عراقي)</label>
+                                    <input type="number" id="rc-input-amount" placeholder="مثال: 250000" min="0" step="500" oninput="updateClientPreview()">
+                                </div>
+                                <div>
+                                    <label>المبلغ الواصل (دينار عراقي)</label>
+                                    <input type="number" id="rc-input-paid" placeholder="مثال: 125000" min="0" step="500" oninput="updateClientPreview()">
+                                </div>
+                                <div>
+                                    <label>طريقة الدفع</label>
+                                    <div class="cs-wrap" id="cs-rc-method">
+                                        <div class="cs-head" onclick="csToggle('cs-rc-method')">
+                                            <span class="cs-text">تحويل بنكي</span>
+                                            <span class="cs-arrow">▾</span>
+                                        </div>
+                                        <div class="cs-list">
+                                            <div class="cs-opt active" onclick="csSelect('cs-rc-method','rc-input-method','updateClientPreview')">تحويل بنكي</div>
+                                            <div class="cs-opt" onclick="csSelect('cs-rc-method','rc-input-method','updateClientPreview')">زين كاش</div>
+                                            <div class="cs-opt" onclick="csSelect('cs-rc-method','rc-input-method','updateClientPreview')">آسيا حوالة</div>
+                                            <div class="cs-opt" onclick="csSelect('cs-rc-method','rc-input-method','updateClientPreview')">ماستر كي</div>
+                                            <div class="cs-opt" onclick="csSelect('cs-rc-method','rc-input-method','updateClientPreview')">سوبر كي</div>
+                                            <div class="cs-opt" onclick="csSelect('cs-rc-method','rc-input-method','updateClientPreview')">نقداً</div>
+                                            <div class="cs-opt" onclick="csSelect('cs-rc-method','rc-input-method','updateClientPreview')">واتساب باي</div>
+                                        </div>
+                                        <input type="hidden" id="rc-input-method" value="تحويل بنكي">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>تاريخ الاتفاق</label>
+                                    <input type="date" id="rc-input-agree" onchange="updateClientPreview()" style="font-family:inherit;">
+                                </div>
+                                <div>
+                                    <label>تاريخ التسليم المتفق عليه</label>
+                                    <input type="date" id="rc-input-delivery" onchange="updateClientPreview()" style="font-family:inherit;">
+                                </div>
+                                <div>
+                                    <label>ملاحظات (اختياري)</label>
+                                    <textarea id="rc-input-notes" rows="2" placeholder="أي ملاحظات أو شروط إضافية..." oninput="updateClientPreview()"></textarea>
+                                </div>
+                                <button class="btn-primary" onclick="downloadClientReceipt()" style="margin-top:4px">⬇️ تحميل الوصل كصورة</button>
+                                <button class="btn-secondary" onclick="newClientReceipt()" style="margin-top:-4px">🔄 وصل جديد</button>
+                            </div>
+
+                            <!-- Client Receipt Preview -->
+                            <div>
+                                <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:10px;text-align:center;">معاينة الوصل</p>
+                                <div id="clientReceiptCanvas" style="width:400px;max-width:100%;">
+                                    <div class="receipt-paper">
+                                        <div class="receipt-header">
+                                            <img src="logo.svg" class="receipt-logo" alt="شعار">
+                                            <h1 class="receipt-title">علي عباس — للتصميم</h1>
+                                            <p class="receipt-subtitle">وصل خدمات تصميم</p>
+                                        </div>
+
+                                        <div class="receipt-divider"></div>
+
+                                        <div class="receipt-meta">
+                                            <div class="receipt-meta-item">
+                                                <span class="meta-label">رقم الوصل</span>
+                                                <span class="meta-value" id="rc-num">#C001</span>
+                                            </div>
+                                            <div class="receipt-meta-item">
+                                                <span class="meta-label">التاريخ</span>
+                                                <span class="meta-value" id="rc-date">—</span>
+                                            </div>
+                                        </div>
+
+                                        <hr class="receipt-dashed">
+
+                                        <div>
+                                            <div class="receipt-row">
+                                                <span class="r-label">اسم العميل</span>
+                                                <span class="r-value" id="rc-name">—</span>
+                                            </div>
+                                            <div class="receipt-row">
+                                                <span class="r-label">يوزر العميل</span>
+                                                <span class="r-value" id="rc-user" style="direction:ltr;text-align:left;">—</span>
+                                            </div>
+                                        </div>
+
+                                        <hr class="receipt-dashed">
+
+                                        <div style="margin:12px 0;">
+                                            <p style="font-size:.72rem;color:#9ca3af;margin:0 0 6px;">تفاصيل العمل</p>
+                                            <p id="rc-details" style="font-size:.88rem;color:#111;line-height:1.6;margin:0;white-space:pre-wrap;">—</p>
+                                        </div>
+
+                                        <hr class="receipt-dashed">
+
+                                        <div>
+                                            <div class="receipt-row highlight">
+                                                <span class="r-label">الحساب الإجمالي</span>
+                                                <span class="r-value" id="rc-amount">—</span>
+                                            </div>
+                                            <div class="receipt-row">
+                                                <span class="r-label">المبلغ الواصل</span>
+                                                <span class="r-value" id="rc-paid" style="color:#16a34a;">—</span>
+                                            </div>
+                                            <div class="receipt-row">
+                                                <span class="r-label">المبلغ الباقي</span>
+                                                <span class="r-value" id="rc-remaining" style="color:#dc2626;">—</span>
+                                            </div>
+                                            <div class="receipt-row">
+                                                <span class="r-label">طريقة الدفع</span>
+                                                <span class="r-value" id="rc-method">تحويل بنكي</span>
+                                            </div>
+                                            <div class="receipt-row">
+                                                <span class="r-label">تاريخ الاتفاق</span>
+                                                <span class="r-value" id="rc-agree">—</span>
+                                            </div>
+                                            <div class="receipt-row">
+                                                <span class="r-label">تاريخ التسليم</span>
+                                                <span class="r-value" id="rc-delivery">—</span>
+                                            </div>
+                                            <div class="receipt-row" id="rc-notes-row" style="display:none">
+                                                <span class="r-label">ملاحظات</span>
+                                                <span class="r-value" id="rc-notes">—</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="receipt-divider"></div>
+
+                                        <div class="receipt-footer">
+                                            <p style="margin:0;font-size:.78rem;color:#374151;">
+                                                شكراً لثقتكم — سيتم التنفيذ بأعلى مستوى ✨
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div><!-- end client panel -->
+
+                </div>
+            </div>
+
+            <!-- ── Receipts Archive Tab ───────────────── -->
+            <div id="tab-receipts-archive" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>🗂️ أرشيف الوصولات</h3>
+                    <div id="receiptsArchiveList"><p class="empty-table">جاري التحميل...</p></div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
+    <script src="https://unpkg.com/html-to-image@1.11.11/dist/html-to-image.js"></script>
+    <script>
+        /* ── Custom Select ── */
+        function csToggle(wrapId) {
+            const wrap = document.getElementById(wrapId);
+            const isOpen = wrap.classList.contains('open');
+            document.querySelectorAll('.cs-wrap.open').forEach(w => w.classList.remove('open'));
+            if (!isOpen) wrap.classList.add('open');
+        }
+        function csSelect(wrapId, inputId, onChangeFn) {
+            const wrap = document.getElementById(wrapId);
+            const opt  = event.currentTarget;
+            const val  = opt.textContent.trim();
+            wrap.querySelector('.cs-text').textContent = val;
+            wrap.querySelectorAll('.cs-opt').forEach(o => o.classList.toggle('active', o === opt));
+            document.getElementById(inputId).value = val;
+            wrap.classList.remove('open');
+            if (onChangeFn && window[onChangeFn]) window[onChangeFn]();
+        }
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.cs-wrap'))
+                document.querySelectorAll('.cs-wrap.open').forEach(w => w.classList.remove('open'));
+        });
+
+        /* ── Receipt ── */
+        function getReceiptNum() {
+            return parseInt(localStorage.getItem('receiptNum') || '0') || 0;
+        }
+        function initReceiptNum() {
+            const n = getReceiptNum();
+            document.getElementById('rv-num').textContent = '#' + String(n + 1).padStart(4, '0');
+        }
+        function newReceipt() {
+            ['rv-input-name','rv-input-amount','rv-input-notes'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            // reset custom selects
+            const sdEl = document.getElementById('rv-input-subdate'); if (sdEl) sdEl.value = '';
+            const pdEl = document.getElementById('rv-input-paid');    if (pdEl) pdEl.value = '';
+            const courseWrap = document.getElementById('cs-course');
+            if (courseWrap) { courseWrap.querySelector('.cs-text').textContent = 'اختر الكورس'; courseWrap.querySelectorAll('.cs-opt').forEach(o => o.classList.remove('active')); document.getElementById('rv-input-course').value = ''; }
+            const typeWrap = document.getElementById('cs-type');
+            if (typeWrap)   { typeWrap.querySelector('.cs-text').textContent = 'أونلاين تفاعلي'; typeWrap.querySelectorAll('.cs-opt').forEach((o,i) => o.classList.toggle('active', i===0)); document.getElementById('rv-input-type').value = 'أونلاين تفاعلي'; }
+            const methodWrap = document.getElementById('cs-method');
+            if (methodWrap) { methodWrap.querySelector('.cs-text').textContent = 'تحويل بنكي'; methodWrap.querySelectorAll('.cs-opt').forEach((o,i) => o.classList.toggle('active', i===0)); document.getElementById('rv-input-method').value = 'تحويل بنكي'; }
+            updateReceiptPreview();
+            showToast('جاهز لوصل جديد');
+        }
+        function updateReceiptPreview() {
+            const name     = document.getElementById('rv-input-name').value.trim()   || '—';
+            const course   = document.getElementById('rv-input-course').value         || '—';
+            const type     = document.getElementById('rv-input-type').value           || '—';
+            const rawTotal = parseFloat(document.getElementById('rv-input-amount').value);
+            const rawPaid  = parseFloat(document.getElementById('rv-input-paid').value);
+            const method   = document.getElementById('rv-input-method').value         || '—';
+            const subdate  = document.getElementById('rv-input-subdate').value;
+            const notes    = document.getElementById('rv-input-notes').value.trim();
+            const today    = new Date().toLocaleDateString('ar-IQ', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+            const dateFmt  = v => v ? new Date(v + 'T12:00:00').toLocaleDateString('ar-IQ', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) : '—';
+
+            const amount    = isNaN(rawTotal) ? '—' : rawTotal.toLocaleString('ar-IQ') + ' د.ع';
+            const paid      = isNaN(rawPaid)  ? '—' : rawPaid.toLocaleString('ar-IQ')  + ' د.ع';
+            const remaining = (!isNaN(rawTotal) && !isNaN(rawPaid))
+                ? (rawTotal - rawPaid).toLocaleString('ar-IQ') + ' د.ع' : '—';
+
+            document.getElementById('rv-date').textContent      = today;
+            document.getElementById('rv-name').textContent      = name;
+            document.getElementById('rv-course').textContent    = course;
+            document.getElementById('rv-type').textContent      = type;
+            document.getElementById('rv-subdate').textContent   = dateFmt(subdate);
+            document.getElementById('rv-amount').textContent    = amount;
+            document.getElementById('rv-paid').textContent      = paid;
+            document.getElementById('rv-remaining').textContent = remaining;
+            document.getElementById('rv-method').textContent    = method;
+
+            const notesRow = document.getElementById('rv-notes-row');
+            if (notes) {
+                document.getElementById('rv-notes').textContent = notes;
+                notesRow.style.display = 'flex';
+            } else {
+                notesRow.style.display = 'none';
+            }
+        }
+        async function downloadReceipt() {
+            const name = document.getElementById('rv-input-name').value.trim();
+            if (!name) { showToast('يرجى إدخال اسم المشترك أولاً', 'error'); return; }
+
+            const num = getReceiptNum() + 1;
+            localStorage.setItem('receiptNum', num);
+            document.getElementById('rv-num').textContent = '#' + String(num).padStart(4, '0');
+
+            // Save to server archive
+            aFetch('/api/admin/receipts', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+                receiptType: 'subscription',
+                num: '#' + String(num).padStart(4,'0'),
+                name,
+                course:   document.getElementById('rv-input-course').value,
+                type:     document.getElementById('rv-input-type').value,
+                subdate:  document.getElementById('rv-input-subdate').value,
+                amount:   document.getElementById('rv-input-amount').value,
+                paid:     document.getElementById('rv-input-paid').value,
+                method:   document.getElementById('rv-input-method').value,
+                notes:    document.getElementById('rv-input-notes').value.trim(),
+                date:    new Date().toISOString()
+            })});
+
+            const el = document.getElementById('receiptCanvas');
+            /* render twice — first pass warms up font embedding in foreignObject */
+            await htmlToImage.toPng(el, { pixelRatio: 2, cacheBust: true });
+            const dataUrl = await htmlToImage.toPng(el, { pixelRatio: 2, cacheBust: true });
+
+            const link = document.createElement('a');
+            link.download = `وصل-${String(num).padStart(4,'0')}-${name}.png`;
+            link.href = dataUrl;
+            link.click();
+
+            document.getElementById('rv-num').textContent = '#' + String(num + 1).padStart(4, '0');
+            showToast('تم تحميل الوصل #' + String(num).padStart(4, '0') + ' ✅');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.getElementById('rv-num')) {
+                updateReceiptPreview();
+                initReceiptNum();
+            }
+            if (document.getElementById('rc-num')) {
+                const n = parseInt(localStorage.getItem('clientReceiptNum') || '0') || 0;
+                document.getElementById('rc-num').textContent = '#C' + String(n + 1).padStart(3, '0');
+                updateClientPreview();
+            }
+        });
+
+        /* ── Receipt type switcher ── */
+        function switchReceiptType(type) {
+            const subPanel    = document.querySelector('.receipt-layout');
+            const clientPanel = document.getElementById('receipt-client-panel');
+            const btnSub      = document.getElementById('rtype-sub');
+            const btnClient   = document.getElementById('rtype-client');
+            if (type === 'sub') {
+                subPanel.style.display    = '';
+                clientPanel.style.display = 'none';
+                btnSub.className    = 'btn-primary';
+                btnSub.style.cssText    = 'padding:8px 20px;border-radius:8px;font-family:inherit;font-size:.88rem;border:none;cursor:pointer;';
+                btnClient.style.cssText = 'padding:8px 20px;border-radius:8px;font-family:inherit;font-size:.88rem;border:1px solid var(--border-color);background:transparent;color:var(--text-muted);cursor:pointer;';
+            } else {
+                subPanel.style.display    = 'none';
+                clientPanel.style.display = '';
+                btnClient.style.cssText = 'padding:8px 20px;border-radius:8px;font-family:inherit;font-size:.88rem;border:none;cursor:pointer;background:var(--primary);color:#000;font-weight:700;';
+                btnSub.style.cssText    = 'padding:8px 20px;border-radius:8px;font-family:inherit;font-size:.88rem;border:1px solid var(--border-color);background:transparent;color:var(--text-muted);cursor:pointer;';
+                updateClientPreview();
+            }
+        }
+
+        /* ── Client Receipt ── */
+        function updateClientPreview() {
+            const name      = document.getElementById('rc-input-name').value.trim()    || '—';
+            const user      = document.getElementById('rc-input-user').value.trim()    || '—';
+            const details   = document.getElementById('rc-input-details').value.trim() || '—';
+            const rawTotal  = parseFloat(document.getElementById('rc-input-amount').value);
+            const rawPaid   = parseFloat(document.getElementById('rc-input-paid').value);
+            const method    = document.getElementById('rc-input-method').value         || '—';
+            const agree     = document.getElementById('rc-input-agree').value;
+            const delivery  = document.getElementById('rc-input-delivery').value;
+            const notes     = document.getElementById('rc-input-notes').value.trim();
+            const today     = new Date().toLocaleDateString('ar-IQ', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+            const dateFmt   = v => v ? new Date(v + 'T12:00:00').toLocaleDateString('ar-IQ', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) : '—';
+
+            const amount    = isNaN(rawTotal) ? '—' : rawTotal.toLocaleString('ar-IQ') + ' د.ع';
+            const paid      = isNaN(rawPaid)  ? '—' : rawPaid.toLocaleString('ar-IQ')  + ' د.ع';
+            const remaining = (!isNaN(rawTotal) && !isNaN(rawPaid))
+                ? (rawTotal - rawPaid).toLocaleString('ar-IQ') + ' د.ع'
+                : '—';
+
+            document.getElementById('rc-date').textContent      = today;
+            document.getElementById('rc-name').textContent      = name;
+            document.getElementById('rc-user').textContent      = user;
+            document.getElementById('rc-details').textContent   = details;
+            document.getElementById('rc-amount').textContent    = amount;
+            document.getElementById('rc-paid').textContent      = paid;
+            document.getElementById('rc-remaining').textContent = remaining;
+            document.getElementById('rc-method').textContent    = method;
+            document.getElementById('rc-agree').textContent     = dateFmt(agree);
+            document.getElementById('rc-delivery').textContent  = dateFmt(delivery);
+
+            const notesRow = document.getElementById('rc-notes-row');
+            if (notes) {
+                document.getElementById('rc-notes').textContent = notes;
+                notesRow.style.display = 'flex';
+            } else {
+                notesRow.style.display = 'none';
+            }
+        }
+
+        async function downloadClientReceipt() {
+            const name = document.getElementById('rc-input-name').value.trim();
+            if (!name) { showToast('يرجى إدخال اسم العميل أولاً', 'error'); return; }
+
+            const num = (parseInt(localStorage.getItem('clientReceiptNum') || '0') || 0) + 1;
+            localStorage.setItem('clientReceiptNum', num);
+            document.getElementById('rc-num').textContent = '#C' + String(num).padStart(3, '0');
+
+            // Save to server archive
+            aFetch('/api/admin/receipts', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+                receiptType: 'client',
+                num: '#C' + String(num).padStart(3,'0'),
+                name,
+                user:     document.getElementById('rc-input-user').value.trim(),
+                details:  document.getElementById('rc-input-details').value.trim(),
+                amount:   document.getElementById('rc-input-amount').value,
+                paid:     document.getElementById('rc-input-paid').value,
+                method:   document.getElementById('rc-input-method').value,
+                agreeDate:    document.getElementById('rc-input-agree').value,
+                deliveryDate: document.getElementById('rc-input-delivery').value,
+                notes:    document.getElementById('rc-input-notes').value.trim(),
+                date:     new Date().toISOString()
+            })});
+
+            const el = document.getElementById('clientReceiptCanvas');
+            await htmlToImage.toPng(el, { pixelRatio: 2, cacheBust: true });
+            const dataUrl = await htmlToImage.toPng(el, { pixelRatio: 2, cacheBust: true });
+
+            const link = document.createElement('a');
+            link.download = `وصل-عميل-C${String(num).padStart(3,'0')}-${name}.png`;
+            link.href = dataUrl;
+            link.click();
+
+            document.getElementById('rc-num').textContent = '#C' + String(num + 1).padStart(3, '0');
+            showToast('تم تحميل وصل العميل #C' + String(num).padStart(3, '0') + ' ✅');
+        }
+
+        async function loadReceiptsArchive() {
+            const container = document.getElementById('receiptsArchiveList');
+            container.innerHTML = '<p style="color:var(--text-muted)">جاري التحميل...</p>';
+            const res  = await aFetch('/api/admin/receipts');
+            const data = await res.json();
+            const list = data.receipts || [];
+            window._receiptsMap = {};
+            list.forEach(r => { window._receiptsMap[r.id] = r; });
+            if (!list.length) { container.innerHTML = '<p class="empty-table">لا توجد وصولات محفوظة بعد</p>'; return; }
+
+            const dateFmt = iso => iso ? new Date(iso).toLocaleDateString('ar-IQ',{year:'numeric',month:'short',day:'numeric'}) : '—';
+            const iqd = v => v ? parseFloat(v).toLocaleString('ar-IQ') + ' د.ع' : '—';
+
+            container.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.87rem;">
+                <thead><tr style="border-bottom:2px solid var(--border-color);">
+                    <th style="padding:10px 8px;text-align:right;">رقم</th>
+                    <th style="padding:10px 8px;text-align:right;">النوع</th>
+                    <th style="padding:10px 8px;text-align:right;">الاسم</th>
+                    <th style="padding:10px 8px;text-align:right;">التفاصيل</th>
+                    <th style="padding:10px 8px;text-align:right;">المبلغ</th>
+                    <th style="padding:10px 8px;text-align:right;">التاريخ</th>
+                    <th></th>
+                </tr></thead>
+                <tbody>${list.map(r => `
+                    <tr style="border-bottom:1px solid var(--border-color);">
+                        <td style="padding:10px 8px;font-weight:700;color:var(--primary);">${r.num}</td>
+                        <td style="padding:10px 8px;">
+                            <span style="background:${r.receiptType==='client'?'#1a1a2e':'#0a2200'};color:${r.receiptType==='client'?'#818cf8':'#c8f135'};padding:3px 10px;border-radius:20px;font-size:.78rem;white-space:nowrap;">
+                                ${r.receiptType==='client'?'🎨 عميل':'🎓 اشتراك'}
+                            </span>
+                        </td>
+                        <td style="padding:10px 8px;font-weight:600;">${r.name}</td>
+                        <td style="padding:10px 8px;color:var(--text-muted);font-size:.82rem;">${r.receiptType==='client'?(r.user||''):'<span style="white-space:nowrap">'+(r.course||'')+'</span>'}</td>
+                        <td style="padding:10px 8px;font-weight:700;">${iqd(r.amount)}</td>
+                        <td style="padding:10px 8px;color:var(--text-muted);white-space:nowrap;">${dateFmt(r.savedAt)}</td>
+                        <td style="padding:10px 8px;display:flex;gap:6px;">
+                            <button class="btn-reply" onclick="viewReceipt(${r.id})" style="font-size:.78rem;padding:5px 10px;">عرض</button>
+                            <button class="btn-del-q" onclick="deleteReceipt(${r.id})">حذف</button>
+                        </td>
+                    </tr>`).join('')}
+                </tbody></table>`;
+        }
+
+        window.deleteReceipt = async function(id) {
+            if (!confirm('حذف هذا الوصل من الأرشيف؟')) return;
+            const res = await aFetch(`/api/admin/receipts/${id}`, { method:'DELETE' });
+            if (res.ok) { showToast('تم الحذف'); loadReceiptsArchive(); }
+        };
+
+        window.viewReceipt = function(id) {
+            const r = (window._receiptsMap || {})[id];
+            if (!r) return;
+            const fmtIQD  = v => { const n = parseFloat(v); return isNaN(n) ? '—' : n.toLocaleString('ar-IQ') + ' د.ع'; };
+            const fmtDate = d => d ? new Date(d + (d.length === 10 ? 'T12:00:00' : '')).toLocaleDateString('ar-IQ', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) : '—';
+            const fmtISO  = d => d ? new Date(d).toLocaleDateString('ar-IQ', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) : '—';
+            const rem     = (!isNaN(parseFloat(r.amount)) && !isNaN(parseFloat(r.paid))) ? (parseFloat(r.amount) - parseFloat(r.paid)).toLocaleString('ar-IQ') + ' د.ع' : '—';
+            let html = '';
+            if (r.receiptType === 'subscription') {
+                const notesRow = r.notes ? `<div class="receipt-row" style="display:flex"><span class="r-label">ملاحظات</span><span class="r-value">${r.notes}</span></div>` : '';
+                html = `<div style="width:400px;max-width:100%"><div class="receipt-paper">
+                    <div class="receipt-header">
+                        <img src="logo.svg" class="receipt-logo" alt="شعار">
+                        <h1 class="receipt-title">منصة علي عباس الالكترونية</h1>
+                        <p class="receipt-subtitle">وصل قبض إلكتروني</p>
+                        <p class="receipt-subtitle" style="direction:ltr;font-size:.7rem;opacity:.6;">Electronic Receipt</p>
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-meta">
+                        <div class="receipt-meta-item"><span class="meta-label">رقم الوصل</span><span class="meta-value">${r.num}</span></div>
+                        <div class="receipt-meta-item"><span class="meta-label">التاريخ</span><span class="meta-value">${fmtISO(r.date || r.savedAt)}</span></div>
+                    </div>
+                    <hr class="receipt-dashed">
+                    <div>
+                        <div class="receipt-row"><span class="r-label">اسم المشترك</span><span class="r-value">${r.name}</span></div>
+                        <div class="receipt-row"><span class="r-label">الكورس</span><span class="r-value">${r.course || '—'}</span></div>
+                        <div class="receipt-row"><span class="r-label">نوع الكورس</span><span class="r-value">${r.type || '—'}</span></div>
+                        <div class="receipt-row"><span class="r-label">تاريخ الاشتراك</span><span class="r-value">${fmtDate(r.subdate)}</span></div>
+                        <div class="receipt-row highlight"><span class="r-label">المبلغ الكلي</span><span class="r-value">${fmtIQD(r.amount)}</span></div>
+                        <div class="receipt-row"><span class="r-label">المبلغ الواصل</span><span class="r-value" style="color:#16a34a;">${fmtIQD(r.paid)}</span></div>
+                        <div class="receipt-row"><span class="r-label">المبلغ الباقي</span><span class="r-value" style="color:#dc2626;">${rem}</span></div>
+                        <div class="receipt-row"><span class="r-label">طريقة الدفع</span><span class="r-value">${r.method || '—'}</span></div>
+                        ${notesRow}
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-footer">
+                        <div class="receipt-stamp">مدفوع</div>
+                        <p style="margin:8px 0 0;font-size:.8rem;color:#374151;">✅ تم استلام المبلغ بنجاح<br>شكراً لاشتراككم في منصة علي عباس</p>
+                    </div>
+                </div></div>`;
+            } else {
+                const notesRow = r.notes ? `<div class="receipt-row" style="display:flex"><span class="r-label">ملاحظات</span><span class="r-value">${r.notes}</span></div>` : '';
+                html = `<div style="width:400px;max-width:100%"><div class="receipt-paper">
+                    <div class="receipt-header">
+                        <img src="logo.svg" class="receipt-logo" alt="شعار">
+                        <h1 class="receipt-title">علي عباس — للتصميم</h1>
+                        <p class="receipt-subtitle">وصل خدمات تصميم</p>
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-meta">
+                        <div class="receipt-meta-item"><span class="meta-label">رقم الوصل</span><span class="meta-value">${r.num}</span></div>
+                        <div class="receipt-meta-item"><span class="meta-label">التاريخ</span><span class="meta-value">${fmtISO(r.date || r.savedAt)}</span></div>
+                    </div>
+                    <hr class="receipt-dashed">
+                    <div>
+                        <div class="receipt-row"><span class="r-label">اسم العميل</span><span class="r-value">${r.name}</span></div>
+                        <div class="receipt-row"><span class="r-label">يوزر العميل</span><span class="r-value" style="direction:ltr;text-align:left;">${r.user || '—'}</span></div>
+                    </div>
+                    <hr class="receipt-dashed">
+                    <div style="margin:12px 0;">
+                        <p style="font-size:.72rem;color:#9ca3af;margin:0 0 6px;">تفاصيل العمل</p>
+                        <p style="font-size:.88rem;color:#111;line-height:1.6;margin:0;white-space:pre-wrap;">${r.details || '—'}</p>
+                    </div>
+                    <hr class="receipt-dashed">
+                    <div>
+                        <div class="receipt-row highlight"><span class="r-label">الحساب الإجمالي</span><span class="r-value">${fmtIQD(r.amount)}</span></div>
+                        <div class="receipt-row"><span class="r-label">المبلغ الواصل</span><span class="r-value" style="color:#16a34a;">${fmtIQD(r.paid)}</span></div>
+                        <div class="receipt-row"><span class="r-label">المبلغ الباقي</span><span class="r-value" style="color:#dc2626;">${rem}</span></div>
+                        <div class="receipt-row"><span class="r-label">طريقة الدفع</span><span class="r-value">${r.method || '—'}</span></div>
+                        <div class="receipt-row"><span class="r-label">تاريخ الاتفاق</span><span class="r-value">${fmtDate(r.agreeDate)}</span></div>
+                        <div class="receipt-row"><span class="r-label">تاريخ التسليم</span><span class="r-value">${fmtDate(r.deliveryDate)}</span></div>
+                        ${notesRow}
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-footer">
+                        <p style="margin:0;font-size:.78rem;color:#374151;">شكراً لثقتكم — سيتم التنفيذ بأعلى مستوى ✨</p>
+                    </div>
+                </div></div>`;
+            }
+            document.getElementById('receiptViewContent').innerHTML = html;
+            document.getElementById('receiptViewModal').classList.add('open');
+        };
+
+        async function downloadFromView() {
+            const el = document.getElementById('receiptViewContent');
+            await htmlToImage.toPng(el, { pixelRatio: 2, cacheBust: true });
+            const dataUrl = await htmlToImage.toPng(el, { pixelRatio: 2, cacheBust: true });
+            const link = document.createElement('a');
+            link.download = 'وصل-أرشيف.png';
+            link.href = dataUrl;
+            link.click();
+        }
+
+        function newClientReceipt() {
+            ['rc-input-name','rc-input-user','rc-input-details','rc-input-amount','rc-input-paid','rc-input-agree','rc-input-delivery','rc-input-notes']
+                .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            const mw = document.getElementById('cs-rc-method');
+            if (mw) { mw.querySelector('.cs-text').textContent = 'تحويل بنكي'; mw.querySelectorAll('.cs-opt').forEach((o,i)=>o.classList.toggle('active',i===0)); document.getElementById('rc-input-method').value='تحويل بنكي'; }
+            updateClientPreview();
+            showToast('جاهز لوصل عميل جديد');
+        }
+    </script>
     <script src="platform.js"></script>
 </body>
 </html>

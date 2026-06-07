@@ -140,14 +140,16 @@ if (document.getElementById('platformPage')) {
         }
 
         list.innerHTML = questions.map(q => `
-            <div class="reply-card ${q.reply ? 'has-reply' : ''}">
+            <div class="reply-card ${q.reply || q.replyLink || q.replyAttachment ? 'has-reply' : ''}">
                 <div class="reply-card-video">📹 ${q.videoTitle || 'محاضرة'}</div>
                 <p class="reply-card-question">${q.text}</p>
                 <p class="reply-card-date">${new Date(q.createdAt).toLocaleDateString('ar-IQ', {year:'numeric',month:'long',day:'numeric'})}</p>
-                ${q.reply
+                ${q.reply || q.replyLink || q.replyAttachment
                     ? `<div class="reply-card-answer">
                            <p class="reply-card-answer-label">✅ رد المدرب:</p>
-                           <p>${q.reply}</p>
+                           ${q.reply ? `<p>${q.reply}</p>` : ''}
+                           ${q.replyLink ? `<a href="${q.replyLink}" target="_blank" rel="noopener" style="font-size:.82rem; color:var(--primary); word-break:break-all; display:block; margin-top:4px;">🔗 ${q.replyLink}</a>` : ''}
+                           ${q.replyAttachment ? `<a href="${q.replyAttachment}" target="_blank" rel="noopener" style="font-size:.82rem;color:var(--primary);display:block;margin-top:4px;">📎 ${q.replyAttachment.split('/').pop()}</a>` : ''}
                        </div>`
                     : `<p class="reply-card-pending">⏳ في انتظار رد المدرب</p>`
                 }
@@ -393,7 +395,6 @@ if (document.getElementById('platformPage')) {
         btn.textContent = 'جاري الإرسال...';
 
         try {
-            const link     = document.getElementById('noteLink').value.trim();
             const fileEl   = document.getElementById('noteFile');
             let attachment = null;
 
@@ -409,12 +410,11 @@ if (document.getElementById('platformPage')) {
             const res = await authFetch('/api/notes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...currentNote, text, link: link || null, attachment })
+                body: JSON.stringify({ ...currentNote, text, link: null, attachment })
             });
             const data = await res.json();
             if (res.ok) {
                 document.getElementById('noteText').value = '';
-                document.getElementById('noteLink').value = '';
                 fileEl.value = '';
                 document.getElementById('attachLabel').textContent = 'إرفاق ملف أو صورة (PDF/PNG/JPG)';
                 showToast(data.message);
@@ -495,8 +495,10 @@ if (document.getElementById('adminPage')) {
         document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
         btn.classList.add('active');
         document.getElementById(`tab-${tab}`).style.display = 'block';
-        if (tab === 'questions') loadQuestions();
-        if (tab === 'videos') loadCourseVideos();
+        if (tab === 'questions')        loadQuestions();
+        if (tab === 'videos')           loadCourseVideos();
+        if (tab === 'registrations')    loadRegistrations();
+        if (tab === 'receipts-archive' && typeof loadReceiptsArchive === 'function') loadReceiptsArchive();
     };
 
     window.loadCourseVideos = async function() {
@@ -818,12 +820,16 @@ if (document.getElementById('adminPage')) {
 
     const courseNames = { graphics: 'الجرافيك', social: 'السوشيال ميديا', branding: 'الهوية البصرية', indesign: 'InDesign', all: 'الكل' };
 
+    window._qDataMap = {};
+
     function renderQuestions(questions) {
         const container = document.getElementById('questionsList');
         if (!questions?.length) {
             container.innerHTML = '<p class="empty-table">لا توجد أسئلة أو ملاحظات بعد</p>';
             return;
         }
+
+        questions.forEach(q => { window._qDataMap[q.id] = q; });
 
         container.innerHTML = questions.map(q => `
             <div class="question-card ${q.reply ? 'replied' : ''}" id="qcard-${q.id}">
@@ -844,16 +850,14 @@ if (document.getElementById('adminPage')) {
                         ${q.replyLink ? `<a href="${q.replyLink}" target="_blank" rel="noopener" style="font-size:.82rem;color:var(--primary);word-break:break-all;">🔗 ${q.replyLink}</a>` : ''}
                         ${q.replyAttachment ? `<a href="${q.replyAttachment}" target="_blank" rel="noopener" style="font-size:.82rem;color:var(--primary);display:block;margin-top:4px;">📎 ${q.replyAttachment.split('/').pop()}</a>` : ''}
                     </div>
-                    <button class="btn-del-q" onclick="editReply(${q.id},'${(q.reply||'').replace(/'/g,"\\'")}','${(q.replyLink||'').replace(/'/g,"\\'")}')">تعديل الرد</button>
+                    <button class="btn-del-q" onclick="editReply(${q.id})">تعديل الرد</button>
                 ` : `
                     <div class="reply-form">
                         <textarea id="reply-${q.id}" placeholder="اكتب ردك على الطالب هنا..."></textarea>
-                        <input type="url" id="replyLink-${q.id}" placeholder="🔗 رابط (اختياري)" style="padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:.85rem;width:100%;box-sizing:border-box;direction:ltr;text-align:left;margin-top:6px;">
-                        <label style="cursor:pointer;padding:7px 12px;border-radius:8px;border:1px dashed var(--border);font-size:.82rem;color:var(--text-muted);display:block;margin-top:6px;">
-                            📎 <span id="rAttachLabel-${q.id}">إرفاق ملف أو صورة</span>
-                            <input type="file" id="replyFile-${q.id}" accept="image/*,application/pdf" style="display:none" onchange="document.getElementById('rAttachLabel-${q.id}').textContent=this.files[0]?this.files[0].name:'إرفاق ملف أو صورة'">
-                        </label>
-                        <button class="btn-reply" onclick="submitReply(${q.id})">إرسال الرد</button>
+                        <input type="url" id="replyLink-${q.id}" placeholder="🔗 رابط (اختياري)">
+                        <button type="button" onclick="document.getElementById('replyFile-${q.id}').click()" style="padding:8px 14px;border-radius:8px;border:1px dashed #6b7280;background:transparent;color:#9ca3af;font-size:.85rem;cursor:pointer;font-family:inherit;text-align:right;">📎 <span id="rAttachLabel-${q.id}">إرفاق ملف أو صورة (PDF/PNG/JPG)</span></button>
+                        <input type="file" id="replyFile-${q.id}" accept="image/*,application/pdf" style="position:absolute;opacity:0;width:0;height:0;" onchange="document.getElementById('rAttachLabel-${q.id}').textContent=this.files[0]?this.files[0].name:'إرفاق ملف أو صورة'">
+                        <button class="btn-reply" onclick="submitReply(${q.id})" style="align-self:flex-start">إرسال الرد</button>
                     </div>
                 `}
             </div>
@@ -866,7 +870,8 @@ if (document.getElementById('adminPage')) {
         const fileInput = document.getElementById(`replyFile-${id}`);
         const reply     = textarea?.value.trim();
         const replyLink = linkInput?.value.trim() || null;
-        let replyAttachment = null;
+        const existingAttachment = window._qDataMap[id]?.replyAttachment || null;
+        let replyAttachment = existingAttachment;
 
         if (fileInput?.files[0]) {
             const fd = new FormData();
@@ -889,8 +894,9 @@ if (document.getElementById('adminPage')) {
         else        { showToast(data.error, 'error'); }
     };
 
-    window.editReply = function(id, currentReply, currentReplyLink) {
-        const card = document.getElementById(`qcard-${id}`);
+    window.editReply = function(id) {
+        const qData = window._qDataMap[id] || {};
+        const card  = document.getElementById(`qcard-${id}`);
         const existing = card.querySelector('.existing-reply');
         const editBtn  = card.querySelector('.btn-del-q:last-child');
         if (existing) existing.remove();
@@ -899,17 +905,73 @@ if (document.getElementById('adminPage')) {
         const form = document.createElement('div');
         form.className = 'reply-form';
         form.innerHTML = `
-            <textarea id="reply-${id}">${currentReply}</textarea>
-            <input type="url" id="replyLink-${id}" value="${currentReplyLink || ''}" placeholder="🔗 رابط (اختياري)" style="padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:.85rem;width:100%;box-sizing:border-box;direction:ltr;text-align:left;margin-top:6px;">
-            <button class="btn-reply" onclick="submitReply(${id})">تحديث الرد</button>
+            <textarea id="reply-${id}" placeholder="اكتب ردك على الطالب هنا..."></textarea>
+            <input type="url" id="replyLink-${id}" value="" placeholder="🔗 رابط (اختياري)">
+            <button type="button" onclick="document.getElementById('replyFile-${id}').click()" style="padding:8px 14px;border-radius:8px;border:1px dashed #6b7280;background:transparent;color:#9ca3af;font-size:.85rem;cursor:pointer;font-family:inherit;text-align:right;">📎 <span id="rAttachLabel-${id}">إرفاق ملف أو صورة (PDF/PNG/JPG)</span></button>
+            <input type="file" id="replyFile-${id}" accept="image/*,application/pdf" style="position:absolute;opacity:0;width:0;height:0;" onchange="document.getElementById('rAttachLabel-${id}').textContent=this.files[0]?this.files[0].name:'إرفاق ملف أو صورة (PDF/PNG/JPG)'">
+            <button class="btn-reply" onclick="submitReply(${id})" style="align-self:flex-start">تحديث الرد</button>
         `;
         card.appendChild(form);
+
+        const ta = document.getElementById(`reply-${id}`);
+        const li = document.getElementById(`replyLink-${id}`);
+        if (ta) ta.value = qData.reply || '';
+        if (li) li.value = qData.replyLink || '';
     };
 
     window.deleteQuestion = async function(id) {
         if (!confirm('هل تريد حذف هذا السؤال؟')) return;
         const res = await aFetch(`/api/admin/questions/${id}`, { method: 'DELETE' });
         if (res.ok) { showToast('تم الحذف'); loadQuestions(); }
+    };
+
+    async function loadRegistrations() {
+        const container = document.getElementById('registrationsList');
+        container.innerHTML = '<p style="color:var(--text-muted)">جاري التحميل...</p>';
+        const res  = await aFetch('/api/admin/registrations');
+        const data = await res.json();
+        const list = data.registrations || [];
+        if (!list.length) { container.innerHTML = '<p class="empty-table">لا توجد طلبات بعد</p>'; return; }
+        container.innerHTML = `
+            <table style="width:100%;border-collapse:collapse;font-size:.88rem;">
+                <thead>
+                    <tr style="border-bottom:2px solid var(--border-color);">
+                        <th style="padding:10px 8px;text-align:right;">الاسم</th>
+                        <th style="padding:10px 8px;text-align:right;">الكورس</th>
+                        <th style="padding:10px 8px;text-align:right;">العمر</th>
+                        <th style="padding:10px 8px;text-align:right;">التحصيل</th>
+                        <th style="padding:10px 8px;text-align:right;">الخبرة</th>
+                        <th style="padding:10px 8px;text-align:right;">تيليغرام</th>
+                        <th style="padding:10px 8px;text-align:right;">انستغرام</th>
+                        <th style="padding:10px 8px;text-align:right;">واتساب</th>
+                        <th style="padding:10px 8px;text-align:right;">التاريخ</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${list.map(r => `
+                        <tr style="border-bottom:1px solid var(--border-color);">
+                            <td style="padding:10px 8px;font-weight:600;">${r.fullName}</td>
+                            <td style="padding:10px 8px;"><span style="background:var(--primary-muted,#1a2a00);color:#c8f135;padding:3px 10px;border-radius:20px;font-size:.8rem;white-space:nowrap;">${r.course || '—'}</span></td>
+                            <td style="padding:10px 8px;">${r.age || '—'}</td>
+                            <td style="padding:10px 8px;">${r.education || '—'}</td>
+                            <td style="padding:10px 8px;">${r.experience || '—'}</td>
+                            <td style="padding:10px 8px;direction:ltr;">${r.telegram || '—'}</td>
+                            <td style="padding:10px 8px;direction:ltr;">${r.instagram || '—'}</td>
+                            <td style="padding:10px 8px;direction:ltr;">${r.whatsapp}</td>
+                            <td style="padding:10px 8px;color:var(--text-muted);white-space:nowrap;">${new Date(r.createdAt).toLocaleDateString('ar-IQ',{year:'numeric',month:'short',day:'numeric'})}</td>
+                            <td style="padding:10px 8px;"><button class="btn-del-q" onclick="deleteRegistration(${r.id})">حذف</button></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    window.deleteRegistration = async function(id) {
+        if (!confirm('حذف هذا الطلب؟')) return;
+        const res = await aFetch(`/api/admin/registrations/${id}`, { method: 'DELETE' });
+        if (res.ok) { showToast('تم الحذف'); loadRegistrations(); }
     };
 
 }

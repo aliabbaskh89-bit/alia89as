@@ -1482,6 +1482,9 @@ html[lang="en"] .close-modal {
     }
 }
 
+.mobile-nav-actions { display: none; }
+.d-show-mobile { display: none; }
+
 @media (max-width: 768px) {
     .d-none-mobile {
         display: none;
@@ -1523,6 +1526,16 @@ html[lang="en"] .close-modal {
     .nav-link::after {
         display: none;
     }
+
+    .mobile-nav-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
+        border-bottom: none !important;
+    }
+
+    .d-show-mobile { display: flex; }
 
     .hero-title {
         font-size: 2.5rem;

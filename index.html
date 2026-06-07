@@ -16,7 +16,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS -->
-    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="styles.css?v=8">
 </head>
 
 <body>
@@ -41,6 +41,10 @@
                 <li><a href="#tutorials" class="nav-link">شروحاتي</a></li>
                 <li><a href="#lectures" class="nav-link">محاضراتي</a></li>
                 <li><a href="#portfolio" class="nav-link">أعمالي</a></li>
+                <li class="mobile-nav-actions">
+                    <button onclick="openRegisterModal()" class="btn btn-primary" style="border:none;cursor:pointer;width:100%;">📋 سجّل في كورس</button>
+                    <a href="login.html" class="btn btn-outline" style="display:block;text-align:center;">🎬 منصة الكورسات</a>
+                </li>
             </ul>
 
             <div class="header-controls">
@@ -48,8 +52,8 @@
                     <i class="fa-solid fa-moon"></i>
                 </button>
                 <a href="en.html" class="btn-icon text-bold" aria-label="Switch to English">EN</a>
-                <a href="login.html" class="btn btn-primary d-none-mobile">🎬 منصة الكورسات</a>
-                <a href="#consulting" class="btn btn-outline d-none-mobile">احجز استشارة</a>
+                <a href="#register" onclick="openRegisterModal(); return false;" class="btn btn-primary d-none-mobile" style="border:none;">📋 سجّل في كورس</a>
+                <a href="login.html" class="btn btn-outline d-none-mobile">🎬 منصة الكورسات</a>
             </div>
         </nav>
         <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
@@ -70,9 +74,12 @@
                     وتبني هوية قوية لمشروعك.</h2>
                 <p class="hero-text reveal reveal-up" style="transition-delay: 0.2s;">كورسات، شروحات، وخدمات تصميم
                     احترافية — كل شيء في مكان واحد.</p>
-                <div class="hero-actions">
-                    <a href="#courses" class="btn btn-primary">شاهد الكورسات</a>
-                    <a href="#consulting" class="btn btn-outline">احجز استشارة</a>
+                <div class="hero-actions" style="flex-direction: column; gap: 16px;">
+                    <a href="#register" onclick="openRegisterModal(); return false;" class="btn btn-primary" style="font-size: 1.3rem; padding: 16px 32px; width: 100%; text-align: center; box-shadow: 0 4px 15px rgba(200, 241, 53, 0.3);">📋 استمارة كورس بغداد</a>
+                    <div style="display: flex; gap: 16px; width: 100%;">
+                        <a href="#courses" class="btn btn-outline" style="flex: 1; text-align: center;">شاهد الكورسات</a>
+                        <a href="#consulting" class="btn btn-outline" style="flex: 1; text-align: center;">احجز استشارة</a>
+                    </div>
                 </div>
                 <div class="social-links">
                     <a href="https://www.youtube.com/@AliAbbas-89" target="_blank" rel="noopener"
@@ -696,6 +703,158 @@
 </div>
 
 <script src="script.js?v=6"></script>
+
+<!-- ── Registration Modal ───────────────────────────── -->
+<style>
+.reg-modal-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);overflow-y:auto;padding:30px 16px;}
+.reg-modal-box{background:#0f0f1a;border:1px solid #2a2a3d;border-radius:24px;max-width:560px;width:100%;margin:0 auto;padding:0;position:relative;color:#eee;box-shadow:0 24px 80px rgba(0,0,0,.6);overflow:hidden;}
+.reg-modal-header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:32px 32px 24px;border-bottom:1px solid #1e1e35;}
+.reg-modal-header h2{margin:0 0 6px;font-size:1.5rem;font-weight:800;}
+.reg-modal-header p{margin:0;font-size:.88rem;color:#888;}
+.reg-modal-close{position:absolute;top:16px;left:16px;background:#1e1e35;border:none;width:34px;height:34px;border-radius:50%;font-size:1.1rem;cursor:pointer;color:#aaa;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.reg-modal-close:hover{background:#c8f135;color:#111;}
+.reg-modal-body{padding:28px 32px;}
+.reg-field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.reg-field label{font-size:.82rem;color:#888;font-weight:600;letter-spacing:.3px;}
+.reg-field input,.reg-field select{padding:12px 16px;border-radius:12px;border:1.5px solid #1e1e35;background:#080810;color:#eee;font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s;}
+.reg-field input:focus,.reg-field select:focus{border-color:#c8f135;}
+.reg-field select option{background:#0f0f1a;}
+.reg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.reg-courses{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.reg-course-item{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1.5px solid #1e1e35;background:#080810;cursor:pointer;transition:all .2s;font-size:.88rem;}
+.reg-course-item:has(input:checked){border-color:#c8f135;background:#0f1a00;color:#c8f135;}
+.reg-course-item input{accent-color:#c8f135;}
+.reg-submit{width:100%;padding:15px;border-radius:14px;border:none;background:#c8f135;color:#111;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:8px;transition:opacity .2s;}
+.reg-submit:disabled{opacity:.6;cursor:not-allowed;}
+.reg-divider{height:1px;background:#1e1e35;margin:20px 0;}
+</style>
+
+<div id="registerModal" class="reg-modal-overlay" onclick="if(event.target===this)closeRegisterModal()">
+    <div class="reg-modal-box">
+        <button onclick="closeRegisterModal()" class="reg-modal-close">✕</button>
+
+        <div class="reg-modal-header">
+            <h2>📋 استمارة كورس بغداد</h2>
+            <p>أكمل البيانات وسيتواصل معك المدرب قريباً</p>
+        </div>
+
+        <div class="reg-modal-body">
+        <form id="registerForm" onsubmit="submitRegister(event)">
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label>الاسم الثلاثي *</label>
+                    <input name="fullName" required placeholder="علي محمد حسين">
+                </div>
+                <div class="reg-field">
+                    <label>العمر</label>
+                    <input name="age" type="number" min="10" max="80" placeholder="25">
+                </div>
+            </div>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label>التحصيل الدراسي</label>
+                    <select name="education">
+                        <option value="">-- اختر --</option>
+                        <option>ابتدائي</option>
+                        <option>متوسط</option>
+                        <option>إعدادي</option>
+                        <option>بكالوريوس</option>
+                        <option>ماجستير</option>
+                        <option>دكتوراه</option>
+                    </select>
+                </div>
+                <div class="reg-field">
+                    <label>الخبرة في المجال</label>
+                    <select name="experience">
+                        <option value="">-- اختر --</option>
+                        <option>مبتدئ (لا خبرة)</option>
+                        <option>مبتدئ (أساسيات)</option>
+                        <option>متوسط</option>
+                        <option>متقدم</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label>رقم الواتساب *</label>
+                    <input name="whatsapp" required placeholder="07801234567" dir="ltr">
+                </div>
+                <div class="reg-field">
+                    <label>يوزر الانستا *</label>
+                    <input name="instagram" required placeholder="@username" dir="ltr">
+                </div>
+            </div>
+            <div class="reg-field">
+                <label>معرف التيليغرام (اختياري)</label>
+                <input name="telegram" placeholder="@username" dir="ltr">
+            </div>
+
+            <div class="reg-divider"></div>
+
+            <!-- Course selection removed for Baghdad Course Form -->
+
+            <button type="submit" id="registerSubmitBtn" class="reg-submit">إرسال الطلب ←</button>
+            <p id="registerMsg" style="text-align:center;font-size:.9rem;margin-top:12px;display:none;"></p>
+
+        </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openRegisterModal() {
+    document.getElementById('registerModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+if (location.hash === '#register' || new URLSearchParams(location.search).get('register')) openRegisterModal();
+function closeRegisterModal() {
+    document.getElementById('registerModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+async function submitRegister(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn  = document.getElementById('registerSubmitBtn');
+    const msg  = document.getElementById('registerMsg');
+    const data = {
+        fullName:   form.fullName.value,
+        age:        form.age.value,
+        education:  form.education.value,
+        experience: form.experience.value,
+        telegram:   form.telegram.value,
+        whatsapp:   form.whatsapp.value,
+        instagram:  form.instagram.value,
+        course:     'كورس بغداد الحضوري'
+    };
+    btn.disabled = true;
+    btn.textContent = 'جاري الإرسال...';
+    try {
+        const res  = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
+        const json = await res.json();
+        msg.style.display = 'block';
+        if (res.ok) {
+            msg.style.color = '#c8f135';
+            msg.textContent = json.message;
+            form.reset();
+            setTimeout(closeRegisterModal, 2500);
+        } else {
+            msg.style.color = '#f87171';
+            msg.textContent = json.error;
+            btn.disabled = false;
+            btn.textContent = 'إرسال الطلب';
+        }
+    } catch {
+        msg.style.display = 'block';
+        msg.style.color = '#f87171';
+        msg.textContent = 'حدث خطأ، حاول مجدداً';
+        btn.disabled = false;
+        btn.textContent = 'إرسال الطلب';
+    }
+}
+</script>
 </body>
 
 </html>

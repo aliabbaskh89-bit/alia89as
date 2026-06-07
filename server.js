@@ -5,7 +5,7 @@ const path    = require('path');
 const fs      = require('fs');
 
 const app        = express();
-const PORT       = process.env.PORT       || 3000;
+const PORT       = process.env.PORT       || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'ali-course-secret-change-me';
 const ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin2024';
 
@@ -20,8 +20,10 @@ fs.mkdirSync(dataDir,  { recursive: true });
 fs.mkdirSync(videosDir, { recursive: true });
 
 const seedFiles = {
-    'students.json':  { students: [] },
-    'questions.json': { questions: [] },
+    'students.json':       { students: [] },
+    'questions.json':      { questions: [] },
+    'registrations.json':  { registrations: [] },
+    'receipts.json':       { receipts: [] },
     'videos.json': {
         courses: [
             { id: 'graphics',  title: 'الكورس الشامل في الجرافيك', videos: [] },
@@ -313,8 +315,10 @@ const uploadAttach = multer({
     storage: attachStorage,
     limits: { fileSize: 50 * 1024 * 1024 },
     fileFilter: (_req, file, cb) => {
-        const ok = ['image/jpeg','image/png','image/gif','image/webp','application/pdf'];
-        ok.includes(file.mimetype) ? cb(null, true) : cb(new Error('يرجى رفع صورة أو PDF فقط'));
+        const okMime = ['image/jpeg','image/png','image/gif','image/webp','application/pdf','application/octet-stream'];
+        const okExt  = ['.jpg','.jpeg','.png','.gif','.webp','.pdf'];
+        const ext    = path.extname(file.originalname).toLowerCase();
+        (okMime.includes(file.mimetype) || okExt.includes(ext)) ? cb(null, true) : cb(new Error('يرجى رفع صورة أو PDF فقط'));
     }
 });
 
@@ -518,8 +522,8 @@ app.get('/api/admin/questions', adminAuth, (_req, res) => {
 
 // Admin: POST /api/admin/questions/:id/reply — reply to a note/question
 app.post('/api/admin/questions/:id/reply', adminAuth, (req, res) => {
-    const { reply, replyLink } = req.body;
-    if (!reply?.trim() && !replyLink?.trim()) return res.status(400).json({ error: 'يرجى كتابة الرد أو إضافة رابط' });
+    const { reply, replyLink, replyAttachment } = req.body;
+    if (!reply?.trim() && !replyLink?.trim() && !replyAttachment) return res.status(400).json({ error: 'يرجى كتابة الرد أو إضافة رابط أو ملف' });
 
     const data = readJSON('questions.json');
     const q    = data.questions.find(q => q.id === parseInt(req.params.id));
@@ -538,6 +542,58 @@ app.delete('/api/admin/questions/:id', adminAuth, (req, res) => {
     const data     = readJSON('questions.json');
     data.questions = data.questions.filter(q => q.id !== parseInt(req.params.id));
     writeJSON('questions.json', data);
+    res.json({ message: 'تم الحذف' });
+});
+
+// ─── Course Registrations ──────────────────────────────────────────────────
+app.post('/api/register', (req, res) => {
+    const { fullName, age, education, experience, telegram, whatsapp, instagram, course } = req.body;
+    if (!fullName?.trim() || !whatsapp?.trim() || !instagram?.trim()) return res.status(400).json({ error: 'الاسم، رقم الواتساب ويوزر الانستا مطلوبات' });
+    const data = readJSON('registrations.json');
+    data.registrations.push({
+        id:         Date.now(),
+        fullName:   fullName.trim(),
+        age:        age?.trim() || '',
+        education:  education?.trim() || '',
+        experience: experience?.trim() || '',
+        telegram:   telegram?.trim() || '',
+        whatsapp:   whatsapp.trim(),
+        instagram:  instagram.trim(),
+        course:     course?.trim() || '',
+        createdAt:  new Date().toISOString()
+    });
+    writeJSON('registrations.json', data);
+    res.json({ message: 'تم استلام طلبك بنجاح ✅' });
+});
+
+app.get('/api/admin/registrations', adminAuth, (req, res) => {
+    res.json(readJSON('registrations.json'));
+});
+
+app.delete('/api/admin/registrations/:id', adminAuth, (req, res) => {
+    const data = readJSON('registrations.json');
+    data.registrations = data.registrations.filter(r => r.id !== parseInt(req.params.id));
+    writeJSON('registrations.json', data);
+    res.json({ message: 'تم الحذف' });
+});
+
+// ─── Receipts ──────────────────────────────────────────────────────────────
+app.post('/api/admin/receipts', adminAuth, (req, res) => {
+    const data = readJSON('receipts.json');
+    const receipt = { id: Date.now(), ...req.body, savedAt: new Date().toISOString() };
+    data.receipts.unshift(receipt);
+    writeJSON('receipts.json', data);
+    res.json({ message: 'تم الحفظ', id: receipt.id });
+});
+
+app.get('/api/admin/receipts', adminAuth, (_req, res) => {
+    res.json(readJSON('receipts.json'));
+});
+
+app.delete('/api/admin/receipts/:id', adminAuth, (req, res) => {
+    const data = readJSON('receipts.json');
+    data.receipts = data.receipts.filter(r => r.id !== parseInt(req.params.id));
+    writeJSON('receipts.json', data);
     res.json({ message: 'تم الحذف' });
 });
 
