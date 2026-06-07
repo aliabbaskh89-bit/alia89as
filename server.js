@@ -547,14 +547,13 @@ app.delete('/api/admin/questions/:id', adminAuth, (req, res) => {
 
 // ─── Course Registrations ──────────────────────────────────────────────────
 app.post('/api/register', (req, res) => {
-    const { fullName, age, education, experience, telegram, whatsapp, instagram, course } = req.body;
+    const { fullName, age, experience, telegram, whatsapp, instagram, course } = req.body;
     if (!fullName?.trim() || !whatsapp?.trim() || !instagram?.trim()) return res.status(400).json({ error: 'الاسم، رقم الواتساب ويوزر الانستا مطلوبات' });
     const data = readJSON('registrations.json');
     data.registrations.push({
         id:         Date.now(),
         fullName:   fullName.trim(),
         age:        age?.trim() || '',
-        education:  education?.trim() || '',
         experience: experience?.trim() || '',
         telegram:   telegram?.trim() || '',
         whatsapp:   whatsapp.trim(),

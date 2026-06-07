@@ -939,7 +939,6 @@ if (document.getElementById('adminPage')) {
                         <th style="padding:10px 8px;text-align:right;">الاسم</th>
                         <th style="padding:10px 8px;text-align:right;">الكورس</th>
                         <th style="padding:10px 8px;text-align:right;">العمر</th>
-                        <th style="padding:10px 8px;text-align:right;">التحصيل</th>
                         <th style="padding:10px 8px;text-align:right;">الخبرة</th>
                         <th style="padding:10px 8px;text-align:right;">تيليغرام</th>
                         <th style="padding:10px 8px;text-align:right;">انستغرام</th>
@@ -954,7 +953,6 @@ if (document.getElementById('adminPage')) {
                             <td style="padding:10px 8px;font-weight:600;">${r.fullName}</td>
                             <td style="padding:10px 8px;"><span style="background:var(--primary-muted,#1a2a00);color:#c8f135;padding:3px 10px;border-radius:20px;font-size:.8rem;white-space:nowrap;">${r.course || '—'}</span></td>
                             <td style="padding:10px 8px;">${r.age || '—'}</td>
-                            <td style="padding:10px 8px;">${r.education || '—'}</td>
                             <td style="padding:10px 8px;">${r.experience || '—'}</td>
                             <td style="padding:10px 8px;direction:ltr;">${r.telegram || '—'}</td>
                             <td style="padding:10px 8px;direction:ltr;">${r.instagram || '—'}</td>

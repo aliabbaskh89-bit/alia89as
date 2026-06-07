@@ -752,29 +752,15 @@
                 </div>
             </div>
 
-            <div class="reg-row">
-                <div class="reg-field">
-                    <label>التحصيل الدراسي</label>
-                    <select name="education">
-                        <option value="">-- اختر --</option>
-                        <option>ابتدائي</option>
-                        <option>متوسط</option>
-                        <option>إعدادي</option>
-                        <option>بكالوريوس</option>
-                        <option>ماجستير</option>
-                        <option>دكتوراه</option>
-                    </select>
-                </div>
-                <div class="reg-field">
-                    <label>الخبرة في المجال</label>
-                    <select name="experience">
-                        <option value="">-- اختر --</option>
-                        <option>مبتدئ (لا خبرة)</option>
-                        <option>مبتدئ (أساسيات)</option>
-                        <option>متوسط</option>
-                        <option>متقدم</option>
-                    </select>
-                </div>
+            <div class="reg-field">
+                <label>الخبرة في المجال</label>
+                <select name="experience">
+                    <option value="">-- اختر --</option>
+                    <option>مبتدئ (لا خبرة)</option>
+                    <option>مبتدئ (أساسيات)</option>
+                    <option>متوسط</option>
+                    <option>متقدم</option>
+                </select>
             </div>
 
             <div class="reg-field">
@@ -820,7 +806,6 @@ async function submitRegister(e) {
     const data = {
         fullName:   form.fullName.value,
         age:        form.age.value,
-        education:  form.education.value,
         experience: form.experience.value,
         telegram:   form.telegram.value,
         whatsapp:   form.whatsapp.value,
