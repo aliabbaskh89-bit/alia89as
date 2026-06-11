@@ -1353,12 +1353,12 @@
                     loadAdminFAQs();
                 } else {
                     msg.style.color = '#f87171';
-                    msg.textContent = json.error;
+                    msg.textContent = `خطأ ${res.status}: ` + (json.error || JSON.stringify(json));
                 }
-            } catch {
+            } catch (err) {
                 msg.style.display = 'block';
                 msg.style.color = '#f87171';
-                msg.textContent = 'حدث خطأ، حاول مجدداً';
+                msg.textContent = 'حدث خطأ: ' + err.message;
             }
             btn.disabled = false;
             btn.textContent = 'إضافة السؤال';
