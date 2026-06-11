@@ -1217,6 +1217,7 @@
 
         // ── FAQ Admin Functions ──────────────────────────────────────────────
         async function loadAdminFAQs() {
+            const adminKey = document.getElementById('adminKeyInput').value.trim();
             const container = document.getElementById('faqAdminList');
             if (!container) return;
             container.innerHTML = '<p class="empty-table">جاري التحميل...</p>';
@@ -1281,6 +1282,7 @@
         function cancelFAQEdit(id) { toggleFAQEdit(id); }
 
         async function saveFAQEdit(id) {
+            const adminKey = document.getElementById('adminKeyInput').value.trim();
             const question = document.getElementById(`faq-edit-q-${id}`)?.value.trim();
             const answer   = document.getElementById(`faq-edit-a-${id}`)?.value.trim();
             if (!question || !answer) return showToast('السؤال والإجابة مطلوبان');
@@ -1297,6 +1299,7 @@
         }
 
         async function toggleFAQPublish(id, currentlyPublished) {
+            const adminKey = document.getElementById('adminKeyInput').value.trim();
             try {
                 const res = await fetch(`/api/admin/faqs/${id}`, {
                     method: 'PATCH',
@@ -1310,7 +1313,8 @@
         }
 
         async function deleteFAQ(id) {
-            if (!confirm('هل تريد حذف هذا السؤال؟')) return;
+            const adminKey = document.getElementById('adminKeyInput').value.trim();
+            if (!confirm('هل أنت متأكد من حذف هذا السؤال نهائياً؟')) return;
             try {
                 const res = await fetch(`/api/admin/faqs/${id}`, {
                     method: 'DELETE',
@@ -1325,6 +1329,7 @@
         // FAQ Add Form
         document.getElementById('faqAddForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const adminKey = document.getElementById('adminKeyInput').value.trim();
             const question = document.getElementById('faqQuestionInput').value.trim();
             const answer   = document.getElementById('faqAnswerInput').value.trim();
             const btn = document.getElementById('faqAddBtn');
