@@ -5,7 +5,7 @@ const path    = require('path');
 const fs      = require('fs');
 
 const app        = express();
-const PORT       = process.env.PORT       || 3000;
+const PORT       = 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'ali-course-secret-change-me';
 const ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin2024';
 
