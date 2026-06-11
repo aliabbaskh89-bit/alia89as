@@ -1,4 +1,4 @@
-const CACHE = 'ali-v4';
+const CACHE = 'ali-v5';
 const STATIC = ['/', '/index.html', '/styles.css', '/script.js', '/profile.jpg'];
 
 self.addEventListener('install', e => {
