@@ -40,9 +40,10 @@
                 <li><a href="#services" class="nav-link">خدماتي</a></li>
                 <li><a href="#tutorials" class="nav-link">شروحاتي</a></li>
                 <li><a href="#lectures" class="nav-link">محاضراتي</a></li>
+                <li><a href="#faq" class="nav-link">الأسئلة الشائعة</a></li>
                 <li><a href="#portfolio" class="nav-link">أعمالي</a></li>
                 <li class="mobile-nav-actions">
-                    <button onclick="openRegisterModal()" class="btn btn-primary" style="border:none;cursor:pointer;width:100%;">📋 سجّل في كورس</button>
+                    <button onclick="openRegisterModal()" class="btn btn-primary" style="border:none;cursor:pointer;width:100%;">📋 استمارة كورس بغداد</button>
                     <a href="login.html" class="btn btn-outline" style="display:block;text-align:center;">🎬 منصة الكورسات</a>
                 </li>
             </ul>
@@ -52,7 +53,7 @@
                     <i class="fa-solid fa-moon"></i>
                 </button>
                 <a href="en.html" class="btn-icon text-bold" aria-label="Switch to English">EN</a>
-                <a href="#register" onclick="openRegisterModal(); return false;" class="btn btn-primary d-none-mobile" style="border:none;">📋 سجّل في كورس</a>
+                <a href="#register" onclick="openRegisterModal(); return false;" class="btn btn-primary d-none-mobile" style="border:none;">📋 استمارة كورس بغداد</a>
                 <a href="login.html" class="btn btn-outline d-none-mobile">🎬 منصة الكورسات</a>
             </div>
         </nav>
@@ -572,6 +573,42 @@
                         <h3 class="portfolio-title">مطبوعات</h3>
                         <span class="portfolio-cat">انقر لمشاهدة الأعمال</span>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq section">
+        <div class="container">
+            <div class="section-title text-center reveal reveal-up">
+                <h2>الأسئلة الشائعة</h2>
+                <div class="divider"></div>
+                <p class="section-desc">أبرز الأسئلة التي يطرحها الطلاب حول الكورسات.</p>
+            </div>
+
+            <div class="faq-list reveal reveal-up" id="faq-list">
+                <!-- سيتم تحميل الأسئلة ديناميكياً -->
+                <div class="faq-loading" id="faq-loading">
+                    <div class="faq-skeleton"></div>
+                    <div class="faq-skeleton"></div>
+                    <div class="faq-skeleton"></div>
+                </div>
+                <div class="faq-empty" id="faq-empty" style="display:none">
+                    <i class="fa-solid fa-circle-question" style="font-size:3rem;color:var(--primary);margin-bottom:1rem;"></i>
+                    <p>لا توجد أسئلة متاحة حالياً، تابعونا قريباً!</p>
+                </div>
+            </div>
+
+            <!-- CTA after FAQ -->
+            <div class="faq-cta reveal reveal-up" id="faq-cta" style="display:none;">
+                <div class="faq-cta-inner">
+                    <div class="faq-cta-icon">🎓</div>
+                    <h3>هل أنت مستعد للبدء؟</h3>
+                    <p>سجّل الآن في الكورس وابدأ رحلتك نحو الاحتراف في التصميم.</p>
+                    <a href="#register" onclick="openRegisterModal(); return false;" class="btn btn-primary faq-cta-btn">
+                        📋 سجّل في الكورس الآن
+                    </a>
                 </div>
             </div>
         </div>

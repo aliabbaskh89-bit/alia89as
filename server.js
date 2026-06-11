@@ -24,6 +24,7 @@ const seedFiles = {
     'questions.json':      { questions: [] },
     'registrations.json':  { registrations: [] },
     'receipts.json':       { receipts: [] },
+    'faqs.json':           { faqs: [] },
     'videos.json': {
         courses: [
             { id: 'graphics',  title: 'الكورس الشامل في الجرافيك', videos: [] },
@@ -594,6 +595,61 @@ app.delete('/api/admin/receipts/:id', adminAuth, (req, res) => {
     data.receipts = data.receipts.filter(r => r.id !== parseInt(req.params.id));
     writeJSON('receipts.json', data);
     res.json({ message: 'تم الحذف' });
+});
+
+// ─── FAQs (Frequently Asked Questions) ───────────────────────────────────
+// Public: GET /api/faqs — all published FAQs
+app.get('/api/faqs', (_req, res) => {
+    const data = readJSON('faqs.json');
+    const published = (data.faqs || []).filter(f => f.published !== false);
+    res.json({ faqs: published });
+});
+
+// Admin: GET /api/admin/faqs — all FAQs (including unpublished)
+app.get('/api/admin/faqs', adminAuth, (_req, res) => {
+    res.json(readJSON('faqs.json'));
+});
+
+// Admin: POST /api/admin/faqs — add new FAQ
+app.post('/api/admin/faqs', adminAuth, (req, res) => {
+    const { question, answer } = req.body;
+    if (!question?.trim() || !answer?.trim()) {
+        return res.status(400).json({ error: 'السؤال والجواب مطلوبان' });
+    }
+    const data = readJSON('faqs.json');
+    const faq = {
+        id:        Date.now(),
+        question:  question.trim(),
+        answer:    answer.trim(),
+        published: true,
+        order:     data.faqs.length,
+        createdAt: new Date().toISOString()
+    };
+    data.faqs.push(faq);
+    writeJSON('faqs.json', data);
+    res.json({ message: 'تم إضافة السؤال بنجاح ✅', faq });
+});
+
+// Admin: PATCH /api/admin/faqs/:id — edit FAQ
+app.patch('/api/admin/faqs/:id', adminAuth, (req, res) => {
+    const { question, answer, published, order } = req.body;
+    const data = readJSON('faqs.json');
+    const faq  = data.faqs.find(f => f.id === parseInt(req.params.id));
+    if (!faq) return res.status(404).json({ error: 'السؤال غير موجود' });
+    if (question !== undefined) faq.question  = question.trim();
+    if (answer   !== undefined) faq.answer    = answer.trim();
+    if (published !== undefined) faq.published = published;
+    if (order    !== undefined) faq.order     = order;
+    writeJSON('faqs.json', data);
+    res.json({ message: 'تم التحديث بنجاح ✅', faq });
+});
+
+// Admin: DELETE /api/admin/faqs/:id — delete FAQ
+app.delete('/api/admin/faqs/:id', adminAuth, (req, res) => {
+    const data = readJSON('faqs.json');
+    data.faqs  = data.faqs.filter(f => f.id !== parseInt(req.params.id));
+    writeJSON('faqs.json', data);
+    res.json({ message: 'تم الحذف ✅' });
 });
 
 // ─── Start ─────────────────────────────────────────────────────────────────

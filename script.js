@@ -294,6 +294,76 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.reveal').forEach(el => {
         revealObserver.observe(el);
     });
+
+    // --- FAQ Section ---
+    async function loadFAQs() {
+        const listEl    = document.getElementById('faq-list');
+        const loadingEl = document.getElementById('faq-loading');
+        const emptyEl   = document.getElementById('faq-empty');
+        const ctaEl     = document.getElementById('faq-cta');
+        if (!listEl) return;
+
+        try {
+            const res  = await fetch('/api/faqs');
+            const json = await res.json();
+            const faqs = json.faqs || [];
+
+            // Remove skeleton loaders
+            if (loadingEl) loadingEl.remove();
+
+            if (faqs.length === 0) {
+                if (emptyEl) emptyEl.style.display = 'flex';
+                return;
+            }
+
+            // Sort by order field
+            faqs.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+            faqs.forEach((faq, i) => {
+                const item = document.createElement('div');
+                item.className = 'faq-item';
+                item.innerHTML = `
+                    <button class="faq-question" aria-expanded="false" id="faq-q-${faq.id}">
+                        <span class="faq-q-text">${faq.question}</span>
+                        <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer" id="faq-a-${faq.id}" role="region" aria-labelledby="faq-q-${faq.id}">
+                        <div class="faq-answer-inner">${faq.answer}</div>
+                    </div>
+                `;
+
+                const btn = item.querySelector('.faq-question');
+                const ans = item.querySelector('.faq-answer');
+                btn.addEventListener('click', () => {
+                    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+                    // Close all others
+                    listEl.querySelectorAll('.faq-question').forEach(b => {
+                        b.setAttribute('aria-expanded', 'false');
+                        b.closest('.faq-item').querySelector('.faq-answer').style.maxHeight = null;
+                    });
+                    if (!isOpen) {
+                        btn.setAttribute('aria-expanded', 'true');
+                        ans.style.maxHeight = ans.scrollHeight + 'px';
+                    }
+                });
+
+                listEl.appendChild(item);
+                // Observe for animation
+                revealObserver.observe(item);
+            });
+
+            // Show CTA
+            if (ctaEl) {
+                ctaEl.style.display = 'block';
+                revealObserver.observe(ctaEl);
+            }
+        } catch (err) {
+            if (loadingEl) loadingEl.remove();
+            if (emptyEl) emptyEl.style.display = 'flex';
+        }
+    }
+
+    loadFAQs();
 });
 
 // ── Global Lightbox ──
