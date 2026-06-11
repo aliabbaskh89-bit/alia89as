@@ -300,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const listEl    = document.getElementById('faq-list');
         const loadingEl = document.getElementById('faq-loading');
         const emptyEl   = document.getElementById('faq-empty');
-        const ctaEl     = document.getElementById('faq-cta');
         if (!listEl) return;
 
         try {
@@ -351,12 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Observe for animation
                 revealObserver.observe(item);
             });
-
-            // Show CTA
-            if (ctaEl) {
-                ctaEl.style.display = 'block';
-                revealObserver.observe(ctaEl);
-            }
         } catch (err) {
             if (loadingEl) loadingEl.remove();
             if (emptyEl) emptyEl.style.display = 'flex';
