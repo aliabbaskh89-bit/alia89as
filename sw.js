@@ -1,4 +1,4 @@
-const CACHE = 'ali-v5';
+const CACHE = 'ali-v6';
 const STATIC = ['/', '/index.html', '/styles.css', '/script.js', '/profile.jpg'];
 
 self.addEventListener('install', e => {
@@ -20,12 +20,14 @@ self.addEventListener('fetch', e => {
     if (e.request.method !== 'GET') return;
 
     const url = new URL(e.request.url);
-    // Always fetch fresh for JS, CSS, HTML, and API
-    if (url.pathname.endsWith('.js') || url.pathname.endsWith('.css') ||
-        url.pathname.endsWith('.html') || url.pathname.startsWith('/api/')) {
-        e.respondWith(fetch(e.request));
+    // Always fetch fresh for root navigation (/), HTML, JS, CSS, and API
+    if (e.request.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('.js') || 
+        url.pathname.endsWith('.css') || url.pathname.endsWith('.html') || url.pathname.startsWith('/api/')) {
+        e.respondWith(
+            fetch(e.request).catch(() => caches.match(e.request))
+        );
         return;
     }
-    // Cache-first for images
+    // Cache-first for images and other static assets
     e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
 });

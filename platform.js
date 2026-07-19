@@ -510,12 +510,22 @@ if (document.getElementById('adminPage')) {
         const { videos } = await res.json();
         if (!videos || videos.length === 0) { container.innerHTML = '<p style="color:var(--text-muted)">لا توجد فيديوهات في هذا الكورس</p>'; return; }
         container.innerHTML = videos.map((v, i) => `
-            <div style="background:var(--card);border-radius:12px;margin-bottom:12px;border:1px solid var(--border-color);overflow:hidden">
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;">
-                    <span style="color:var(--text);font-weight:600">${i+1}. ${v.title}</span>
-                    <div style="display:flex;gap:8px">
+            <div id="vcard-${v.id}" style="background:var(--card);border-radius:12px;margin-bottom:12px;border:1px solid var(--border-color);overflow:hidden">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:10px;flex-wrap:wrap">
+                    <span class="v-title-display" style="color:var(--text);font-weight:600;flex:1;min-width:150px">${i+1}. ${v.title}</span>
+                    <div style="display:flex;gap:8px;flex-shrink:0">
+                        <button onclick="startRename('${courseId}','${v.id}','${v.title.replace(/'/g,"\\'")}')" style="background:var(--border-color);color:var(--text);border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:inherit">✏️ تعديل</button>
                         <button onclick="togglePreview('${v.id}')" style="background:var(--primary);color:#000;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:inherit;font-weight:700">▶ معاينة</button>
                         <button onclick="deleteVideo('${courseId}','${v.id}')" style="background:#e53e3e;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:inherit">🗑 حذف</button>
+                    </div>
+                </div>
+                <div id="rename-${v.id}" style="display:none;padding:0 16px 14px;gap:8px;align-items:center">
+                    <input id="rename-input-${v.id}" type="text" value="${v.title.replace(/"/g,'&quot;')}"
+                        style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-card,var(--card));color:var(--text);font-family:inherit;font-size:.95rem;width:100%;box-sizing:border-box;margin-bottom:8px;text-align:right"
+                        onkeydown="if(event.key==='Enter')saveRename('${courseId}','${v.id}');if(event.key==='Escape')cancelRename('${v.id}')">
+                    <div style="display:flex;gap:8px">
+                        <button onclick="saveRename('${courseId}','${v.id}')" style="background:var(--primary);color:#000;border:none;border-radius:8px;padding:7px 18px;cursor:pointer;font-family:inherit;font-weight:700">حفظ</button>
+                        <button onclick="cancelRename('${v.id}')" style="background:var(--border-color);color:var(--text);border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-family:inherit">إلغاء</button>
                     </div>
                 </div>
                 <div id="preview-${v.id}" style="display:none;padding:0 16px 16px">
@@ -525,6 +535,44 @@ if (document.getElementById('adminPage')) {
                 </div>
             </div>
         `).join('');
+    };
+
+    window.startRename = function(courseId, videoId, currentTitle) {
+        document.getElementById(`rename-${videoId}`).style.display = 'flex';
+        document.getElementById(`rename-${videoId}`).style.flexDirection = 'column';
+        const input = document.getElementById(`rename-input-${videoId}`);
+        input.value = currentTitle;
+        input.focus();
+        input.select();
+    };
+
+    window.cancelRename = function(videoId) {
+        document.getElementById(`rename-${videoId}`).style.display = 'none';
+    };
+
+    window.saveRename = async function(courseId, videoId) {
+        const input = document.getElementById(`rename-input-${videoId}`);
+        const newTitle = input.value.trim();
+        if (!newTitle) { showToast('العنوان لا يمكن أن يكون فارغاً', 'error'); return; }
+        try {
+            const res = await aFetch(`/api/admin/videos/${courseId}/${videoId}/title`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: newTitle })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showToast('✅ تم تحديث العنوان');
+                // Update displayed title without full reload
+                const card = document.getElementById(`vcard-${videoId}`);
+                const titleEl = card.querySelector('.v-title-display');
+                const idx = titleEl.textContent.match(/^\d+\./)?.[0] || '';
+                titleEl.textContent = idx + ' ' + newTitle;
+                document.getElementById(`rename-${videoId}`).style.display = 'none';
+            } else {
+                showToast(data.error || 'خطأ في الحفظ', 'error');
+            }
+        } catch { showToast('خطأ في الاتصال', 'error'); }
     };
 
     window.togglePreview = function(videoId) {
@@ -599,7 +647,7 @@ if (document.getElementById('adminPage')) {
     }
 
     function courseLabel(id) {
-        const map = { graphics: 'الجرافيك', social: 'السوشيال', branding: 'الهوية', indesign: 'InDesign', recorded: 'المسجل (مقاطع)', baghdad1: 'بغداد الحضوري ١', all: 'الكل' };
+        const map = { graphics: 'الجرافيك', social: 'السوشيال', branding: 'الهوية', indesign: 'InDesign', recorded: 'المسجل (مقاطع)', baghdad1: 'بغداد الحضوري ١', baghdad2: 'بغداد الحضوري ٢', all: 'الكل' };
         return map[id] || id;
     }
 

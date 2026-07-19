@@ -4,6 +4,17 @@ const multer  = require('multer');
 const path    = require('path');
 const fs      = require('fs');
 
+// ─── Global crash protection ──────────────────────────────────────────────
+// These handlers prevent the ENTIRE server from dying on unexpected errors
+process.on('uncaughtException', (err) => {
+    console.error(`[${new Date().toISOString()}] ❌ UNCAUGHT EXCEPTION:`, err.stack || err);
+    // DO NOT call process.exit — keep the server alive
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error(`[${new Date().toISOString()}] ❌ UNHANDLED REJECTION:`, reason);
+});
+
 const app        = express();
 const PORT       = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'ali-course-secret-change-me';
@@ -32,7 +43,8 @@ const seedFiles = {
             { id: 'branding',  title: 'الهوية البصرية والبراند',    videos: [] },
             { id: 'indesign',  title: 'كورس Adobe InDesign',        videos: [] },
             { id: 'recorded',  title: 'الكورس المسجل (مقاطع)',      videos: [] },
-            { id: 'baghdad1',  title: 'كورس بغداد الحضوري ١',       videos: [] }
+            { id: 'baghdad1',  title: 'كورس بغداد الحضوري ١',       videos: [] },
+            { id: 'baghdad2',  title: 'كورس بغداد الحضوري ٢',       videos: [] }
         ]
     }
 };
@@ -84,13 +96,69 @@ app.use(express.static(path.join(__dirname), {
     }
 }));
 
-// ─── Data helpers ──────────────────────────────────────────────────────────
+// ─── Health check (Cloudflare / uptime monitors) ─────────────────────────
+app.get('/health', (_req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        uptime: Math.floor(process.uptime()),
+        memory: Math.round(process.memoryUsage().rss / 1024 / 1024) + ' MB',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// ─── Data helpers (crash-safe) ────────────────────────────────────────────
+const JSON_DEFAULTS = {
+    'students.json':       { students: [] },
+    'questions.json':      { questions: [] },
+    'registrations.json':  { registrations: [] },
+    'receipts.json':       { receipts: [] },
+    'faqs.json':           { faqs: [] },
+    'videos.json':         { courses: [] }
+};
+
 function readJSON(file) {
-    return JSON.parse(fs.readFileSync(path.join(dataDir, file), 'utf8'));
+    const filePath = path.join(dataDir, file);
+    try {
+        const raw = fs.readFileSync(filePath, 'utf8');
+        if (!raw || !raw.trim()) throw new Error('Empty file');
+        return JSON.parse(raw);
+    } catch (err) {
+        console.error(`[${new Date().toISOString()}] ⚠️ readJSON(${file}) failed:`, err.message);
+        // Try reading backup
+        const backupPath = filePath + '.bak';
+        try {
+            if (fs.existsSync(backupPath)) {
+                console.log(`  ↪ Restoring from backup: ${backupPath}`);
+                const backupRaw = fs.readFileSync(backupPath, 'utf8');
+                const backupData = JSON.parse(backupRaw);
+                // Restore the main file from backup
+                fs.writeFileSync(filePath, backupRaw, 'utf8');
+                return backupData;
+            }
+        } catch (backupErr) {
+            console.error(`  ↪ Backup restore also failed:`, backupErr.message);
+        }
+        // Last resort: return empty defaults
+        console.log(`  ↪ Using empty defaults for ${file}`);
+        return JSON_DEFAULTS[file] || {};
+    }
 }
 
 function writeJSON(file, data) {
-    fs.writeFileSync(path.join(dataDir, file), JSON.stringify(data, null, 2), 'utf8');
+    const filePath = path.join(dataDir, file);
+    try {
+        const jsonStr = JSON.stringify(data, null, 2);
+        // Create backup of current file before writing
+        if (fs.existsSync(filePath)) {
+            fs.copyFileSync(filePath, filePath + '.bak');
+        }
+        // Atomic write: write to .tmp first, then rename
+        const tmpPath = filePath + '.tmp';
+        fs.writeFileSync(tmpPath, jsonStr, 'utf8');
+        fs.renameSync(tmpPath, filePath);
+    } catch (err) {
+        console.error(`[${new Date().toISOString()}] ⚠️ writeJSON(${file}) failed:`, err.message);
+    }
 }
 
 // ─── Middleware ────────────────────────────────────────────────────────────
@@ -453,6 +521,24 @@ app.delete('/api/admin/videos/:courseId/:videoId', adminAuth, (req, res) => {
     res.json({ message: 'تم حذف الفيديو' });
 });
 
+// ─── Admin: Rename video title ─────────────────────────────────────────────
+app.patch('/api/admin/videos/:courseId/:videoId/title', adminAuth, (req, res) => {
+    const { title } = req.body;
+    if (!title || !title.trim()) return res.status(400).json({ error: 'العنوان مطلوب' });
+
+    const data   = readJSON('videos.json');
+    const course = data.courses.find(c => c.id === req.params.courseId);
+    if (!course) return res.status(404).json({ error: 'الكورس غير موجود' });
+
+    const videoId = parseInt(req.params.videoId);
+    const video   = course.videos.find(v => v.id === videoId);
+    if (!video) return res.status(404).json({ error: 'الفيديو غير موجود' });
+
+    video.title = title.trim();
+    writeJSON('videos.json', data);
+    res.json({ message: 'تم تحديث العنوان', title: video.title });
+});
+
 // ─── Admin: Reorder videos ─────────────────────────────────────────────────
 app.patch('/api/admin/videos/:courseId/reorder', adminAuth, (req, res) => {
     const { order } = req.body; // array of video IDs in new order
@@ -652,9 +738,38 @@ app.delete('/api/admin/faqs/:id', adminAuth, (req, res) => {
     res.json({ message: 'تم الحذف ✅' });
 });
 
+// ─── Express error handler (catch-all) ────────────────────────────────────
+app.use((err, _req, res, _next) => {
+    console.error(`[${new Date().toISOString()}] ❌ EXPRESS ERROR:`, err.stack || err);
+    if (!res.headersSent) {
+        res.status(500).json({ error: 'حدث خطأ في السيرفر، يرجى المحاولة لاحقاً' });
+    }
+});
+
 // ─── Start ─────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`\n✅ المنصة تعمل على: http://localhost:${PORT}`);
     console.log(`🔑 مفتاح الأدمن: ${ADMIN_KEY}`);
-    console.log(`⚙️  لوحة التحكم:  http://localhost:${PORT}/admin.html\n`);
+    console.log(`⚙️  لوحة التحكم:  http://localhost:${PORT}/admin.html`);
+    console.log(`💚 Health check:  http://localhost:${PORT}/health\n`);
 });
+
+// Keep-alive: prevent idle socket timeouts (Cloudflare has 100s timeout)
+server.keepAliveTimeout = 65000;    // 65 seconds
+server.headersTimeout   = 66000;    // slightly more than keepAliveTimeout
+
+// ─── Graceful shutdown ────────────────────────────────────────────────────
+function shutdown(signal) {
+    console.log(`\n⏹  ${signal} received — shutting down gracefully...`);
+    server.close(() => {
+        console.log('👋 Server closed cleanly.');
+        process.exit(0);
+    });
+    // Force exit after 10 seconds if connections won't close
+    setTimeout(() => {
+        console.error('⚠️ Forcing shutdown after 10s timeout');
+        process.exit(1);
+    }, 10000).unref();
+}
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT',  () => shutdown('SIGINT'));

@@ -12,3 +12,7 @@ data/
 
 # Environment variables
 .env
+
+# JSON backup & temp files (from atomic writes)
+data/*.bak
+data/*.tmp

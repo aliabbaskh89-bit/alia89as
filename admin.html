@@ -253,6 +253,7 @@
                 <label><input type="checkbox" class="edit-checkbox" value="indesign"> InDesign</label>
                 <label><input type="checkbox" class="edit-checkbox" value="recorded"> الكورس المسجل (مقاطع)</label>
                 <label><input type="checkbox" class="edit-checkbox" value="baghdad1"> كورس بغداد الحضوري ١</label>
+                <label><input type="checkbox" class="edit-checkbox" value="baghdad2"> كورس بغداد الحضوري ٢</label>
                 <label><input type="checkbox" class="edit-checkbox" value="all"> ⭐ جميع الكورسات</label>
             </div>
             <p id="editError" class="error-msg" style="display:none"></p>
@@ -361,6 +362,7 @@
                             <label><input type="checkbox" class="course-checkbox" value="indesign"> Adobe InDesign</label>
                             <label><input type="checkbox" class="course-checkbox" value="recorded"> الكورس المسجل (مقاطع)</label>
                             <label><input type="checkbox" class="course-checkbox" value="baghdad1"> كورس بغداد الحضوري ١</label>
+                            <label><input type="checkbox" class="course-checkbox" value="baghdad2"> كورس بغداد الحضوري ٢</label>
                             <label><input type="checkbox" class="course-checkbox" value="all"> ⭐ جميع الكورسات</label>
                         </div>
 
@@ -424,6 +426,7 @@
                             <option value="indesign">Adobe InDesign</option>
                             <option value="recorded">الكورس المسجل (مقاطع)</option>
                             <option value="baghdad1">كورس بغداد الحضوري ١</option>
+                            <option value="baghdad2">كورس بغداد الحضوري ٢</option>
                         </select>
 
                         <input type="text" id="videoTitleInput"
@@ -462,6 +465,7 @@
                         <option value="indesign">Adobe InDesign</option>
                             <option value="recorded">الكورس المسجل (مقاطع)</option>
                             <option value="baghdad1">كورس بغداد الحضوري ١</option>
+                            <option value="baghdad2">كورس بغداد الحضوري ٢</option>
                     </select>
                     <div id="manageVideosList"></div>
                 </div>
@@ -523,6 +527,7 @@
                                         <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">Adobe InDesign</div>
                                         <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">الكورس المسجل (مقاطع)</div>
                                         <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">كورس بغداد الحضوري ١</div>
+                                        <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">كورس بغداد الحضوري ٢</div>
                                         <div class="cs-opt" onclick="csSelect('cs-course','rv-input-course','updateReceiptPreview')">⭐ جميع الكورسات</div>
                                     </div>
                                     <input type="hidden" id="rv-input-course" value="">
@@ -687,11 +692,11 @@
                                 </div>
                                 <div>
                                     <label>الحساب الإجمالي (دينار عراقي)</label>
-                                    <input type="number" id="rc-input-amount" placeholder="مثال: 250000" min="0" step="500" oninput="updateClientPreview()">
+                                    <input type="number" id="rc-input-amount" placeholder="مثال: 200000" min="0" step="500" oninput="updateClientPreview()">
                                 </div>
                                 <div>
                                     <label>المبلغ الواصل (دينار عراقي)</label>
-                                    <input type="number" id="rc-input-paid" placeholder="مثال: 125000" min="0" step="500" oninput="updateClientPreview()">
+                                    <input type="number" id="rc-input-paid" placeholder="مثال: 100000" min="0" step="500" oninput="updateClientPreview()">
                                 </div>
                                 <div>
                                     <label>طريقة الدفع</label>
