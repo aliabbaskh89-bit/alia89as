@@ -36,48 +36,192 @@ function showToast(msg, type = 'success') {
 }
 
 /* ══════════════════════════════════════
-   LOGIN PAGE
+   LOGIN PAGE HANDLERS
    ══════════════════════════════════════ */
+const userLoginForm = document.getElementById('userLoginForm');
+const userRegisterForm = document.getElementById('userRegisterForm');
 const loginForm = document.getElementById('loginForm');
-if (loginForm) {
+
+if (userLoginForm || userRegisterForm || loginForm) {
     if (getToken()) window.location.href = 'platform.html';
 
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const code     = document.getElementById('codeInput').value.trim();
-        const btn      = document.getElementById('loginBtn');
-        const errorEl  = document.getElementById('loginError');
+    // 1. User Login
+    if (userLoginForm) {
+        userLoginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const identity = document.getElementById('loginIdentity').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('userLoginBtn');
+            const errorEl = document.getElementById('userLoginError');
 
-        btn.disabled    = true;
-        btn.textContent = 'جاري التحقق...';
-        errorEl.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = 'جاري تسجيل الدخول...';
+            errorEl.style.display = 'none';
 
-        try {
-            const res  = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code, deviceId: getDeviceId() })
-            });
-            const data = await res.json();
+            try {
+                const res = await fetch('/api/login-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identity, password, deviceId: getDeviceId() })
+                });
+                const data = await res.json();
 
-            if (!res.ok) {
-                errorEl.textContent = data.error;
+                if (!res.ok) {
+                    errorEl.textContent = data.error || 'فشل في تسجيل الدخول';
+                    errorEl.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = '🔑 دخول الحساب';
+                    return;
+                }
+
+                saveAuth(data.token, data.name);
+                window.location.href = 'platform.html';
+            } catch (err) {
+                errorEl.textContent = 'خطأ في الاتصال بالسيرفر، حاول مرة أخرى';
                 errorEl.style.display = 'block';
-                btn.disabled    = false;
-                btn.textContent = 'دخول';
-                return;
+                btn.disabled = false;
+                btn.textContent = '🔑 دخول الحساب';
             }
+        });
+    }
 
-            saveAuth(data.token, data.name);
-            window.location.href = 'platform.html';
-        } catch {
-            errorEl.textContent   = 'خطأ في الاتصال بالسيرفر، حاول مرة أخرى';
-            errorEl.style.display = 'block';
-            btn.disabled    = false;
-            btn.textContent = 'دخول';
-        }
-    });
+    // 2. User Register
+    if (userRegisterForm) {
+        userRegisterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const identity = document.getElementById('regIdentity').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const btn = document.getElementById('userRegBtn');
+            const errorEl = document.getElementById('userRegError');
+
+            btn.disabled = true;
+            btn.textContent = 'جاري إنشاء الحساب...';
+            errorEl.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, identity, password, deviceId: getDeviceId() })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorEl.textContent = data.error || 'فشل في إنشاء الحساب';
+                    errorEl.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = '✨ إنشاء حساب جديد';
+                    return;
+                }
+
+                saveAuth(data.token, data.name);
+                window.location.href = 'platform.html';
+            } catch (err) {
+                errorEl.textContent = 'خطأ في الاتصال بالسيرفر، حاول مرة أخرى';
+                errorEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '✨ إنشاء حساب جديد';
+            }
+        });
+    }
+
+    // 3. Legacy Direct Code Login
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('codeInput').value.trim();
+            const btn = document.getElementById('loginBtn');
+            const errorEl = document.getElementById('loginError');
+
+            btn.disabled = true;
+            btn.textContent = 'جاري التحقق...';
+            errorEl.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, deviceId: getDeviceId() })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorEl.textContent = data.error || 'الكود غير صحيح';
+                    errorEl.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = '⚡ دخول مباشر بالكود';
+                    return;
+                }
+
+                saveAuth(data.token, data.name);
+                window.location.href = 'platform.html';
+            } catch {
+                errorEl.textContent = 'خطأ في الاتصال بالسيرفر، حاول مرة أخرى';
+                errorEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '⚡ دخول مباشر بالكود';
+            }
+        });
+    }
 }
+
+// ── Modal & Code Activation Functions ──
+window.openActivateModal = function() {
+    const modal = document.getElementById('activateModal');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeActivateModal = function() {
+    const modal = document.getElementById('activateModal');
+    if (modal) modal.style.display = 'none';
+    const err = document.getElementById('activateError');
+    if (err) err.style.display = 'none';
+};
+
+window.handleActivateCode = async function(e) {
+    e.preventDefault();
+    const code = document.getElementById('activateInput').value.trim();
+    const btn = document.getElementById('btnActivateSubmit');
+    const err = document.getElementById('activateError');
+
+    if (!code) return;
+
+    btn.disabled = true;
+    btn.textContent = 'جاري التفعيل...';
+    if (err) err.style.display = 'none';
+
+    try {
+        const res = await authFetch('/api/activate-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            if (err) {
+                err.textContent = data.error || 'فشل في تفعيل الكود';
+                err.style.display = 'block';
+            }
+            btn.disabled = false;
+            btn.textContent = 'تفعيل الكورس 🚀';
+            return;
+        }
+
+        saveAuth(data.token, getName() || 'طالب');
+        showToast('🎉 تم تفعيل الكورس بنجاح!', 'success');
+        closeActivateModal();
+        setTimeout(() => { window.location.reload(); }, 1200);
+    } catch {
+        if (err) {
+            err.textContent = 'خطأ في الاتصال بالسيرفر، حاول مرة أخرى';
+            err.style.display = 'block';
+        }
+        btn.disabled = false;
+        btn.textContent = 'تفعيل الكورس 🚀';
+    }
+};
 
 /* ══════════════════════════════════════
    PLATFORM PAGE

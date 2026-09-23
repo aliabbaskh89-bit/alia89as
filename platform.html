@@ -36,10 +36,30 @@
                 📬
                 <span id="repliesBadge" class="replies-badge" style="display:none">0</span>
             </button>
+            <button id="activateBtnHeader" onclick="openActivateModal()" style="padding:6px 12px; background:rgba(200,241,53,0.15); border:1px solid #c8f135; color:#c8f135; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.82rem; font-family:inherit; margin-left:8px;">
+                ✨ تفعيل كورس
+            </button>
             <span>مرحباً، <strong id="studentName"></strong></span>
             <button id="logoutBtn" class="btn-logout">خروج</button>
         </div>
     </header>
+
+    <!-- ── Code Activation Modal ─── -->
+    <div id="activateModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:#18181b; border:1px solid rgba(200,241,53,0.3); border-radius:16px; padding:24px; max-width:440px; width:100%; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
+            <div style="font-size:36px; margin-bottom:10px;">✨</div>
+            <h3 style="color:#fff; font-size:1.2rem; margin-bottom:6px;">تفعيل كورس جديد</h3>
+            <p style="color:rgba(255,255,255,0.7); font-size:0.85rem; margin-bottom:20px;">أدخل كود الاشتراك المكون من حروف وأرقام المأخوذ من المدرب</p>
+            <form id="activateCodeForm" onsubmit="handleActivateCode(event)">
+                <input type="text" id="activateInput" placeholder="أدخل كود التفعيل هنا" style="width:100%; padding:12px; border-radius:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:1rem; text-align:center; margin-bottom:14px; font-family:inherit;" required>
+                <p id="activateError" style="color:#f87171; font-size:0.82rem; margin-bottom:12px; display:none;"></p>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" onclick="closeActivateModal()" style="flex:1; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:transparent; color:#fff; cursor:pointer; font-family:inherit;">إلغاء</button>
+                    <button type="submit" id="btnActivateSubmit" class="btn-primary" style="flex:2; padding:10px; border-radius:8px; cursor:pointer;">تفعيل الكورس 🚀</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- ── Main Layout ──────────────────────────────── -->
     <div class="platform-layout">

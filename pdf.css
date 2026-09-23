@@ -1,0 +1,284 @@
+/* ── PDF Purchase & Download Page Styles (Ali Abbas Platform) ── */
+:root {
+    --bg-dark: #0f1117;
+    --card-bg: rgba(22, 26, 36, 0.85);
+    --card-border: rgba(200, 241, 53, 0.25);
+    --accent-lime: #c8f135;
+    --accent-lime-hover: #b4db2d;
+    --text-white: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.7);
+    --font-arabic: 'IBM Plex Sans Arabic', -apple-system, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    font-family: var(--font-arabic);
+    direction: rtl;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 16px;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(200, 241, 53, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(200, 241, 53, 0.05) 0%, transparent 40%);
+}
+
+.pdf-container {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.pdf-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.pdf-logo-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-white);
+    text-decoration: none;
+    margin-bottom: 12px;
+}
+
+.pdf-logo-brand span {
+    color: var(--accent-lime);
+}
+
+.pdf-tagline {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Product Card */
+.pdf-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(200, 241, 53, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.pdf-details {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+}
+
+@media (min-width: 540px) {
+    .pdf-details {
+        flex-direction: row;
+        text-align: right;
+        align-items: flex-start;
+    }
+}
+
+.pdf-cover {
+    width: 140px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 2px solid var(--accent-lime);
+    box-shadow: 0 10px 24px rgba(200, 241, 53, 0.25);
+    flex-shrink: 0;
+}
+
+.pdf-info {
+    flex: 1;
+}
+
+.pdf-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-white);
+    line-height: 1.3;
+}
+
+.pdf-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.pdf-price-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200, 241, 53, 0.15);
+    border: 1px solid var(--accent-lime);
+    color: var(--accent-lime);
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Payment Form Section */
+.payment-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.payment-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-lime);
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    background: rgba(10, 12, 18, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #fff;
+    font-family: var(--font-arabic);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: var(--accent-lime);
+    box-shadow: 0 0 10px rgba(200, 241, 53, 0.2);
+}
+
+/* Payment Options Badges */
+.payment-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.payment-card-opt {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payment-card-opt.active, .payment-card-opt:hover {
+    border-color: var(--accent-lime);
+    background: rgba(200, 241, 53, 0.1);
+}
+
+.payment-card-opt i {
+    font-size: 20px;
+    color: var(--accent-lime);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.payment-card-opt span {
+    font-size: 12px;
+    font-weight: 600;
+    display: block;
+}
+
+.btn-buy {
+    width: 100%;
+    background: linear-gradient(135deg, #c8f135 0%, #a4d216 100%);
+    color: #0c0e12;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--font-arabic);
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(200, 241, 53, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.btn-buy:active {
+    transform: scale(0.98);
+}
+
+.btn-download {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+}
+
+/* Alert Message */
+.alert-box {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    display: none;
+}
+
+.alert-box.info {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid #3b82f6;
+    color: #93c5fd;
+    display: block;
+}
+
+.alert-box.success {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid #22c55e;
+    color: #86efac;
+    display: block;
+}
+
+.alert-box.error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    display: block;
+}
+
+.pdf-footer {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 13px;
+    color: var(--text-muted);
+}

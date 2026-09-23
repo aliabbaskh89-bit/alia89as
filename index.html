@@ -5,28 +5,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>علي عباس | مصمم ومدرب گرافيك</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2EJSHP00Q"></script>
     <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-B2EJSHP00Q');</script>
     <meta name="description" content="كورسات، شروحات، وخدمات تصميم احترافية — كل شيء في مكان واحد.">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#c8f135">
-    <link rel="apple-touch-icon" href="/profile.jpg">
-    <link rel="preload" href="font/GraphikArabic-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="font/GraphikArabic-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <!-- iOS / iPadOS PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="علي عباس">
+    <link rel="apple-touch-icon" href="/logocopy.png">
+    
+    <link rel="preload" href="font/IBM Plex Sans Arabic-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="font/IBM Plex Sans Arabic-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS -->
-    <link rel="stylesheet" href="styles.css?v=8">
+    <link rel="stylesheet" href="styles-v21.css">
+    <link rel="stylesheet" href="pwa-install.css?v=1">
+    <script src="pwa-install.js?v=1" defer></script>
 </head>
 
 <body>
     <div id="scroll-progress"></div>
-    <div class="bg-blobs" aria-hidden="true">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-        <div class="blob blob-4"></div>
+    <!-- ── Background Effects ─── -->
+    <div class="platform-bg-effects" aria-hidden="true">
+        <div class="platform-blob platform-blob-1"></div>
+        <div class="platform-blob platform-blob-2"></div>
+        <div class="platform-blob platform-blob-3"></div>
     </div>
+
+    <!-- Particles -->
+    <div class="platform-particles" id="platformParticles"></div>
+    <script>
+        (function() {
+            var c = document.getElementById('platformParticles');
+            if (c) {
+                c.innerHTML = '';
+                for (var i = 0; i < 40; i++) {
+                    var p = document.createElement('div');
+                    p.className = 'particle';
+                    p.style.left = (Math.random() * 100) + 'vw';
+                    p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                    p.style.animationDelay = (Math.random() * 10) + 's';
+                    c.appendChild(p);
+                }
+            }
+        })();
+    </script>
     <!-- Header & Navbar -->
     <header class="header" id="header">
         <div class="container nav-wrapper">
@@ -36,6 +65,7 @@
                     <li><a href="#home" class="nav-link active">الرئيسية</a></li>
                     <li><a href="#about" class="nav-link">عني</a></li>
                     <li><a href="#courses" class="nav-link">كورساتي</a></li>
+                    <li><a href="#digital-books" class="nav-link">الكتب الرقمية 📖</a></li>
                     <li><a href="#subscribe" class="nav-link">الاشتراك</a></li>
                     <li><a href="#services" class="nav-link">خدماتي</a></li>
                     <li><a href="#tutorials" class="nav-link">شروحاتي</a></li>
@@ -44,7 +74,7 @@
                     <li><a href="#portfolio" class="nav-link">أعمالي</a></li>
                     <li class="mobile-nav-actions">
                         <button onclick="openRegisterModal()" class="btn btn-primary"
-                            style="border:none;cursor:pointer;width:100%;">📋 استمارة كورس بغداد</button>
+                            style="border:none;cursor:pointer;width:100%;">🤖 استمارة كورس الذكاء الاصطناعي</button>
                         <a href="login.html" class="btn btn-outline" style="display:block;text-align:center;">🎬 منصة
                             الكورسات</a>
                     </li>
@@ -56,7 +86,7 @@
                     </button>
                     <a href="en.html" class="btn-icon text-bold" aria-label="Switch to English">EN</a>
                     <a href="#register" onclick="openRegisterModal(); return false;"
-                        class="btn btn-primary d-none-mobile" style="border:none;">📋 استمارة كورس بغداد</a>
+                        class="btn btn-primary d-none-mobile" style="border:none;">🤖 استمارة كورس الذكاء الاصطناعي</a>
                     <a href="login.html" class="btn btn-outline d-none-mobile">🎬 منصة الكورسات</a>
                 </div>
             </nav>
@@ -82,8 +112,8 @@
                         احترافية — كل شيء في مكان واحد.</p>
                     <div class="hero-actions" style="flex-direction: column; gap: 16px;">
                         <a href="#register" onclick="openRegisterModal(); return false;" class="btn btn-primary"
-                            style="font-size: 1.3rem; padding: 16px 32px; width: 100%; text-align: center; box-shadow: 0 4px 15px rgba(200, 241, 53, 0.3);">📋
-                            استمارة كورس بغداد</a>
+                            style="font-size: 1.3rem; padding: 16px 32px; width: 100%; text-align: center; box-shadow: 0 4px 15px rgba(200, 241, 53, 0.3);">🤖
+                            استمارة كورس الذكاء الاصطناعي</a>
                         <div style="display: flex; gap: 16px; width: 100%;">
                             <a href="#courses" class="btn btn-outline" style="flex: 1; text-align: center;">شاهد
                                 الكورسات</a>
@@ -331,6 +361,24 @@
                                 <a href="#subscribe" class="btn btn-primary btn-sm w-100">احجز الآن</a>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Digital Books Section -->
+        <section id="digital-books" class="courses section" style="background: rgba(255, 255, 255, 0.02);">
+            <div class="container">
+                <div class="section-title text-center reveal reveal-up">
+                    <h2>الكتب والملفات الرقمية 📖</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">تصفح وحمّل ملفات الشرح والكتب الرقمية الحصرية مباشرة</p>
+                </div>
+
+                <div class="courses-grid reveal reveal-stagger" id="home-pdfs-container">
+                    <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i>
+                        <p style="margin-top: 10px;">جاري تحميل الكتب الرقمية...</p>
                     </div>
                 </div>
             </div>
@@ -765,7 +813,8 @@
         <span id="toast-msg">تم الإرسال بنجاح!</span>
     </div>
 
-    <script src="script.js?v=6"></script>
+    <!-- Scripts -->
+    <script src="script.js?v=21"></script>
 
     <!-- ── Registration Modal ───────────────────────────── -->
     <style>
@@ -936,6 +985,177 @@
             background: #1e1e35;
             margin: 20px 0;
         }
+
+        /* ── Course Details Accordion ── */
+        .course-details-section {
+            margin-bottom: 24px;
+        }
+
+        .course-details-toggle {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(200, 241, 53, .25);
+            background: linear-gradient(135deg, #0f1a2e, #1a0f2e);
+            color: #c8f135;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all .3s ease;
+            animation: pulseGlow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(200, 241, 53, 0); }
+            50% { box-shadow: 0 0 18px 3px rgba(200, 241, 53, .12); }
+        }
+
+        .course-details-toggle:hover {
+            border-color: #c8f135;
+            background: linear-gradient(135deg, #141f33, #1f1433);
+        }
+
+        .course-details-toggle.active {
+            animation: none;
+            border-color: #c8f135;
+            background: linear-gradient(135deg, #141f33, #1f1433);
+        }
+
+        .course-details-toggle .toggle-arrow {
+            transition: transform .4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: .75rem;
+        }
+
+        .course-details-toggle.active .toggle-arrow {
+            transform: rotate(-90deg);
+        }
+
+        .course-details-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .course-details-content.open {
+            max-height: 3000px;
+        }
+
+        .course-details-inner {
+            padding: 20px 0 0;
+        }
+
+        .course-goals {
+            background: linear-gradient(135deg, rgba(200, 241, 53, .06), rgba(200, 241, 53, .02));
+            border: 1px solid rgba(200, 241, 53, .15);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .course-goals h4 {
+            margin: 0 0 14px;
+            font-size: .95rem;
+            color: #c8f135;
+            font-weight: 700;
+        }
+
+        .course-goals ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .course-goals li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: .87rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .course-goals li::before {
+            content: '\2705';
+            flex-shrink: 0;
+            font-size: .75rem;
+            margin-top: 2px;
+        }
+
+        .modules-title {
+            font-size: .95rem;
+            font-weight: 700;
+            color: #c8f135;
+            margin: 0 0 12px;
+        }
+
+        .course-module {
+            background: rgba(255, 255, 255, .02);
+            border: 1px solid #1e1e35;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            transition: border-color .3s;
+        }
+
+        .course-module:hover {
+            border-color: rgba(200, 241, 53, .25);
+        }
+
+        .course-module-header {
+            padding: 14px 16px;
+            font-size: .88rem;
+            font-weight: 700;
+            color: #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .course-module-header .module-num {
+            background: #c8f135;
+            color: #111;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .78rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .course-module-items {
+            padding: 2px 52px 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .course-module-items span {
+            font-size: .82rem;
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .course-module-items span::before {
+            content: '\25C6 ';
+            color: rgba(200, 241, 53, .45);
+            font-size: .5rem;
+            vertical-align: middle;
+        }
+
+        .course-module.featured {
+            border-color: rgba(200, 241, 53, .3);
+            background: linear-gradient(135deg, rgba(200, 241, 53, .04), transparent);
+        }
     </style>
 
     <div id="registerModal" class="reg-modal-overlay" onclick="if(event.target===this)closeRegisterModal()">
@@ -943,11 +1163,115 @@
             <button onclick="closeRegisterModal()" class="reg-modal-close">✕</button>
 
             <div class="reg-modal-header">
-                <h2>📋 استمارة كورس بغداد</h2>
-                <p>أكمل البيانات وسيتواصل معك المدرب قريباً</p>
+                <h2>🤖 استمارة كورس الذكاء الاصطناعي</h2>
+                <p>الذكاء الاصطناعي للمصممين — أكمل البيانات وسيتواصل معك المدرب قريباً</p>
             </div>
 
             <div class="reg-modal-body">
+
+                <!-- Course Details Accordion -->
+                <div class="course-details-section">
+                    <button type="button" class="course-details-toggle" onclick="toggleCourseDetails(this)">
+                        <span>🎯 شنو اللي تستفاد منه بعد الكورس؟</span>
+                        <span class="toggle-arrow">◀</span>
+                    </button>
+                    <div class="course-details-content" id="courseDetailsContent">
+                        <div class="course-details-inner">
+
+                            <div class="course-goals">
+                                <h4>✨ بعد ما تكمل الكورس راح تقدر:</h4>
+                                <ul>
+                                    <li>تختصر وقت التصميم والبحث والتنفيذ</li>
+                                    <li>تنتج تصاميم بجودة واحترافية أعلى</li>
+                                    <li>تحول أي فكرة إلى تصميم قابل للتنفيذ</li>
+                                    <li>تستخدم الذكاء الاصطناعي كأداة حقيقية داخل شغلك</li>
+                                    <li>تزيد قدرتك على إنجاز مشاريع أكثر وبالتالي زيادة دخلك</li>
+                                </ul>
+                            </div>
+
+                            <h4 class="modules-title">📚 محاور الكورس</h4>
+
+                            <div class="course-module">
+                                <div class="course-module-header">
+                                    <span class="module-num">1</span>
+                                    الذكاء الاصطناعي للمصمم
+                                </div>
+                                <div class="course-module-items">
+                                    <span>شنو هو الذكاء الاصطناعي؟</span>
+                                    <span>شلون دخل عالم التصميم؟</span>
+                                    <span>شلون غيّر طريقة عمل المصمم؟</span>
+                                    <span>الفرق بين المصمم التقليدي والمصمم المدعوم بالـAI</span>
+                                    <span>أهم أدوات الذكاء الاصطناعي للمصممين ومتى تستخدم كل أداة</span>
+                                </div>
+                            </div>
+
+                            <div class="course-module">
+                                <div class="course-module-header">
+                                    <span class="module-num">2</span>
+                                    هندسة البرومبت Prompt Engineering
+                                </div>
+                                <div class="course-module-items">
+                                    <span>شنو هو الـPrompt؟</span>
+                                    <span>شلون تفكر قبل ما تكتب البرومت؟</span>
+                                    <span>مكونات البرومت الاحترافي</span>
+                                    <span>بناء برومت من الصفر</span>
+                                    <span>الأخطاء اللي تخلي النتيجة ضعيفة</span>
+                                    <span>تحويل الفكرة والكلام إلى Prompt احترافي</span>
+                                    <span>تطوير البرومت للوصول للنتيجة المطلوبة</span>
+                                </div>
+                            </div>
+
+                            <div class="course-module">
+                                <div class="course-module-header">
+                                    <span class="module-num">3</span>
+                                    توليد الصور الاحترافية
+                                </div>
+                                <div class="course-module-items">
+                                    <span>شلون تحصل على أفكار بصرية قوية</span>
+                                    <span>التغذية البصرية باستخدام AI</span>
+                                    <span>توليد الشخصيات والمنتجات والمشاهد</span>
+                                    <span>التحكم بالإضاءة، الكاميرا، الزوايا، التكوين والستايل</span>
+                                    <span>توليد صور إعلانية واقعية واحترافية</span>
+                                    <span>تعديل وتطوير النتائج بدل إعادة التوليد من الصفر</span>
+                                </div>
+                            </div>
+
+                            <div class="course-module featured">
+                                <div class="course-module-header">
+                                    <span class="module-num">4</span>
+                                    من الفكرة إلى الإعلان ⭐
+                                </div>
+                                <div class="course-module-items">
+                                    <span>شلون تطلع فكرة لحملة إعلانية</span>
+                                    <span>تحويل الفكرة إلى Concept بصري</span>
+                                    <span>بناء المشهد باستخدام AI</span>
+                                    <span>دمج العناصر بصورة واقعية</span>
+                                    <span>استخدام Photoshop لتنفيذ الفكرة</span>
+                                    <span>معالجة العيوب والدمج والرتوش</span>
+                                    <span>تحويل صورة مولدة بالـAI إلى تصميم إعلاني جاهز</span>
+                                </div>
+                            </div>
+
+                            <div class="course-module">
+                                <div class="course-module-header">
+                                    <span class="module-num">5</span>
+                                    تطبيقات عملية 🔥
+                                </div>
+                                <div class="course-module-items">
+                                    <span>تصميم إعلان لمنتج</span>
+                                    <span>تصميم حملة للسوشيال ميديا</span>
+                                    <span>تصميم بوستر إعلاني</span>
+                                    <span>إنشاء Key Visual للحملة</span>
+                                    <span>تنفيذ مشروع كامل: الفكرة ← البرومت ← التوليد ← Photoshop ← التصميم النهائي</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reg-divider"></div>
+
                 <form id="registerForm" onsubmit="submitRegister(event)">
 
                     <div class="reg-row">
@@ -1007,6 +1331,11 @@
             document.getElementById('registerModal').style.display = 'none';
             document.body.style.overflow = '';
         }
+        function toggleCourseDetails(btn) {
+            const content = document.getElementById('courseDetailsContent');
+            btn.classList.toggle('active');
+            content.classList.toggle('open');
+        }
         async function submitRegister(e) {
             e.preventDefault();
             const form = e.target;
@@ -1019,7 +1348,7 @@
                 telegram: form.telegram.value,
                 whatsapp: form.whatsapp.value,
                 instagram: form.instagram.value,
-                course: 'كورس بغداد الحضوري'
+                course: 'كورس الذكاء الاصطناعي'
             };
             btn.disabled = true;
             btn.textContent = 'جاري الإرسال...';

@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم | علي عباس</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="manifest" href="/manifest-admin.json">
     <meta name="theme-color" content="#c8f135">
-    <link rel="apple-touch-icon" href="/profile.jpg">
-    <link rel="preload" href="font/GraphikArabic-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="font/GraphikArabic-Bold.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="platform.css">
+    
+    <!-- iOS / iPadOS PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="لوحة تحكم — علي عباس">
+    <link rel="apple-touch-icon" href="/logocopy.png">
+
+    <link rel="preload" href="font/IBM Plex Sans Arabic-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="font/IBM Plex Sans Arabic-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="platform.css?v=17">
+    <link rel="icon" type="image/x-icon" href="icon.png">
     <style>
         /* ── Modal ── */
         .modal-overlay {
@@ -61,7 +71,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-muted);
-            font-family: 'GraphikArabic', sans-serif;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
             font-size: .9rem;
             cursor: pointer;
             transition: all .2s;
@@ -115,7 +125,7 @@
             justify-content: space-between;
             align-items: center;
             user-select: none;
-            font-family: 'GraphikArabic', sans-serif;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
             font-size: .93rem;
         }
         .cs-wrap.open .cs-head { border-color: var(--primary); }
@@ -138,7 +148,7 @@
             padding: 10px 14px;
             cursor: pointer;
             text-align: right;
-            font-family: 'GraphikArabic', sans-serif;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
             font-size: .9rem;
             transition: background .12s;
         }
@@ -165,7 +175,7 @@
             border: 1px solid var(--border-color);
             background: var(--bg-main);
             color: var(--text-main);
-            font-family: 'GraphikArabic', sans-serif;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
             font-size: .93rem;
             text-align: right;
         }
@@ -177,7 +187,7 @@
             color: #1a1a1a;
             border-radius: 16px;
             padding: 40px 32px 36px;
-            font-family: 'GraphikArabic', sans-serif;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
             direction: rtl;
             text-align: right;
             box-shadow: 0 8px 40px rgba(0,0,0,.35);
@@ -231,6 +241,48 @@
             margin-bottom: 8px;
             transform: rotate(-15deg);
             letter-spacing: 1px;
+        }
+
+        /* Login-specific particles & features */
+        .login-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .login-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(167, 255, 13, .4);
+            border-radius: 50%;
+            animation: loginFloat linear infinite;
+        }
+        @keyframes loginFloat {
+            0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 1; }
+            100% { transform: translateY(-20px) rotate(360deg); opacity: 0; }
+        }
+        .login-features {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp .7s ease-out .6s both;
+        }
+        .login-feature {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .75rem;
+            color: var(--text-muted);
+            background: rgba(167,255,13,.04);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(167,255,13,.08);
         }
     </style>
 </head>
@@ -290,20 +342,45 @@
     </div>
 
     <!-- ── Admin Login Gate ─────────────────────────── -->
-    <div id="adminLogin" class="admin-gate">
-        <div class="login-card" style="max-width:400px; margin:auto;">
-            <h2 style="text-align:center; margin-bottom:6px;">⚙️ لوحة التحكم</h2>
-            <p style="text-align:center; color:var(--text-muted); font-size:.85rem; margin-bottom:20px;">
-                منصة كورسات علي عباس
-            </p>
-            <div class="input-group">
-                <input type="password" id="adminKeyInput"
-                    placeholder="أدخل مفتاح الأدمن"
-                    style="letter-spacing:0; text-align:right; font-size:1rem;">
+    <div id="adminLogin" class="login-body" style="position:fixed; inset:0; z-index:99999; display:flex; align-items:center; justify-content:center;">
+        
+        <!-- Background Effects -->
+        <div class="platform-bg-effects" aria-hidden="true">
+            <div class="platform-blob platform-blob-1"></div>
+            <div class="platform-blob platform-blob-2"></div>
+            <div class="platform-blob platform-blob-3"></div>
+        </div>
+        
+        <!-- Particles -->
+        <div class="platform-particles" id="adminLoginParticles"></div>
+
+        <div class="login-container">
+            <div class="login-logo">
+                <img src="profile.jpg" alt="علي عباس" class="login-avatar">
+                <h1 style="margin-bottom:0">علي عباس</h1>
+                <p>⚙️ لوحة الإدارة والتحكم</p>
             </div>
-            <p id="adminKeyError" class="error-msg" style="display:none">❌ المفتاح غير صحيح</p>
-            <p id="adminNetError" class="error-msg" style="display:none">⚠️ تأكد من تشغيل السيرفر أولاً</p>
-            <button id="adminLoginBtn" class="btn-primary">دخول</button>
+
+            <div class="login-card" style="max-width:400px; margin:auto;">
+                <h2 style="text-align:center; margin-bottom:20px;">أدخل مفتاح الأدمن</h2>
+                
+                <div class="input-group">
+                    <input type="password" id="adminKeyInput"
+                        placeholder="أدخل المفتاح هنا"
+                        style="letter-spacing:0; text-align:center; font-size:1.1rem; padding:14px;">
+                </div>
+                <p id="adminKeyError" class="error-msg" style="display:none; text-align:center; margin-top:10px;">❌ المفتاح غير صحيح</p>
+                <p id="adminNetError" class="error-msg" style="display:none; text-align:center; margin-top:10px;">⚠️ تأكد من تشغيل السيرفر أولاً</p>
+                
+                <button id="adminLoginBtn" class="btn-primary" style="margin-top:20px; width: 100%;">
+                    دخول
+                </button>
+            </div>
+            
+            <div class="login-features">
+                <span class="login-feature" style="color:var(--text-muted); background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:6px 12px; border-radius:20px; font-size:.8rem;">🔐 وصول مشفر</span>
+                <span class="login-feature" style="color:var(--text-muted); background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:6px 12px; border-radius:20px; font-size:.8rem;">📊 إدارة شاملة</span>
+            </div>
         </div>
     </div>
 
@@ -343,6 +420,9 @@
                 <button class="admin-tab" onclick="showTab('receipt', this)">🧾 إصدار وصل</button>
                 <button class="admin-tab" onclick="showTab('receipts-archive', this)">🗂️ أرشيف الوصولات</button>
                 <button class="admin-tab" onclick="showTab('faq', this); loadAdminFAQs();">❓ الأسئلة الشائعة</button>
+                <button class="admin-tab" onclick="showTab('courses', this); loadAdminCourses();">📚 إعدادات الكورسات</button>
+                <button class="admin-tab" onclick="showTab('resources', this); loadAdminResources();">📁 مكتبة الملفات</button>
+                <button class="admin-tab" onclick="showTab('pdfs', this); loadAdminPDFs();">📖 بيع ملفات PDF</button>
             </div>
 
             <!-- ── Students Tab ─────────────────────── -->
@@ -354,19 +434,26 @@
                         <input type="text" id="studentNameInput"
                             placeholder="اسم الطالب الكامل" required>
 
-                        <div style="font-size:.85rem; color:var(--text-muted); margin-bottom:-4px;">اختر الكورس:</div>
-                        <div class="courses-checkboxes">
-                            <label><input type="checkbox" class="course-checkbox" value="graphics"> الكورس الشامل في الجرافيك</label>
-                            <label><input type="checkbox" class="course-checkbox" value="social"> تصميم السوشيال ميديا</label>
-                            <label><input type="checkbox" class="course-checkbox" value="branding"> الهوية البصرية</label>
-                            <label><input type="checkbox" class="course-checkbox" value="indesign"> Adobe InDesign</label>
-                            <label><input type="checkbox" class="course-checkbox" value="recorded"> الكورس المسجل (مقاطع)</label>
-                            <label><input type="checkbox" class="course-checkbox" value="baghdad1"> كورس بغداد الحضوري ١</label>
-                            <label><input type="checkbox" class="course-checkbox" value="baghdad2"> كورس بغداد الحضوري ٢</label>
-                            <label><input type="checkbox" class="course-checkbox" value="all"> ⭐ جميع الكورسات</label>
+                        <div class="multi-select-wrap" id="ms-courses">
+                            <div class="ms-head" onclick="toggleMultiSelect(this)">
+                                <div class="ms-tags" id="ms-tags-container">
+                                    <span class="ms-placeholder">اضغط لاختيار الكورسات...</span>
+                                </div>
+                                <span class="ms-arrow">▾</span>
+                            </div>
+                            <div class="ms-list">
+                                <label class="ms-opt"><input type="checkbox" class="course-checkbox" value="graphics" onchange="updateMultiSelect()"> <span class="ms-opt-text">الكورس الشامل في الجرافيك</span></label>
+                                <label class="ms-opt"><input type="checkbox" class="course-checkbox" value="social" onchange="updateMultiSelect()"> <span class="ms-opt-text">تصميم السوشيال ميديا</span></label>
+                                <label class="ms-opt"><input type="checkbox" class="course-checkbox" value="branding" onchange="updateMultiSelect()"> <span class="ms-opt-text">الهوية البصرية</span></label>
+                                <label class="ms-opt"><input type="checkbox" class="course-checkbox" value="indesign" onchange="updateMultiSelect()"> <span class="ms-opt-text">Adobe InDesign</span></label>
+                                <label class="ms-opt"><input type="checkbox" class="course-checkbox" value="recorded" onchange="updateMultiSelect()"> <span class="ms-opt-text">الكورس المسجل (مقاطع)</span></label>
+                                <label class="ms-opt"><input type="checkbox" class="course-checkbox" value="baghdad1" onchange="updateMultiSelect()"> <span class="ms-opt-text">كورس بغداد الحضوري ١</span></label>
+                                <label class="ms-opt"><input type="checkbox" class="course-checkbox" value="baghdad2" onchange="updateMultiSelect()"> <span class="ms-opt-text">كورس بغداد الحضوري ٢</span></label>
+                                <label class="ms-opt"><input type="checkbox" class="course-checkbox" value="all" onchange="updateMultiSelect()"> <span class="ms-opt-text">⭐ جميع الكورسات</span></label>
+                            </div>
                         </div>
 
-                        <button type="submit" id="addStudentBtn" class="btn-primary" style="max-width:220px">
+                        <button type="submit" id="addStudentBtn" class="btn-primary" style="margin: 0 auto; min-width: 250px; font-size: 1.05rem; padding: 14px 24px;">
                             إضافة وتوليد كود
                         </button>
                     </form>
@@ -482,14 +569,66 @@
                     <!-- Add FAQ Form -->
                     <form id="faqAddForm" style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;padding:20px;background:var(--bg-main);border-radius:14px;border:1px solid var(--border-color);">
                         <div style="font-size:.85rem;font-weight:700;color:var(--text-muted);margin-bottom:4px;">➕ إضافة سؤال جديد</div>
-                        <input type="text" id="faqQuestionInput" placeholder="اكتب السؤال..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-light);color:var(--text-main);font-family:'GraphikArabic',sans-serif;font-size:.93rem;text-align:right;box-sizing:border-box;" required>
-                        <textarea id="faqAnswerInput" rows="3" placeholder="اكتب الإجابة..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-light);color:var(--text-main);font-family:'GraphikArabic',sans-serif;font-size:.93rem;text-align:right;resize:vertical;box-sizing:border-box;"></textarea>
+                        <input type="text" id="faqQuestionInput" placeholder="اكتب السؤال..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-light);color:var(--text-main);font-family:'IBM Plex Sans Arabic',sans-serif;font-size:.93rem;text-align:right;box-sizing:border-box;" required>
+                        <textarea id="faqAnswerInput" rows="3" placeholder="اكتب الإجابة..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-light);color:var(--text-main);font-family:'IBM Plex Sans Arabic',sans-serif;font-size:.93rem;text-align:right;resize:vertical;box-sizing:border-box;"></textarea>
                         <button type="submit" id="faqAddBtn" class="btn-primary" style="max-width:200px;">إضافة السؤال</button>
                         <p id="faqAddMsg" style="display:none;font-size:.88rem;margin:0;"></p>
                     </form>
 
                     <!-- FAQ List -->
                     <div id="faqAdminList">
+                        <p class="empty-table">جاري التحميل...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Resources Tab ──────────────────────────── -->
+            <div id="tab-resources" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>📁 مكتبة الملفات (Resources)</h3>
+                    <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:20px;">ارفع ملفات (PDF، صور، ZIP) ليتمكن الطلاب من تحميلها.</p>
+                    
+                    <form id="uploadResourceForm" class="add-student-form" style="max-width:600px; margin:0 auto 30px;">
+                        <input type="text" id="resTitleInput" placeholder="عنوان الملف (مثلاً: ملزمة الجرافيك)" required style="margin-bottom:12px;">
+                        
+                        <div class="cs-wrap" id="resCourseSelect" onclick="this.classList.toggle('open')" style="margin-bottom:12px;">
+                            <div class="cs-head"><span class="cs-val">⭐ جميع الكورسات (عام)</span><span class="cs-arrow">▼</span></div>
+                            <input type="hidden" id="resCourseVal" value="all">
+                            <div class="cs-list">
+                                <div class="cs-opt active" onclick="setResCourse('all', '⭐ جميع الكورسات (عام)')">⭐ جميع الكورسات (عام)</div>
+                                <div class="cs-opt" onclick="setResCourse('graphics', 'الكورس الشامل في الجرافيك')">الكورس الشامل في الجرافيك</div>
+                                <div class="cs-opt" onclick="setResCourse('social', 'تصميم السوشيال ميديا')">تصميم السوشيال ميديا</div>
+                                <div class="cs-opt" onclick="setResCourse('branding', 'الهوية البصرية')">الهوية البصرية</div>
+                                <div class="cs-opt" onclick="setResCourse('indesign', 'Adobe InDesign')">Adobe InDesign</div>
+                                <div class="cs-opt" onclick="setResCourse('recorded', 'الكورس المسجل (مقاطع)')">الكورس المسجل (مقاطع)</div>
+                                <div class="cs-opt" onclick="setResCourse('baghdad1', 'كورس بغداد الحضوري ١')">كورس بغداد الحضوري ١</div>
+                                <div class="cs-opt" onclick="setResCourse('baghdad2', 'كورس بغداد الحضوري ٢')">كورس بغداد الحضوري ٢</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                            <button type="button" onclick="document.getElementById('resFileInput').click()" class="btn-secondary" style="flex:1">📎 <span id="resFileLabel">اختر ملف (PDF, ZIP, الخ)</span></button>
+                            <input type="file" id="resFileInput" required style="display:none" onchange="document.getElementById('resFileLabel').textContent=this.files[0]?this.files[0].name:'اختر ملف (PDF, ZIP, الخ)'">
+                        </div>
+                        
+                        <button type="submit" id="resUploadBtn" class="btn-primary" style="width:100%">📤 رفع الملف</button>
+                        <div id="resUploadProgress" style="display:none; margin-top:10px; background:var(--bg-main); border-radius:8px; height:8px; overflow:hidden;">
+                            <div id="resUploadBar" style="background:var(--primary); width:0%; height:100%; transition:width 0.2s;"></div>
+                        </div>
+                    </form>
+
+                    <div id="resourcesAdminList">
+                        <p class="empty-table">جاري التحميل...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Courses Tab ──────────────────────────── -->
+            <div id="tab-courses" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>📚 إعدادات الكورسات (صور الغلاف)</h3>
+                    <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:20px;">هنا يمكنك تعديل صورة الغلاف لكل كورس بحيث تظهر كخلفية في كارت الكورس للطلاب.</p>
+                    <div id="coursesAdminList">
                         <p class="empty-table">جاري التحميل...</p>
                     </div>
                 </div>
@@ -832,6 +971,48 @@
                 <div class="admin-section">
                     <h3>🗂️ أرشيف الوصولات</h3>
                     <div id="receiptsArchiveList"><p class="empty-table">جاري التحميل...</p></div>
+                </div>
+            </div>
+
+            <!-- ── PDF Products Tab ────────────────────────── -->
+            <div id="tab-pdfs" class="admin-tab-content" style="display:none">
+                <div class="admin-section">
+                    <h3>➕ رفع وتجهيز كتاب/ملَف PDF جديد للبيع</h3>
+                    <form id="addPdfForm" style="display:flex; flex-direction:column; gap:12px; margin-top:14px;" onsubmit="uploadPdfProduct(event)">
+                        <div>
+                            <label style="font-size:.85rem; color:var(--text-muted); display:block; margin-bottom:4px">عنوان الملف/الكتاب *</label>
+                            <input type="text" id="pdfTitleInput" placeholder="مثال: كتاب تصميم الهويات البصرية الاحترافي" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);">
+                        </div>
+                        <div>
+                            <label style="font-size:.85rem; color:var(--text-muted); display:block; margin-bottom:4px">الوصف التفصيلي</label>
+                            <textarea id="pdfDescInput" rows="2" placeholder="وصف محتويات الكتاب وما يحصله المشتري..." style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-family:inherit;"></textarea>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <div style="flex:1; min-width:160px;">
+                                <label style="font-size:.85rem; color:var(--text-muted); display:block; margin-bottom:4px">السعر (بالدينار العراقي)</label>
+                                <input type="number" id="pdfPriceInput" placeholder="15000" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);">
+                            </div>
+                            <div style="flex:1; min-width:160px;">
+                                <label style="font-size:.85rem; color:var(--text-muted); display:block; margin-bottom:4px">رابط صورة الغلاف (اختياري)</label>
+                                <input type="text" id="pdfCoverInput" placeholder="/course-graphic.jpg" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size:.85rem; color:var(--text-muted); display:block; margin-bottom:4px">ملف الـ PDF * (الملَف الاصلي المعروض للبيع)</label>
+                            <input type="file" id="pdfFileInput" accept="application/pdf" required style="width:100%; padding:8px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);">
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-top:6px;">🚀 رفع الملف وتوليد رابط الشراء المباشر</button>
+                    </form>
+                </div>
+
+                <div class="admin-section" style="margin-top:24px;">
+                    <h3>📚 قائمة الكتب وملفات الـ PDF المتوفرة للبيع</h3>
+                    <div id="adminPdfsList" style="margin-top:14px;"></div>
+                </div>
+
+                <div class="admin-section" style="margin-top:24px;">
+                    <h3>💳 طلبات شراء وتنزيل الـ PDF (المدفوعات)</h3>
+                    <div id="adminPdfOrdersList" style="margin-top:14px;"></div>
                 </div>
             </div>
 
@@ -1248,8 +1429,8 @@
                                     <p style="font-size:.88rem;color:var(--text-muted);margin:0;line-height:1.7;">${faq.answer}</p>
                                 </div>
                                 <div id="faq-edit-${faq.id}" style="display:none;">
-                                    <input type="text" id="faq-edit-q-${faq.id}" value="${faq.question.replace(/"/g,'&quot;')}" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-light);color:var(--text-main);font-family:'GraphikArabic',sans-serif;font-size:.9rem;box-sizing:border-box;margin-bottom:8px;text-align:right;">
-                                    <textarea id="faq-edit-a-${faq.id}" rows="3" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-light);color:var(--text-main);font-family:'GraphikArabic',sans-serif;font-size:.9rem;resize:vertical;box-sizing:border-box;text-align:right;">${faq.answer}</textarea>
+                                    <input type="text" id="faq-edit-q-${faq.id}" value="${faq.question.replace(/"/g,'&quot;')}" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-light);color:var(--text-main);font-family:'IBM Plex Sans Arabic',sans-serif;font-size:.9rem;box-sizing:border-box;margin-bottom:8px;text-align:right;">
+                                    <textarea id="faq-edit-a-${faq.id}" rows="3" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-light);color:var(--text-main);font-family:'IBM Plex Sans Arabic',sans-serif;font-size:.9rem;resize:vertical;box-sizing:border-box;text-align:right;">${faq.answer}</textarea>
                                     <div style="display:flex;gap:8px;margin-top:8px;">
                                         <button class="btn-primary" style="padding:7px 16px;font-size:.85rem;" onclick="saveFAQEdit(${faq.id})">حفظ</button>
                                         <button class="btn-secondary" style="padding:7px 14px;font-size:.85rem;" onclick="cancelFAQEdit(${faq.id})">إلغاء</button>
@@ -1368,6 +1549,384 @@
             btn.disabled = false;
             btn.textContent = 'إضافة السؤال';
         });
+
+        // --- Multi-select logic ---
+        function toggleMultiSelect(head) {
+            const wrap = head.closest('.multi-select-wrap');
+            wrap.classList.toggle('open');
+        }
+
+        function updateMultiSelect() {
+            const wrap = document.getElementById('ms-courses');
+            const checkboxes = wrap.querySelectorAll('.course-checkbox:checked');
+            const container = document.getElementById('ms-tags-container');
+            
+            container.innerHTML = '';
+            
+            if (checkboxes.length === 0) {
+                container.innerHTML = '<span class="ms-placeholder">اضغط لاختيار الكورسات...</span>';
+                return;
+            }
+            
+            checkboxes.forEach(cb => {
+                const text = cb.nextElementSibling.textContent;
+                const tag = document.createElement('span');
+                tag.className = 'ms-tag';
+                tag.innerHTML = `${text} <span class="ms-tag-close" onclick="removeCourse(event, '${cb.value}')">✕</span>`;
+                container.appendChild(tag);
+            });
+        }
+
+        function removeCourse(e, val) {
+            e.stopPropagation(); // prevent toggling dropdown
+            const wrap = document.getElementById('ms-courses');
+            const cb = wrap.querySelector(`.course-checkbox[value="${val}"]`);
+            if (cb) {
+                cb.checked = false;
+                updateMultiSelect();
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const wrap = document.getElementById('ms-courses');
+            if (wrap && !wrap.contains(e.target)) {
+                wrap.classList.remove('open');
+            }
+        });
+
+        // ─── Resources Management ──────────────────────────────────────────────────
+        function setResCourse(val, text) {
+            document.getElementById('resCourseVal').value = val;
+            document.querySelector('#resCourseSelect .cs-val').textContent = text;
+            
+            document.querySelectorAll('#resCourseSelect .cs-opt').forEach(opt => opt.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        document.getElementById('uploadResourceForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('resUploadBtn');
+            const title = document.getElementById('resTitleInput').value;
+            const courseId = document.getElementById('resCourseVal').value;
+            const file = document.getElementById('resFileInput').files[0];
+            const adminKey = document.getElementById('adminKeyInput').value.trim();
+            const progress = document.getElementById('resUploadProgress');
+            const bar = document.getElementById('resUploadBar');
+
+            if (!file || !title) return;
+
+            btn.disabled = true;
+            btn.textContent = 'جاري الرفع...';
+            progress.style.display = 'block';
+            bar.style.width = '0%';
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('courseId', courseId);
+            formData.append('file', file);
+
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/admin/resources');
+                xhr.setRequestHeader('x-admin-key', adminKey);
+
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percent = (e.loaded / e.total) * 100;
+                        bar.style.width = percent + '%';
+                    }
+                };
+
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        alert('تم رفع الملف بنجاح! 🎉');
+                        document.getElementById('uploadResourceForm').reset();
+                        document.getElementById('resFileLabel').textContent = 'اختر ملف (PDF, ZIP, الخ)';
+                        loadAdminResources();
+                    } else {
+                        let msg = 'فشل الرفع';
+                        try {
+                            const res = JSON.parse(xhr.responseText);
+                            msg = res.error || msg;
+                        } catch (e) {
+                            msg = 'خطأ في السيرفر (' + xhr.status + ')';
+                        }
+                        alert(msg);
+                    }
+                    resetBtn();
+                };
+
+                xhr.onerror = () => {
+                    alert('خطأ في الاتصال بالشبكة');
+                    resetBtn();
+                };
+
+                xhr.send(formData);
+
+                function resetBtn() {
+                    btn.disabled = false;
+                    btn.textContent = '📤 رفع الملف';
+                    progress.style.display = 'none';
+                    bar.style.width = '0%';
+                }
+            } catch (err) {
+                alert('حدث خطأ غير متوقع');
+                btn.disabled = false;
+                btn.textContent = '📤 رفع الملف';
+                progress.style.display = 'none';
+            }
+        });
+
+        async function loadAdminResources() {
+            const list = document.getElementById('resourcesAdminList');
+            const adminKey = document.getElementById('adminKeyInput').value.trim();
+            list.innerHTML = '<p class="empty-table">جاري التحميل...</p>';
+            try {
+                const res = await fetch('/api/admin/resources', { headers: {'x-admin-key': adminKey} });
+                const data = await res.json();
+                
+                if (!data.resources || data.resources.length === 0) {
+                    list.innerHTML = '<p class="empty-table">لا توجد ملفات مرفوعة حالياً.</p>';
+                    return;
+                }
+
+                const getCourseName = (id) => {
+                    if (id === 'all') return '⭐ عام (جميع الكورسات)';
+                    const names = {
+                        graphics: 'الكورس الشامل في الجرافيك',
+                        social: 'تصميم السوشيال ميديا',
+                        branding: 'الهوية البصرية',
+                        indesign: 'Adobe InDesign',
+                        recorded: 'الكورس المسجل (مقاطع)',
+                        baghdad1: 'كورس بغداد الحضوري ١',
+                        baghdad2: 'كورس بغداد الحضوري ٢'
+                    };
+                    return names[id] || id;
+                };
+
+                const html = data.resources.map(r => `
+                    <div style="background:var(--bg-main); padding:16px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 style="margin:0 0 6px 0; color:var(--text-main); font-size:1.05rem;">${r.title}</h4>
+                            <p style="margin:0; font-size:.8rem; color:var(--text-muted);">
+                                📚 الكورس: <strong>${getCourseName(r.courseId)}</strong> | 
+                                📁 الحجم: ${Math.round(r.size / 1024 / 1024 * 100) / 100} MB
+                            </p>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <a href="${r.url}" download target="_blank" class="btn-primary" style="padding:6px 12px; text-decoration:none; font-size:.85rem;">تحميل</a>
+                            <button onclick="deleteResource(${r.id})" class="btn-secondary" style="padding:6px 12px; color:#f87171; border-color:#f87171;">حذف</button>
+                        </div>
+                    </div>
+                `).join('');
+                list.innerHTML = html;
+            } catch (err) {
+                list.innerHTML = '<p class="empty-table" style="color:#f87171">فشل تحميل الملفات</p>';
+            }
+        }
+
+        async function deleteResource(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+            const adminKey = document.getElementById('adminKeyInput').value.trim();
+            try {
+                const res = await fetch(`/api/admin/resources/${id}`, {
+                    method: 'DELETE',
+                    headers: {'x-admin-key': adminKey}
+                });
+                if (res.ok) {
+                    loadAdminResources();
+                } else {
+                    alert('فشل الحذف');
+                }
+            } catch (err) {
+                alert('خطأ في الاتصال');
+            }
+        }
+
+        function getAdminKeyHeader() {
+            return (typeof adminKey !== 'undefined' && adminKey) 
+                ? adminKey 
+                : (document.getElementById('adminKeyInput')?.value || '').trim();
+        }
+
+        // ─── PDF Store Admin Functions ─────────────────────────
+        async function loadAdminPDFs() {
+            const pdfsList = document.getElementById('adminPdfsList');
+            const ordersList = document.getElementById('adminPdfOrdersList');
+            if (!pdfsList) return;
+
+            pdfsList.innerHTML = '<p style="color:var(--text-muted)">جاري جلب الملفات...</p>';
+            ordersList.innerHTML = '<p style="color:var(--text-muted)">جاري جلب الطلبات...</p>';
+
+            const currentKey = getAdminKeyHeader();
+
+            try {
+                // Fetch PDFs
+                const resPdfs = await fetch('/api/pdfs');
+                const pdfsData = await resPdfs.json();
+                
+                if (pdfsData.pdfs && pdfsData.pdfs.length > 0) {
+                    pdfsList.innerHTML = pdfsData.pdfs.map(p => `
+                        <div style="background:var(--bg-main); padding:16px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                            <div style="display:flex; gap:12px; align-items:center;">
+                                <img src="${p.coverUrl || '/profile.jpg'}" style="width:50px; height:65px; object-fit:cover; border-radius:8px; border:1px solid var(--primary);" />
+                                <div>
+                                    <h4 style="margin:0 0 4px 0; color:var(--text-main); font-size:1rem;">${p.title}</h4>
+                                    <p style="margin:0; font-size:.8rem; color:var(--text-muted);">💰 السعر: <strong>${p.priceFormatted}</strong></p>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button onclick="copyPdfLink('${p.id}')" class="btn-primary" style="padding:6px 12px; font-size:.85rem;">📋 نسخ رابط الشراء المباشر</button>
+                                <button onclick="deletePdfProduct('${p.id}')" class="btn-secondary" style="padding:6px 12px; color:#f87171; border-color:#f87171;">حذف</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    pdfsList.innerHTML = '<p class="empty-table">لا توجد ملفات PDF معروضة حالياً.</p>';
+                }
+
+                // Fetch Orders
+                const resOrders = await fetch('/api/admin/pdf-orders', { headers: { 'x-admin-key': currentKey } });
+                const ordersData = await resOrders.json();
+
+                if (ordersData.orders && ordersData.orders.length > 0) {
+                    ordersList.innerHTML = ordersData.orders.map(o => `
+                        <div style="background:var(--bg-main); padding:14px; border-radius:12px; margin-bottom:10px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <div style="font-weight:700; font-size:0.95rem; color:var(--text-main);">${o.customerName} (${o.customerPhone})</div>
+                                <div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">
+                                    📖 الكتاب: <strong>${o.pdfTitle}</strong> | 
+                                    💳 طريقة الدفع: ${o.paymentMethod} ${o.referenceCode ? `(${o.referenceCode})` : ''} |
+                                    الحالة: <span style="color:${o.status === 'approved' ? '#4ade80' : '#f87171'}">${o.status === 'approved' ? '✅ مقبول (تم التسليم)' : '⌛ قيد الانتظار'}</span>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:6px;">
+                                ${o.status !== 'approved' ? `<button onclick="approvePdfOrder('${o.id}', 'approve')" class="btn-primary" style="padding:6px 10px; font-size:0.8rem;">موافقة وتفعيل</button>` : ''}
+                                <button onclick="approvePdfOrder('${o.id}', 'reject')" class="btn-secondary" style="padding:6px 10px; font-size:0.8rem; color:#f87171;">رفض</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    ordersList.innerHTML = '<p class="empty-table">لا توجد طلبات شراء مسجلة بعد.</p>';
+                }
+
+            } catch(e) {
+                pdfsList.innerHTML = '<p style="color:#f87171">حدث خطأ أثناء جلب البيانات</p>';
+            }
+        }
+
+        async function uploadPdfProduct(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const origHtml = btn ? btn.innerHTML : '';
+
+            const currentKey = getAdminKeyHeader();
+            const title = document.getElementById('pdfTitleInput').value.trim();
+            const desc = document.getElementById('pdfDescInput').value.trim();
+            const price = document.getElementById('pdfPriceInput').value.trim();
+            const cover = document.getElementById('pdfCoverInput').value.trim();
+            const fileInput = document.getElementById('pdfFileInput');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('يرجى تحديد ملف الـ PDF');
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⌛ جاري رفع الملف وحفظ البيانات...';
+            }
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('description', desc);
+            formData.append('price', price);
+            formData.append('coverUrl', cover);
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const res = await fetch('/api/admin/pdfs', {
+                    method: 'POST',
+                    headers: { 'x-admin-key': currentKey },
+                    body: formData
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'فشل الرفع');
+
+                alert('✅ تم رفع الكتاب وتوليد رابط الشراء بنجاح!');
+                document.getElementById('addPdfForm').reset();
+                loadAdminPDFs();
+            } catch(err) {
+                alert('❌ ' + (err.message || 'حدث خطأ أثناء الرفع'));
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            }
+        }
+
+        function copyPdfLink(id) {
+            const fullUrl = window.location.origin + '/pdf.html?id=' + id;
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                alert('✅ تم نسخ رابط الشراء المباشر للـ PDF:\n' + fullUrl);
+            }).catch(() => {
+                prompt('رابط الشراء المباشر:', fullUrl);
+            });
+        }
+
+        async function deletePdfProduct(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا الكتاب؟')) return;
+            const currentKey = getAdminKeyHeader();
+            try {
+                const res = await fetch(`/api/admin/pdfs/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'x-admin-key': currentKey }
+                });
+                if (res.ok) {
+                    loadAdminPDFs();
+                } else {
+                    alert('فشل الحذف');
+                }
+            } catch(e) {
+                alert('خطأ في الاتصال');
+            }
+        }
+
+        async function approvePdfOrder(orderId, action) {
+            const currentKey = getAdminKeyHeader();
+            try {
+                const res = await fetch('/api/admin/pdf-orders/approve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-key': currentKey },
+                    body: JSON.stringify({ orderId, action })
+                });
+                if (res.ok) {
+                    loadAdminPDFs();
+                } else {
+                    alert('حدث خطأ أثناء تعديل الطلب');
+                }
+            } catch(e) {
+                alert('خطأ في الاتصال');
+            }
+        }
+
+        // Generate floating particles for Admin Login
+        (function() {
+            const container = document.getElementById('adminLoginParticles');
+            if (!container) return;
+            for (let i = 0; i < 25; i++) {
+                const p = document.createElement('div');
+                p.className = 'platform-particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (6 + Math.random() * 8) + 's';
+                p.style.animationDelay = (Math.random() * 5) + 's';
+                p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+                p.style.opacity = (0.2 + Math.random() * 0.4);
+                container.appendChild(p);
+            }
+        })();
     </script>
     <script src="platform.js"></script>
 </body>

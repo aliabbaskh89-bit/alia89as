@@ -1,15 +1,19 @@
 {
   "name": "علي عباس — منصة الكورسات",
   "short_name": "علي عباس",
-  "description": "منصة الكورسات والتصميم الجرافيكي",
+  "description": "منصة الكورسات والتصميم الجرافيكي — علي عباس",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0f0f0f",
   "theme_color": "#c8f135",
   "lang": "ar",
   "dir": "rtl",
+  "categories": ["education", "graphics", "design"],
   "icons": [
-    { "src": "/logocopy.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "/logocopy.png", "sizes": "192x192", "type": "image/png" }
+    { "src": "/logocopy.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/logocopy.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/logocopy.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

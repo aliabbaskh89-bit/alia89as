@@ -3,6 +3,8 @@ highlight-gallery/highlight-work-12.tif
 .DS_Store
 node_modules/
 .next/
+www/
+*.exp
 
 # Videos (large binary files — don't commit to git)
 videos/

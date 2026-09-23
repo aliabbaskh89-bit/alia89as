@@ -1,5 +1,5 @@
-const CACHE = 'ali-v6';
-const STATIC = ['/', '/index.html', '/styles.css', '/script.js', '/profile.jpg'];
+const CACHE = 'ali-v22';
+const STATIC = ['/', '/index.html', '/styles-v21.css', '/platform.css?v=28', '/script.js?v=21', '/profile.jpg', '/logocopy.png', '/pwa-install.css?v=1', '/pwa-install.js?v=1'];
 
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC)));
@@ -20,6 +20,10 @@ self.addEventListener('fetch', e => {
     if (e.request.method !== 'GET') return;
 
     const url = new URL(e.request.url);
+
+    // CRITICAL: Never intercept video streaming — let browser handle Range requests directly
+    if (url.pathname.startsWith('/api/video/')) return;
+
     // Always fetch fresh for root navigation (/), HTML, JS, CSS, and API
     if (e.request.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('.js') || 
         url.pathname.endsWith('.css') || url.pathname.endsWith('.html') || url.pathname.startsWith('/api/')) {

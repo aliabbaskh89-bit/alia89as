@@ -4,53 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول | منصة علي عباس</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <meta name="description" content="سجّل دخولك لمنصة كورسات علي عباس للتصميم الجرافيكي">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2EJSHP00Q"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-B2EJSHP00Q');</script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="platform.css">
+    <link rel="preload" href="font/IBM Plex Sans Arabic-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="font/IBM Plex Sans Arabic-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="platform.css?v=20">
+    <style>
+        .auth-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+            gap: 4px;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 10px 8px;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+        .auth-tab.active {
+            background: var(--primary, #c8f135);
+            color: #000;
+            box-shadow: 0 4px 12px rgba(200,241,53,0.25);
+        }
+        .login-features {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .login-feature {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .75rem;
+            color: var(--text-muted);
+            background: rgba(167,255,13,.04);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(167,255,13,.08);
+        }
+        .form-label {
+            display: block;
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 6px;
+            text-align: right;
+        }
+    </style>
 </head>
 <body class="login-body">
+
+    <!-- ── Background Effects ─── -->
+    <div class="platform-bg-effects" aria-hidden="true">
+        <div class="platform-blob platform-blob-1"></div>
+        <div class="platform-blob platform-blob-2"></div>
+        <div class="platform-blob platform-blob-3"></div>
+    </div>
+
+    <!-- Particles -->
+    <div class="platform-particles" id="loginParticles"></div>
 
     <div class="login-container">
 
         <div class="login-logo">
             <img src="profile.jpg" alt="علي عباس" class="login-avatar">
             <h1>علي عباس</h1>
-            <p>منصة الكورسات المسجلة</p>
+            <p>منصة الكورسات والدورات التعليمية</p>
         </div>
 
         <div class="login-card">
-            <h2>أدخل كود الوصول</h2>
-            <p class="login-hint">الكود يُرسل إليك من المدرب بعد التسجيل في الكورس</p>
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab active" onclick="switchAuthTab('login', this)">تسجيل الدخول</button>
+                <button type="button" class="auth-tab" onclick="switchAuthTab('register', this)">حساب جديد</button>
+                <button type="button" class="auth-tab" onclick="switchAuthTab('code', this)">دخول بكود</button>
+            </div>
 
-            <form id="loginForm">
+            <!-- 1. User Login Form -->
+            <form id="userLoginForm">
                 <div class="input-group">
-                    <input
-                        type="text"
-                        id="codeInput"
-                        placeholder="أدخل الكود هنا"
-                        autocomplete="off"
-                        autocapitalize="characters"
-                        spellcheck="false"
-                        maxlength="20"
-                        required
-                    >
+                    <label class="form-label" for="loginIdentity">رقم الهاتف أو البريد الإلكتروني</label>
+                    <input type="text" id="loginIdentity" placeholder="07xxxxxxxx / email@domain.com" required autocomplete="username">
                 </div>
+                <div class="input-group">
+                    <label class="form-label" for="loginPassword">كلمة المرور</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <p id="userLoginError" class="error-msg" style="display:none"></p>
+                <button type="submit" id="userLoginBtn" class="btn-primary">🔑 دخول الحساب</button>
+            </form>
 
+            <!-- 2. User Register Form -->
+            <form id="userRegisterForm" style="display: none;">
+                <div class="input-group">
+                    <label class="form-label" for="regName">الاسم الكامل</label>
+                    <input type="text" id="regName" placeholder="أدخل اسمك الثلاثي" required>
+                </div>
+                <div class="input-group">
+                    <label class="form-label" for="regIdentity">رقم الهاتف أو البريد الإلكتروني</label>
+                    <input type="text" id="regIdentity" placeholder="07xxxxxxxx / email@domain.com" required>
+                </div>
+                <div class="input-group">
+                    <label class="form-label" for="regPassword">كلمة المرور</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required minlength="4">
+                </div>
+                <p id="userRegError" class="error-msg" style="display:none"></p>
+                <button type="submit" id="userRegBtn" class="btn-primary">✨ إنشاء حساب جديد</button>
+            </form>
+
+            <!-- 3. Direct Code Login Form (Legacy) -->
+            <form id="loginForm" style="display: none;">
+                <p class="login-hint" style="margin-bottom: 12px;">الكود يُرسل إليك من المدرب بعد الاشتراك بالكورس</p>
+                <div class="input-group">
+                    <input type="text" id="codeInput" placeholder="أدخل كود الاشتراك هنا" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="20">
+                </div>
                 <p id="loginError" class="error-msg" style="display:none"></p>
-
-                <button type="submit" id="loginBtn" class="btn-primary">
-                    دخول
-                </button>
+                <button type="submit" id="loginBtn" class="btn-primary">⚡ دخول مباشر بالكود</button>
             </form>
 
             <a href="index.html" class="back-link">← العودة للموقع الرئيسي</a>
         </div>
 
+        <div class="login-features">
+            <span class="login-feature">🔒 حماية الجهاز الواحد</span>
+            <span class="login-feature">🎬 كورسات مسجلة</span>
+            <span class="login-feature">✨ تفعيل الكورسات بالأكواد</span>
+        </div>
+
     </div>
 
-    <script src="platform.js"></script>
+    <script>
+        (function() {
+            const container = document.getElementById('loginParticles');
+            if (!container) return;
+            for (let i = 0; i < 25; i++) {
+                const p = document.createElement('div');
+                p.className = 'platform-particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (6 + Math.random() * 8) + 's';
+                p.style.animationDelay = (Math.random() * 5) + 's';
+                p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+                p.style.opacity = (0.2 + Math.random() * 0.4);
+                container.appendChild(p);
+            }
+        })();
+
+        function switchAuthTab(tab, btn) {
+            document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.getElementById('userLoginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('userRegisterForm').style.display = tab === 'register' ? 'block' : 'none';
+            document.getElementById('loginForm').style.display = tab === 'code' ? 'block' : 'none';
+        }
+    </script>
+    <script src="platform.js?v=20"></script>
 </body>
 </html>

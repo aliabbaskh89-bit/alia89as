@@ -503,5 +503,61 @@ function copyPayNum(num, btn) {
         }, { passive: true });
     }
 
+    // ── 6. Particles Generation ────────────────
+    // Now handled inline in index.html for maximum robustness.
 
-})();
+});
+
+// ── 7. Load PDFs into index.html ────────────────
+async function loadHomePdfs() {
+    const container = document.getElementById('home-pdfs-container');
+    if (!container) return;
+
+    try {
+        const res = await fetch('/api/pdfs');
+        const data = await res.json();
+        const pdfs = data.pdfs || [];
+
+        if (pdfs.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">
+                    <i class="fa-solid fa-book-open" style="font-size: 36px; margin-bottom: 12px; opacity: 0.5;"></i>
+                    <p>لا توجد كتب رقمية متاحة حالياً. سيتم إضافتها قريباً!</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = pdfs.map(pdf => `
+            <div class="course-card">
+                <img src="${pdf.coverUrl || '/profile.jpg'}" alt="${pdf.title}" class="course-img" loading="lazy" style="object-fit: cover; height: 220px;">
+                <div class="course-content">
+                    <div class="course-meta">
+                        <span><i class="fa-solid fa-file-pdf"></i> كتاب رقمي PDF</span>
+                        <span class="price-tag">${pdf.priceFormatted || (pdf.price + ' د.ع')}</span>
+                    </div>
+                    <h3>${pdf.title}</h3>
+                    <p>${pdf.description || 'كتاب وملف رقمي محمي جاهز للتحميل بعد الشراء.'}</p>
+                    <div class="course-actions mt-3">
+                        <a href="pdf.html?id=${pdf.id}" class="btn btn-primary btn-sm w-100" style="display: block; text-align: center; text-decoration: none;">
+                            <i class="fa-solid fa-cart-shopping"></i> شراء وتنزيل الملف
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+    } catch (e) {
+        container.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; color: #f87171; padding: 30px 0;">
+                <p>فشل في تحميل الكتب الرقمية</p>
+            </div>
+        `;
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadHomePdfs);
+} else {
+    loadHomePdfs();
+}

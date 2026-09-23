@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنزيل وشراء الكتاب | علي عباس</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="pdf.css?v=2">
+</head>
+<body>
+
+    <div class="pdf-container">
+        <!-- Header Brand -->
+        <header class="pdf-header">
+            <a href="/" class="pdf-logo-brand">
+                Ali <span>Abbas</span>
+            </a>
+            <p class="pdf-tagline">منصة الكورسات والملفات الرقمية — علي عباس</p>
+        </header>
+
+        <!-- Main Product Card -->
+        <main class="pdf-card" id="pdfCard">
+            <div id="loadingState" style="text-align: center; padding: 40px 0;">
+                <i class="fas fa-spinner fa-spin fa-2x" style="color: #c8f135; margin-bottom: 12px;"></i>
+                <p style="color: rgba(255,255,255,0.7);">جاري تحميل تفاصيل الملف الرقمي...</p>
+            </div>
+
+            <!-- PDF Content (populated dynamically) -->
+            <div id="pdfContent" style="display: none;">
+                <div class="pdf-details">
+                    <img id="pdfCover" src="/profile.jpg" alt="الغلاف" class="pdf-cover" />
+                    <div class="pdf-info">
+                        <h1 id="pdfTitle" class="pdf-title">عنوان الكتاب الرقمي</h1>
+                        <p id="pdfDesc" class="pdf-desc">وصف الكتاب والملف الرقمي المحمي للتحميل المباشر.</p>
+                        <div id="pdfPrice" class="pdf-price-tag">
+                            <i class="fas fa-tag"></i> <span>0 د.ع</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <div class="payment-section">
+                    <h3 class="payment-title">
+                        <i class="fas fa-credit-card"></i> شراء وتنزيل الملف الآن
+                    </h3>
+
+                    <div id="alertBox" class="alert-box"></div>
+
+                    <form id="checkoutForm">
+                        <div class="form-group">
+                            <label class="form-label" for="custName">الاسم الكامل *</label>
+                            <input type="text" id="custName" class="form-input" placeholder="اكتب اسمك الثلاثي" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="custPhone">رقم الهاتف *</label>
+                            <input type="tel" id="custPhone" class="form-input" placeholder="07xxxxxxxx" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">طريقة الدفع</label>
+                            <div class="payment-methods">
+                                <div class="payment-card-opt active" data-method="qicard">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>Qi Card / ماستر كارد</span>
+                                </div>
+                                <div class="payment-card-opt" data-method="zaincash">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <span>ZainCash</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="referenceGroup">
+                            <label class="form-label" id="refLabel" for="refCode">رقم الوصل / رقم عملية التحويل <span style="color:#f87171;">*</span></label>
+                            <input type="text" id="refCode" class="form-input" placeholder="أدخل رقم العملية أو كود التحويل هنا" required />
+                        </div>
+
+                        <button type="submit" id="btnSubmit" class="btn-buy">
+                            <i class="fas fa-lock"></i> إرسال الطلب وتأكيد التحويل
+                        </button>
+                    </form>
+
+                    <!-- Pending Approval Box (Shown when submitted) -->
+                    <div id="pendingBox" style="display: none; text-align: center; padding-top: 20px;">
+                        <div style="background: rgba(234, 179, 8, 0.1); border: 1px solid #eab308; border-radius: 16px; padding: 24px;">
+                            <i class="fas fa-clock" style="font-size: 48px; color: #eab308; margin-bottom: 12px;"></i>
+                            <h3 style="color: #fde047; margin-bottom: 8px;">⏳ تم إرسال الطلب بنجاح!</h3>
+                            <p style="font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 10px;">
+                                طلبك الآن قيد مراجعة وتأكيد تحويل المبلغ من الأدمن.
+                            </p>
+                            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 4px;">
+                                رقم طلبك: <strong id="pendingOrderIdText" style="color:#c8f135; font-size: 16px;"></strong>
+                            </p>
+                            <p style="font-size: 12px; color: rgba(255,255,255,0.5);">
+                                احتفظ برقم الطلب ورقم هاتفك، ويمكنك التحقق وتنزيل الملف عبر خانة البحث بالأسفل فور تأكيد التحويل.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Download Ready Box (Hidden by default) -->
+                    <div id="downloadBox" style="display: none; text-align: center; padding-top: 20px;">
+                        <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 16px; padding: 24px; margin-bottom: 16px;">
+                            <i class="fas fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 12px;"></i>
+                            <h3 style="color: #22c55e; margin-bottom: 8px;">✅ تمت عملية الشراء بنجاح!</h3>
+                            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 4px;">
+                                رقم طلبك: <strong id="orderIdText" style="color:#c8f135;"></strong>
+                            </p>
+                            <p style="font-size: 12px; color: rgba(255,255,255,0.5);">
+                                احتفظ برقم الطلب ورقم هاتفك لتنزيل الملف مرة أخرى لاحقاً
+                            </p>
+                        </div>
+                        <button id="btnDownload" class="btn-buy btn-download">
+                            <i class="fas fa-download"></i> ⚡ تنزيل الملف فوراً
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Order Lookup Section -->
+                <div class="payment-section" style="margin-top: 24px;">
+                    <h3 class="payment-title" style="font-size: 14px; color: rgba(255,255,255,0.6);">
+                        <i class="fas fa-search"></i> عندك طلب سابق؟ أدخل بياناتك لتنزيل الملف مرة أخرى
+                    </h3>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <input type="text" id="lookupOrderId" class="form-input" placeholder="رقم الطلب (ORD-...)" style="flex: 1; min-width: 160px;" />
+                        <input type="tel" id="lookupPhone" class="form-input" placeholder="رقم الهاتف" style="flex: 1; min-width: 140px;" />
+                        <button type="button" id="btnLookup" onclick="lookupOrder()" class="btn-buy" style="flex: 0 0 auto; max-width: 160px; margin-top: 0;">
+                            <i class="fas fa-search"></i> بحث
+                        </button>
+                    </div>
+                    <div id="lookupResult" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+
+            <!-- Empty / Not Found State -->
+            <div id="notFoundState" style="display: none; text-align: center; padding: 40px 0;">
+                <i class="fas fa-exclamation-triangle fa-3x" style="color: #ef4444; margin-bottom: 14px;"></i>
+                <h3 style="margin-bottom: 8px;">لم يتم العثور على الملف</h3>
+                <p style="color: rgba(255,255,255,0.6); font-size: 14px;">يرجى التأكد من رابط الكتاب أو الاختيار من القائمة الرئيسية.</p>
+                <a href="/" class="btn-buy" style="max-width: 220px; margin: 20px auto 0 auto; text-decoration: none;">العودة للرئيسية</a>
+            </div>
+        </main>
+
+        <footer class="pdf-footer">
+            <p>جميع الحقوق محفوظة © <span id="year">2026</span> منصة علي عباس</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        let currentPdfId = null;
+        let selectedPaymentMethod = 'qicard';
+
+        // Extract PDF ID from URL parameters (?id=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        currentPdfId = urlParams.get('id');
+
+        // Elements
+        const loadingState = document.getElementById('loadingState');
+        const pdfContent = document.getElementById('pdfContent');
+        const notFoundState = document.getElementById('notFoundState');
+        const alertBox = document.getElementById('alertBox');
+        const checkoutForm = document.getElementById('checkoutForm');
+        const downloadBox = document.getElementById('downloadBox');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        // Select payment options
+        document.querySelectorAll('.payment-card-opt').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.payment-card-opt').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                selectedPaymentMethod = card.dataset.method;
+            });
+        });
+
+        function showAlert(msg, type = 'info') {
+            alertBox.className = `alert-box ${type}`;
+            alertBox.textContent = msg;
+        }
+
+        // Fetch PDF Details
+        async function loadPdfDetails() {
+            if (!currentPdfId) {
+                // Fetch first available PDF or show error
+                try {
+                    const res = await fetch('/api/pdfs');
+                    const data = await res.json();
+                    if (data.pdfs && data.pdfs.length > 0) {
+                        currentPdfId = data.pdfs[0].id;
+                    } else {
+                        loadingState.style.display = 'none';
+                        notFoundState.style.display = 'block';
+                        return;
+                    }
+                } catch(e) {
+                    loadingState.style.display = 'none';
+                    notFoundState.style.display = 'block';
+                    return;
+                }
+            }
+
+            try {
+                const res = await fetch(`/api/pdf/${currentPdfId}`);
+                if (!res.ok) throw new Error('الملف غير موجود');
+                const pdf = await res.json();
+
+                document.getElementById('pdfTitle').textContent = pdf.title;
+                document.getElementById('pdfDesc').textContent = pdf.description || 'كتاب وملف رقمي حقيقي جاهز للتحميل المباشر فور الدفع.';
+                document.getElementById('pdfCover').src = pdf.coverUrl || '/profile.jpg';
+                document.getElementById('pdfPrice').querySelector('span').textContent = pdf.priceFormatted || (pdf.price + ' د.ع');
+
+                loadingState.style.display = 'none';
+                pdfContent.style.display = 'block';
+            } catch(e) {
+                loadingState.style.display = 'none';
+                notFoundState.style.display = 'block';
+            }
+        }
+
+        // Handle Checkout Form Submission
+        checkoutForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const refCode = document.getElementById('refCode').value.trim();
+
+            if (!name || !phone || !refCode) {
+                showAlert('يرجى إدخال الاسم ورقم الهاتف ورقم الوصل / التحويل', 'error');
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري إرسال الطلب...';
+
+            try {
+                const res = await fetch('/api/pdf/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        pdfId: currentPdfId,
+                        name: name,
+                        phone: phone,
+                        paymentMethod: selectedPaymentMethod,
+                        referenceCode: refCode
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'حدث خطأ أثناء تنفيذ الطلب');
+
+                showAlert('⏳ تم إرسال الطلب بنجاح! طلبك قيد المراجعة وتأكيد الدفع من الأدمن.', 'info');
+                checkoutForm.style.display = 'none';
+                
+                if (data.status === 'approved' && data.downloadUrl) {
+                    downloadBox.style.display = 'block';
+                    document.getElementById('orderIdText').textContent = data.orderId;
+                    document.getElementById('btnDownload').onclick = (ev) => {
+                        ev.preventDefault();
+                        const link = document.createElement('a');
+                        link.href = data.downloadUrl;
+                        link.download = '';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    };
+                } else {
+                    const pendingBox = document.getElementById('pendingBox');
+                    if (pendingBox) pendingBox.style.display = 'block';
+                    const pendingOrderEl = document.getElementById('pendingOrderIdText');
+                    if (pendingOrderEl) pendingOrderEl.textContent = data.orderId;
+                }
+
+            } catch(err) {
+                showAlert(err.message || 'فشل في الاتصال بالسيرفر', 'error');
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="fas fa-lock"></i> إرسال الطلب وتأكيد التحويل';
+            }
+        });
+
+        // Order Lookup Function
+        async function lookupOrder() {
+            const orderId = document.getElementById('lookupOrderId').value.trim();
+            const phone = document.getElementById('lookupPhone').value.trim();
+            const resultDiv = document.getElementById('lookupResult');
+
+            if (!orderId || !phone) {
+                resultDiv.innerHTML = '<p style="color: #fca5a5; font-size: 13px;">يرجى إدخال رقم الطلب ورقم الهاتف</p>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<p style="color: rgba(255,255,255,0.6); font-size: 13px;"><i class="fas fa-spinner fa-spin"></i> جاري البحث...</p>';
+
+            try {
+                const res = await fetch('/api/pdf/order-lookup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, phone })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'لم يتم العثور على الطلب');
+
+                if (data.status === 'approved' && data.downloadUrl) {
+                    resultDiv.innerHTML = `
+                        <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 12px; padding: 14px; text-align: center;">
+                            <p style="color: #86efac; font-size: 14px; margin-bottom: 10px;">✅ الطلب مؤكد — <strong>${data.pdfTitle}</strong></p>
+                            <a href="${data.downloadUrl}" download class="btn-buy btn-download" style="max-width: 280px; margin: 0 auto; text-decoration: none; display: inline-block;">
+                                <i class="fas fa-download"></i> تنزيل الملف
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: #fde68a; font-size: 13px;">⌛ الطلب قيد المراجعة — ${data.pdfTitle}</p>`;
+                }
+            } catch(err) {
+                resultDiv.innerHTML = `<p style="color: #fca5a5; font-size: 13px;">❌ ${err.message}</p>`;
+            }
+        }
+
+        loadPdfDetails();
+    </script>
+</body>
+</html>
