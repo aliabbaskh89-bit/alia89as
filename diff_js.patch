@@ -1,0 +1,591 @@
+diff --git a/platform.js b/platform.js
+index e12106d..ef31eb4 100644
+--- a/platform.js
++++ b/platform.js
+@@ -1,5 +1,6 @@
+ /* ═══════════════════════════════════════════════════
+    Platform JS — Login / Platform / Admin
++   REDESIGN: Interactive, animated, enhanced UX
+    ═══════════════════════════════════════════════════ */
+ 
+ if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+@@ -35,6 +36,73 @@ function showToast(msg, type = 'success') {
+     setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 350); }, 4000);
+ }
+ 
++/* ══════════════════════════════════════
++   RIPPLE EFFECT — Global
++   ══════════════════════════════════════ */
++function createRipple(event, element) {
++    const rect = element.getBoundingClientRect();
++    const ripple = document.createElement('span');
++    ripple.className = 'ripple-effect';
++    const size = Math.max(rect.width, rect.height);
++    ripple.style.width = ripple.style.height = size + 'px';
++    ripple.style.left = (event.clientX - rect.left - size / 2) + 'px';
++    ripple.style.top = (event.clientY - rect.top - size / 2) + 'px';
++    element.appendChild(ripple);
++    ripple.addEventListener('animationend', () => ripple.remove());
++}
++
++/* ══════════════════════════════════════
++   CONFETTI CELEBRATION
++   ══════════════════════════════════════ */
++function initParticles() {
++    const container = document.getElementById('platformParticles');
++    if (!container) return;
++    for (let i = 0; i < 30; i++) {
++        const p = document.createElement('div');
++        p.className = 'platform-particle';
++        p.style.left = Math.random() * 100 + 'vw';
++        p.style.animationDuration = (Math.random() * 15 + 10) + 's';
++        p.style.animationDelay = (Math.random() * 10) + 's';
++        container.appendChild(p);
++    }
++}
++
++document.addEventListener('DOMContentLoaded', initParticles);
++
++function launchConfetti() {
++    const container = document.getElementById('confettiContainer');
++    if (!container) return;
++    const colors = ['#a7ff0d', '#4a9eff', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6', '#ec4899'];
++    
++    for (let i = 0; i < 60; i++) {
++        const piece = document.createElement('div');
++        piece.className = 'confetti-piece';
++        piece.style.left = Math.random() * 100 + '%';
++        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
++        piece.style.animationDelay = (Math.random() * 2) + 's';
++        piece.style.animationDuration = (2 + Math.random() * 2) + 's';
++        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
++        piece.style.width = (6 + Math.random() * 8) + 'px';
++        piece.style.height = (6 + Math.random() * 8) + 'px';
++        container.appendChild(piece);
++    }
++    
++    setTimeout(() => { container.innerHTML = ''; }, 5000);
++}
++
++/* ══════════════════════════════════════
++   BREADCRUMB
++   ══════════════════════════════════════ */
++function updateBreadcrumb(parts) {
++    const bc = document.getElementById('breadcrumb');
++    if (!bc) return;
++    bc.innerHTML = parts.map((p, i) => {
++        const isLast = i === parts.length - 1;
++        const sep = i > 0 ? '<span class="bc-sep">‹</span>' : '';
++        return sep + `<span class="${isLast ? 'bc-active' : ''}">${p}</span>`;
++    }).join('');
++}
++
+ /* ══════════════════════════════════════
+    LOGIN PAGE
+    ══════════════════════════════════════ */
+@@ -95,6 +163,23 @@ if (document.getElementById('platformPage')) {
+     const $playerArea   = document.getElementById('playerArea');
+     const $welcomeScr   = document.getElementById('welcomeScreen');
+ 
++    if ($player) {
++        $player.onerror = function() {
++            console.error('Video error:', $player.error);
++            showToast('تعذر تشغيل الفيديو، يرجى المحاولة مرة أخرى أو إعادة تسجيل الدخول', 'error');
++        };
++    }
++
++    // ── Current lesson state ──────────────────────
++    let _currentCourseId = null;
++    let _currentVideoIndex = -1;
++
++    // ── Course icon map ───────────────────────────
++    const courseIcons = {
++        graphics: '🎨', social: '📱', branding: '🏷️', indesign: '📖',
++        recorded: '🎬', baghdad1: '🏙️', baghdad2: '🌆', all: '📚'
++    };
++
+     // ── Replies Drawer ─────────────────────────────
+     window.openReplies = function() {
+         document.getElementById('repliesDrawer').classList.add('open');
+@@ -113,7 +198,6 @@ if (document.getElementById('platformPage')) {
+             if (!res.ok) return;
+             const { questions } = await res.json();
+ 
+-            // Badge: count questions that have replies
+             const withReply = questions.filter(q => q.reply).length;
+             const badge = document.getElementById('repliesBadge');
+             if (withReply > 0) {
+@@ -210,21 +294,53 @@ if (document.getElementById('platformPage')) {
+         }
+ 
+         if (_wmInterval) clearInterval(_wmInterval);
+-        // Small delay so container has rendered dimensions
+         setTimeout(moveWatermark, 300);
+         _wmInterval = setInterval(moveWatermark, 8000);
+     }
+ 
+-    // Pause video when user switches tab (deters screen recorders)
++    // Pause video when user switches tab
+     document.addEventListener('visibilitychange', () => {
+         if (document.hidden && $player && !$player.paused) $player.pause();
+     });
+ 
+     // ── Current video state (for notes) ───────────
+-    let currentNote = null; // { courseId, videoId, videoTitle }
++    let currentNote = null;
++
++    // Welcome Stats removed - handled by Carousel now
++
++    // ── View Transitions ───────────────────────────
++    window.showCoursesView = function() {
++        document.getElementById('lecturesView').classList.remove('active-view');
++        document.getElementById('playerArea').classList.remove('active-view');
++        setTimeout(() => {
++            document.getElementById('lecturesView').style.display = 'none';
++            document.getElementById('playerArea').style.display = 'none';
++            document.getElementById('coursesView').style.display = 'flex';
++            setTimeout(() => document.getElementById('coursesView').classList.add('active-view'), 50);
++        }, 300); // match transition duration
++    };
++
++    window.showLecturesView = function() {
++        document.getElementById('coursesView').classList.remove('active-view');
++        document.getElementById('playerArea').classList.remove('active-view');
++        setTimeout(() => {
++            document.getElementById('coursesView').style.display = 'none';
++            document.getElementById('playerArea').style.display = 'none';
++            document.getElementById('lecturesView').style.display = 'flex';
++            setTimeout(() => document.getElementById('lecturesView').classList.add('active-view'), 50);
++        }, 300);
++
++        if (window.$player && !window.$player.paused) window.$player.pause();
++    };
+ 
+     // ── Load courses ───────────────────────────────
+     async function loadCourses() {
++        // Show skeleton loading
++        const track = document.getElementById('coursesCarousel');
++        track.innerHTML = Array(3).fill('').map(() =>
++            '<div class="course-card-slide skeleton" style="height: 350px;"></div>'
++        ).join('');
++
+         try {
+             const res = await authFetch('/api/my-videos');
+             if (!res.ok) { clearAuth(); window.location.href = 'login.html'; return; }
+@@ -237,21 +353,58 @@ if (document.getElementById('platformPage')) {
+     }
+ 
+     function renderCourses(courses) {
++        const track = document.getElementById('coursesCarousel');
++        const dots = document.getElementById('coursesDots');
++        
+         if (!courses.length) {
+-            $coursesList.innerHTML = '<p class="no-content">لا توجد كورسات مسجلة</p>';
++            track.innerHTML = '<p class="no-content">لا توجد كورسات مسجلة</p>';
++            dots.innerHTML = '';
+             return;
+         }
+ 
+-        $coursesList.innerHTML = courses.map((c, i) => `
+-            <div class="course-tab ${i === 0 ? 'active' : ''}" data-id="${c.id}" onclick="selectCourse('${c.id}')">
+-                <span class="course-icon">📚</span>
+-                <span class="course-tab-name">${c.title}</span>
+-                <span class="lesson-count">${c.videos.length} درس</span>
++        const progress = getProgress();
++
++        track.innerHTML = courses.map((c, i) => {
++            const watched = (progress[c.id] || []).length;
++            const total = c.videos.length;
++            const pct = total > 0 ? Math.round((watched / total) * 100) : 0;
++            const icon = courseIcons[c.id] || '📚';
++
++            return `
++            <div class="course-card-slide" id="course-slide-${i}" onclick="selectCourse('${c.id}')">
++                <div class="course-card-icon">${icon}</div>
++                <h3 class="course-card-title">${c.title}</h3>
++                <div class="course-card-stats">
++                    <span>🎬 ${total} محاضرة</span>
++                    <span>✅ ${watched} مشاهدة</span>
++                </div>
++                <div class="course-card-progress">
++                    <div class="course-progress-bar">
++                        <div class="course-progress-fill" style="width:${pct}%"></div>
++                    </div>
++                    <div class="course-card-progress-text">${pct}% مكتمل</div>
++                </div>
++                <button class="btn-enter-course">دخول الكورس</button>
+             </div>
+-        `).join('');
++        `}).join('');
++
++        dots.innerHTML = courses.map((_, i) => `<div class="carousel-dot ${i===0?'active':''}" id="dot-${i}"></div>`).join('');
++
++        // Setup IntersectionObserver for snapping dots
++        const observer = new IntersectionObserver((entries) => {
++            entries.forEach(entry => {
++                if (entry.isIntersecting) {
++                    const slideIndex = entry.target.id.split('-').pop();
++                    document.querySelectorAll('.carousel-dot').forEach(d => d.classList.remove('active'));
++                    document.getElementById(`dot-${slideIndex}`)?.classList.add('active');
++                    
++                    document.querySelectorAll('.course-card-slide').forEach(s => s.classList.remove('snapped'));
++                    entry.target.classList.add('snapped');
++                }
++            });
++        }, { root: document.querySelector('#coursesCarousel'), threshold: 0.6 });
+ 
+-        // Show first course lessons but do NOT auto-play
+-        if (courses[0]) selectCourse(courses[0].id);
++        document.querySelectorAll('.course-card-slide').forEach(slide => observer.observe(slide));
+     }
+ 
+     window.selectCourse = function(courseId) {
+@@ -259,56 +412,109 @@ if (document.getElementById('platformPage')) {
+         const course  = courses.find(c => c.id === courseId);
+         if (!course) return;
+ 
+-        document.querySelectorAll('.course-tab').forEach(t => t.classList.remove('active'));
+-        document.querySelector(`.course-tab[data-id="${courseId}"]`)?.classList.add('active');
++        _currentCourseId = courseId;
++        _currentVideoIndex = -1;
+ 
+-        // Update welcome screen text
+-        $welcomeTitle.textContent = course.title;
+-        $welcomeSub.textContent   = `${course.videos.length} محاضرة — اضغط على أي محاضرة لتشغيلها`;
++        // Transition view
++        document.getElementById('lecturesCourseTitle').textContent = course.title;
++        showLecturesView();
+ 
+-        // Hide player, show welcome
+-        $playerArea.style.display = 'none';
+-        $welcomeScr.style.display = 'flex';
++        const track = document.getElementById('lecturesCarousel');
+ 
+         if (!course.videos.length) {
+-            $lessonsList.innerHTML = '<p class="no-content">لم يتم رفع محاضرات لهذا الكورس بعد</p>';
+-            $lessonsList.style.display = 'block';
++            track.innerHTML = '<p class="no-content">لم يتم رفع محاضرات لهذا الكورس بعد</p>';
+             return;
+         }
+ 
+-        const watched    = getProgress()[courseId] || [];
+-        const watchedCnt = watched.length;
+-        const total      = course.videos.length;
+-        const lastVid    = getLastVideo(courseId);
++        const watched = getProgress()[courseId] || [];
++        const lastVid = getLastVideo(courseId);
+ 
+-        $lessonsList.style.display = 'block';
+-        $lessonsList.innerHTML = `
+-            <div class="lessons-list-header">
+-                <p class="lessons-list-title">محتوى الكورس — ${total} محاضرة</p>
+-                <span class="progress-count">${watchedCnt}/${total} ✅</span>
+-            </div>
+-            ${lastVid ? `<button class="btn-resume" onclick="resumeVideo('${courseId}')">▶ استكمل من حيث توقفت</button>` : ''}
+-            ${course.videos.map((v, i) => `
+-                <div class="lesson-item ${isWatched(courseId, v.id) ? 'watched' : ''}" data-course="${courseId}" data-id="${v.id}" data-file="${v.filename}" data-title="${v.title.replace(/"/g,'&quot;')}">
+-                    <span class="lesson-num">${isWatched(courseId, v.id) ? '✅' : (i + 1)}</span>
+-                    <span class="lesson-name" onclick="playVideo('${courseId}','${v.id}','${v.filename}','${v.title.replace(/'/g,"\\'")}',this.closest('.lesson-item'))">${v.title}</span>
+-                    <span class="play-icon">▶</span>
++        track.innerHTML = course.videos.map((v, i) => {
++            const isW = isWatched(courseId, v.id);
++            return `
++            <div class="lecture-card-slide ${isW ? 'watched' : ''}" id="lec-slide-${i}">
++                <div class="lecture-card-top">
++                    <span class="lecture-card-num">${isW ? '✅ مكتملة' : `محاضرة ${i + 1}`}</span>
++                    <span class="lecture-card-icon">🎬</span>
+                 </div>
+-            `).join('')}
+-        `;
++                <h3 class="lecture-card-title">${v.title}</h3>
++                <button class="btn-play-lecture" onclick="playVideoFromItem(this, event)" data-course="${courseId}" data-id="${v.id}" data-file="${encodeURIComponent(v.filename)}" data-title="${encodeURIComponent(v.title)}" data-index="${i}">
++                    ▶ تشغيل المحاضرة
++                </button>
++            </div>
++            `;
++        }).join('');
++
++        updateCourseProgress(courseId);
++
++        // Observer for lecture snapping effects
++        const lecObserver = new IntersectionObserver((entries) => {
++            entries.forEach(entry => {
++                if (entry.isIntersecting) {
++                    document.querySelectorAll('.lecture-card-slide').forEach(s => s.classList.remove('snapped'));
++                    entry.target.classList.add('snapped');
++                }
++            });
++        }, { root: document.querySelector('#lecturesCarousel'), threshold: 0.6 });
++
++        document.querySelectorAll('.lecture-card-slide').forEach(slide => lecObserver.observe(slide));
++
++        // Scroll to the last watched lecture (or first)
++        setTimeout(() => {
++            const container = document.querySelector('#lecturesCarousel');
++            if (lastVid) {
++                const idx = course.videos.findIndex(v => String(v.id) === String(lastVid.videoId));
++                if (idx >= 0) {
++                    const slide = document.getElementById(`lec-slide-${idx}`);
++                    if (slide) container.scrollLeft = slide.offsetLeft - container.offsetLeft - 28;
++                }
++            } else {
++                container.scrollLeft = 0; // RTL will scroll differently depending on browser, usually negative, but let's let CSS handle natural scrolling
++            }
++        }, 350);
+     };
+ 
+-    window.playVideo = function(courseId, videoId, filename, videoTitle, element) {
+-        document.querySelectorAll('.lesson-item').forEach(l => l.classList.remove('active'));
+-        element.classList.add('active');
++    window.playVideoFromItem = function(element, event) {
++        // Ripple effect
++        if (event) createRipple(event, element);
++
++        const courseId   = element.getAttribute('data-course');
++        const videoId    = element.getAttribute('data-id');
++        const filename   = decodeURIComponent(element.getAttribute('data-file'));
++        const videoTitle = decodeURIComponent(element.getAttribute('data-title'));
++        const index      = parseInt(element.getAttribute('data-index'));
++        _currentVideoIndex = index;
++        playVideo(courseId, videoId, filename, videoTitle, element);
++    };
+ 
+-        $playerArea.style.display = 'flex';
+-        $welcomeScr.style.display = 'none';
++    window.playVideo = function(courseId, videoId, filename, videoTitle, element) {
++        document.querySelectorAll('.lecture-card-slide').forEach(l => l.classList.remove('active'));
++        if (element) element.classList.add('active');
++
++        document.getElementById('coursesView').classList.remove('active-view');
++        document.getElementById('lecturesView').classList.remove('active-view');
++        
++        setTimeout(() => {
++            document.getElementById('coursesView').style.display = 'none';
++            document.getElementById('lecturesView').style.display = 'none';
++            document.getElementById('playerArea').style.display = 'flex';
++            setTimeout(() => document.getElementById('playerArea').classList.add('active-view'), 50);
++        }, 300);
+ 
+         $lessonTitle.textContent = videoTitle;
+-        $player.src = `/api/video/${courseId}/${filename}?token=${encodeURIComponent(getToken())}`;
++        $player.src = `/api/video/${encodeURIComponent(courseId)}/${encodeURIComponent(filename)}?token=${encodeURIComponent(getToken())}`;
+         $player.play().catch(() => {});
+ 
++        // Update breadcrumb
++        const course = (window._courses || []).find(c => c.id === courseId);
++        updateBreadcrumb(['المنصة', course ? course.title : '', videoTitle]);
++
++        // Update nav buttons
++        updateNavButtons();
++
++        // Update course progress bar
++        updateCourseProgress(courseId);
++
+         // Save last watched
+         saveLastVideo(courseId, videoId, filename, videoTitle);
+ 
+@@ -319,13 +525,31 @@ if (document.getElementById('platformPage')) {
+             if ($player.duration && ($player.currentTime / $player.duration) >= 0.8) {
+                 if (!isWatched(courseId, videoId)) {
+                     markWatched(courseId, videoId);
+-                    element.classList.add('watched');
+-                    element.querySelector('.lesson-num').textContent = '✅';
+-                    // Refresh progress counter
++                    if (element) {
++                        element.classList.add('watched');
++                        element.querySelector('.lesson-num').textContent = '✅';
++                    }
+                     const p    = getProgress()[courseId] || [];
+-                    const tot  = document.querySelectorAll('.lesson-item').length;
+-                    const cntEl = document.querySelector('.progress-count');
+-                    if (cntEl) cntEl.textContent = `${p.length}/${tot} ✅`;
++                    const tot  = document.querySelectorAll('.lecture-card-slide').length;
++                    
++                    // Update course progress bar
++                    updateCourseProgress(courseId);
++
++                    // Update carousel progress
++                    const slide = document.querySelector(`.course-card-slide[onclick="selectCourse('${courseId}')"]`);
++                    if (slide) {
++                        const pct = tot > 0 ? Math.round((p.length / tot) * 100) : 0;
++                        const fill = slide.querySelector('.course-progress-fill');
++                        const txt = slide.querySelector('.course-card-progress-text');
++                        if (fill) fill.style.width = pct + '%';
++                        if (txt) txt.textContent = pct + '% مكتمل';
++                    }
++
++                    // Check if all lessons are complete
++                    if (p.length >= tot) {
++                        launchConfetti();
++                        showToast('🎉 مبروك! أكملت جميع محاضرات الكورس!');
++                    }
+                 }
+             }
+         };
+@@ -339,17 +563,94 @@ if (document.getElementById('platformPage')) {
+         loadNotes();
+     };
+ 
++    // ── Navigation buttons ────────────────────────
++    function updateNavButtons() {
++        const course = (window._courses || []).find(c => c.id === _currentCourseId);
++        if (!course) return;
++
++        const btnPrev = document.getElementById('btnPrev');
++        const btnNext = document.getElementById('btnNext');
++
++        if (btnPrev) btnPrev.disabled = _currentVideoIndex <= 0;
++        if (btnNext) btnNext.disabled = _currentVideoIndex >= course.videos.length - 1;
++    }
++
++    window.navigateLesson = function(direction) {
++        const course = (window._courses || []).find(c => c.id === _currentCourseId);
++        if (!course) return;
++
++        const newIndex = _currentVideoIndex + direction;
++        if (newIndex < 0 || newIndex >= course.videos.length) return;
++
++        _currentVideoIndex = newIndex;
++        const v = course.videos[newIndex];
++        const btn = document.querySelector(`.btn-play-lecture[data-id="${v.id}"]`);
++        if (btn) {
++            playVideo(_currentCourseId, v.id, v.filename, v.title, btn.closest('.lecture-card-slide'));
++        }
++    };
++
++    // ── Course progress bar ───────────────────────
++    function updateCourseProgress(courseId) {
++        const course = (window._courses || []).find(c => c.id === courseId);
++        if (!course) return;
++
++        const watched = (getProgress()[courseId] || []).length;
++        const total = course.videos.length;
++        const pct = total > 0 ? Math.round((watched / total) * 100) : 0;
++
++        const fill = document.getElementById('courseProgressFill');
++        const pctEl = document.getElementById('courseProgressPct');
++        if (fill) fill.style.width = pct + '%';
++        if (pctEl) pctEl.textContent = pct + '%';
++    }
++
+     window.resumeVideo = function(courseId) {
+         const last = getLastVideo(courseId);
+         if (!last) return;
+         const course = (window._courses || []).find(c => c.id === courseId);
+         if (!course) return;
+-        const video = course.videos.find(v => String(v.id) === String(last.videoId));
++        const videoIndex = course.videos.findIndex(v => String(v.id) === String(last.videoId));
++        const video = videoIndex >= 0 ? course.videos[videoIndex] : null;
+         if (!video) return;
+-        const el = document.querySelector(`.lesson-item[data-id="${video.id}"]`);
+-        if (el) playVideo(courseId, video.id, video.filename, video.title, el);
++        _currentVideoIndex = videoIndex;
++        const btn = document.querySelector(`.btn-play-lecture[data-id="${video.id}"]`);
++        if (btn) playVideo(courseId, video.id, video.filename, video.title, btn.closest('.lecture-card-slide'));
+     };
+ 
++    // ── Keyboard Shortcuts ────────────────────────
++    document.addEventListener('keydown', (e) => {
++        // Don't trigger when typing in inputs
++        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
++
++        switch (e.key.toLowerCase()) {
++            case ' ':
++                e.preventDefault();
++                if ($player && $player.src) {
++                    $player.paused ? $player.play() : $player.pause();
++                }
++                break;
++            case 'n':
++                if (_currentVideoIndex >= 0) navigateLesson(1);
++                break;
++            case 'p':
++                if (_currentVideoIndex >= 0) navigateLesson(-1);
++                break;
++            case 'f':
++                if ($player && $player.src) {
++                    if (document.fullscreenElement) {
++                        document.exitFullscreen();
++                    } else {
++                        $player.requestFullscreen?.() || $player.webkitRequestFullscreen?.();
++                    }
++                }
++                break;
++            case 'escape':
++                closeReplies();
++                break;
++        }
++    });
++
+     // ── Notes ──────────────────────────────────────
+     async function loadNotes() {
+         if (!currentNote) return;
+@@ -363,18 +664,21 @@ if (document.getElementById('platformPage')) {
+     function renderNotes(notes) {
+         const list = document.getElementById('notesList');
+         if (!notes.length) {
+-            list.innerHTML = '<p style="font-size:.8rem; color:var(--text-muted); padding:4px 0;">لا توجد ملاحظات بعد لهذه المحاضرة</p>';
++            list.innerHTML = '<p style="font-size:.82rem; color:var(--text-muted); padding:8px 0; text-align:center;">💬 لا توجد ملاحظات بعد — اكتب سؤالك أدناه</p>';
+             return;
+         }
+-        list.innerHTML = notes.map(n => `
+-            <div class="note-item ${n.reply || n.replyLink ? 'has-reply' : ''}">
++        list.innerHTML = notes.map((n, i) => `
++            <div class="note-item ${n.reply || n.replyLink ? 'has-reply' : ''}" style="animation: fadeInUp .3s ease-out ${i * 0.05}s both">
+                 <p class="note-text">${n.text}</p>
+                 ${n.link ? `<a href="${n.link}" target="_blank" rel="noopener" style="font-size:.78rem; color:var(--primary); word-break:break-all;">🔗 ${n.link}</a>` : ''}
+                 ${n.attachment ? `<a href="${n.attachment}" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--primary);display:inline-block;margin-top:4px;">📎 ${n.attachment.split('/').pop()}</a>` : ''}
+-                <p class="note-meta">${new Date(n.createdAt).toLocaleDateString('ar-IQ', { year:'numeric', month:'long', day:'numeric' })}</p>
++                <p class="note-meta">
++                    <span class="note-status-dot ${n.reply || n.replyLink || n.replyAttachment ? 'replied' : 'pending'}"></span>
++                    ${new Date(n.createdAt).toLocaleDateString('ar-IQ', { year:'numeric', month:'long', day:'numeric' })}
++                </p>
+                 ${n.reply || n.replyLink || n.replyAttachment ? `
+                     <div class="note-reply">
+-                        <p class="note-reply-label">رد المدرب:</p>
++                        <p class="note-reply-label">✅ رد المدرب:</p>
+                         ${n.reply ? `<p>${n.reply}</p>` : ''}
+                         ${n.replyLink ? `<a href="${n.replyLink}" target="_blank" rel="noopener" style="font-size:.82rem; color:var(--primary); word-break:break-all;">🔗 ${n.replyLink}</a>` : ''}
+                         ${n.replyAttachment ? `<a href="${n.replyAttachment}" target="_blank" rel="noopener" style="font-size:.82rem;color:var(--primary);display:block;margin-top:4px;">📎 ${n.replyAttachment.split('/').pop()}</a>` : ''}
+@@ -431,6 +735,9 @@ if (document.getElementById('platformPage')) {
+     });
+ 
+     loadCourses();
++
++    // ── Initial breadcrumb ────────────────────────
++    updateBreadcrumb(['المنصة']);
+ }
+ 
+ /* ══════════════════════════════════════
+@@ -563,7 +870,6 @@ if (document.getElementById('adminPage')) {
+             const data = await res.json();
+             if (res.ok) {
+                 showToast('✅ تم تحديث العنوان');
+-                // Update displayed title without full reload
+                 const card = document.getElementById(`vcard-${videoId}`);
+                 const titleEl = card.querySelector('.v-title-display');
+                 const idx = titleEl.textContent.match(/^\d+\./)?.[0] || '';
+@@ -600,7 +906,6 @@ if (document.getElementById('adminPage')) {
+             const res = await aFetch('/api/admin/students');
+             const { students } = await res.json();
+             renderStudents(students);
+-            // Update stats
+             document.getElementById('statTotal').textContent    = students.length;
+             document.getElementById('statActive').textContent   = students.filter(s => s.active).length;
+             document.getElementById('statInactive').textContent = students.filter(s => !s.active).length;
+@@ -754,7 +1059,6 @@ if (document.getElementById('adminPage')) {
+             const data = await res.json();
+ 
+             if (res.ok) {
+-                // Show code in modal popup — impossible to miss
+                 document.getElementById('modalCode').textContent = data.code;
+                 document.getElementById('codeModal').classList.add('open');
+                 document.getElementById('addStudentForm').reset();
+@@ -852,7 +1156,6 @@ if (document.getElementById('adminPage')) {
+             const { questions } = await res.json();
+             renderQuestions(questions);
+ 
+-            // Badge count for unanswered
+             const unanswered = questions.filter(q => !q.reply).length;
+             const badge      = document.getElementById('qBadge');
+             if (unanswered > 0) {

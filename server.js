@@ -3,6 +3,7 @@ const jwt     = require('jsonwebtoken');
 const multer  = require('multer');
 const fs      = require('fs');
 const crypto  = require('crypto');
+const path    = require('path');
 
 function hashPassword(password) {
     return crypto.createHash('sha256').update(password + 'ALI_ABBAS_SECURITY_SALT_2026').digest('hex');
@@ -986,7 +987,7 @@ app.delete('/api/admin/questions/:id', adminAuth, (req, res) => {
 });
 
 // ─── Course Registrations ──────────────────────────────────────────────────
-app.post('/api/register', (req, res) => {
+app.post('/api/course-register', (req, res) => {
     const { fullName, age, experience, telegram, whatsapp, instagram, course } = req.body;
     if (!fullName?.trim() || !whatsapp?.trim() || !instagram?.trim()) return res.status(400).json({ error: 'الاسم، رقم الواتساب ويوزر الانستا مطلوبات' });
     const data = readJSON('registrations.json');

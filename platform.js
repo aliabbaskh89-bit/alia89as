@@ -738,7 +738,7 @@ if (document.getElementById('adminPage')) {
         else showToast('خطأ في الحذف');
     };
 
-    // ── Load & render students ─────────────────────
+    // ── Load & render students & registered app users ─────────────────────
     async function loadStudents() {
         try {
             const res = await aFetch('/api/admin/students');
@@ -751,9 +751,60 @@ if (document.getElementById('adminPage')) {
         } catch {
             showToast('خطأ في تحميل الطلاب', 'error');
         }
+        loadRegisteredUsers();
     }
 
     let _allStudents = [];
+    let _allRegisteredUsers = [];
+
+    async function loadRegisteredUsers() {
+        try {
+            const res = await aFetch('/api/admin/users');
+            if (!res.ok) return;
+            const data = await res.json();
+            renderRegisteredUsers(data.users || []);
+        } catch (e) {
+            console.error('Failed to load registered users', e);
+        }
+    }
+
+    window.filterRegisteredUsers = function(q) {
+        const term = q.trim().toLowerCase();
+        const filtered = term
+            ? _allRegisteredUsers.filter(u => u.name.toLowerCase().includes(term) || (u.identity && u.identity.toLowerCase().includes(term)))
+            : _allRegisteredUsers;
+        renderRegisteredUsers(filtered, false);
+    };
+
+    function renderRegisteredUsers(users, save = true) {
+        if (save) _allRegisteredUsers = users;
+        const tbody = document.getElementById('registeredUsersTable');
+        if (!tbody) return;
+        if (!users.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-table">لا يوجد حسابات مسجلة بعد في المنصة</td></tr>';
+            return;
+        }
+        tbody.innerHTML = users.map(u => `
+            <tr>
+                <td><strong>${u.name}</strong></td>
+                <td><span style="font-family:monospace;font-size:0.85rem">${u.identity}</span></td>
+                <td style="font-size:.8rem">${Array.isArray(u.activeCourses) && u.activeCourses.length ? u.activeCourses.map(courseLabel).join('، ') : '<span style="color:var(--text-muted)">لا يوجد كورسات</span>'}</td>
+                <td>${u.deviceId ? '<span style="color:var(--success-color);font-weight:bold;font-size:.8rem">🔐 مرتبط بجهاز</span>' : '<span style="font-size:.75rem;color:var(--text-muted)">🔗 غير مرتبط</span>'}</td>
+                <td style="font-size:.78rem;color:var(--text-muted)">${u.lastLogin ? new Date(u.lastLogin).toLocaleString('ar-IQ', {dateStyle:'short', timeStyle:'short'}) : '—'}</td>
+                <td>
+                    ${u.deviceId ? `<button class="btn-reset-device" onclick="resetUserDevice('${u.id}', '${u.name}')">🔓 فك الجهاز</button>` : '<span style="font-size:.75rem;color:var(--text-muted)">لا يلزم</span>'}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    window.resetUserDevice = async function(userId, name) {
+        if (!confirm(`فك ربط جهاز حساب الطالب "${name}"؟ سيتمكن من الدخول من أي جهاز جديد.`)) return;
+        const res = await aFetch(`/api/admin/users/${userId}/device`, { method: 'DELETE' });
+        const data = await res.json();
+        if (res.ok) { showToast(data.message); loadRegisteredUsers(); }
+        else showToast(data.error, 'error');
+    };
 
     window.filterStudents = function(q) {
         const term = q.trim().toLowerCase();

@@ -480,6 +480,28 @@
                     </div>
                 </div>
 
+                <!-- Registered Users List (App Accounts) -->
+                <div class="admin-section" style="margin-top: 24px;">
+                    <h3>📱 حسابات المنصة المسجلة (حسابات التطبيق)</h3>
+                    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">إدارة الطلاب المسجلين بالهاتف/البريد وإعادة تعيين أجهزتهم المرتبطة للحماية</p>
+                    <input type="text" id="registeredUserSearch" placeholder="🔍 ابحث عن مستخدم بالاسم أو رقم الهاتف/البريد..." oninput="filterRegisteredUsers(this.value)" style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:.9rem;text-align:right;margin-bottom:12px;box-sizing:border-box">
+                    <div class="table-wrapper">
+                        <table class="students-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>الهاتف / البريد</th>
+                                    <th>الكورسات المفعّلة</th>
+                                    <th>الجهاز المرتبط</th>
+                                    <th>آخر دخول</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registeredUsersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
             <!-- ── Questions Tab ────────────────────── -->
