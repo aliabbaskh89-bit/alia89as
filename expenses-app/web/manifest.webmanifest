@@ -1,7 +1,7 @@
 {
   "name": "مصروفي — إدارة المصروفات",
   "short_name": "مصروفي",
-  "id": "/masrufi/",
+  "id": "/",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

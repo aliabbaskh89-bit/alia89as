@@ -94,10 +94,6 @@ try {
 // Block direct access to data/ and videos/ directories
 app.use(['/data', '/videos'], (_req, res) => res.status(403).end());
 
-// تطبيق مصروفي (/masrufi) + إشعاراته — معزول حتى لو فشل ما يأثر على المنصة
-try { require('./masrufi-push')(app, dataDir); }
-catch (e) { console.error('⚠️ [masrufi] تعذّر تحميل التطبيق:', e.message); }
-
 // Serve static files — cache images for 7 days, no-cache for HTML/JS/CSS
 app.use(express.static(path.join(__dirname), {
     setHeaders(res, filePath) {
