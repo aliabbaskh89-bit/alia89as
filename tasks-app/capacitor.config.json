@@ -3,12 +3,12 @@
   "appName": "مهامي",
   "webDir": "web",
   "android": {
-    "backgroundColor": "#0f1115"
+    "backgroundColor": "#f3efe7"
   },
   "plugins": {
     "LocalNotifications": {
       "smallIcon": "ic_stat_icon",
-      "iconColor": "#db2777"
+      "iconColor": "#ff5b2e"
     }
   }
 }

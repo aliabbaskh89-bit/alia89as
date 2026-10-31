@@ -143,7 +143,7 @@
   function showTab(name) {
     currentTab = name;
     document.querySelectorAll('.view').forEach(function (v) { v.classList.toggle('active', v.id === 'view-' + name); });
-    document.querySelectorAll('.tabbar button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === name); });
+    document.querySelectorAll('.tabbar button[data-tab]').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === name); });
     window.scrollTo(0, 0);
     render();
   }
@@ -151,7 +151,8 @@
   function render() {
     var now = new Date();
     $('todayLabel').textContent = dayTitle(now) + ' ' + now.getFullYear();
-    $('hello').textContent = settings.name ? 'أهلاً ' + settings.name + ' 👋' : 'أهلاً 👋';
+    var h = now.getHours(), greet = h < 12 ? 'صباح الخير' : h < 18 ? 'نهارك سعيد' : 'مساء الخير';
+    $('hello').textContent = greet + (settings.name ? '، ' + settings.name : '');
     if (currentTab === 'home') renderHome();
     else if (currentTab === 'orders') renderOrders();
     else if (currentTab === 'clients') renderClients();
@@ -555,7 +556,7 @@
     var ot = sortTasks(tasks.filter(function (t) { return t.orderId === o.id; }));
     var html = '<div class="sheet-title"><h3>' + esc(s.icon) + ' ' + esc(o.title) + '</h3><button class="link" data-act="edit">تعديل ✏️</button></div>' +
       '<div class="pills">' + statusPill(o) + deadlinePill(o) + '<span class="pill">' + esc(s.name) + '</span></div>' +
-      '<button class="row" data-act="client" style="border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--surface-2);width:100%;text-align:inherit">' +
+      '<button class="client-link" data-act="client">' +
       '<div class="ic av">' + esc(initial(c.name)) + '</div><div class="main"><div class="ttl">' + esc(c.name) + '</div><div class="sub">' + esc(c.phone || 'اضغط لعرض العميل') + '</div></div><span class="muted-sm">←</span></button>' +
       (o.status === 'cancel' ? '<p class="muted-sm">🚫 هذا الأوردر ملغي.</p>' :
         '<div class="status-steps">' + STATUSES.map(function (st) {
@@ -986,7 +987,7 @@
   }
 
   function bind() {
-    document.querySelectorAll('.tabbar button').forEach(function (b) { b.addEventListener('click', function () { showTab(b.dataset.tab); }); });
+    document.querySelectorAll('.tabbar button[data-tab]').forEach(function (b) { b.addEventListener('click', function () { showTab(b.dataset.tab); }); });
     document.querySelector('[data-tab-btn="settings"]').addEventListener('click', function () { showTab('settings'); });
 
     document.addEventListener('click', function (e) {

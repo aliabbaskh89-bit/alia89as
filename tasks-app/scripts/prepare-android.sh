@@ -7,8 +7,8 @@ cd "$(dirname "$0")/.."
 
 # أيقونات وشاشة البداية
 npx @capacitor/assets generate --android \
-  --iconBackgroundColor '#db2777' --iconBackgroundColorDark '#db2777' \
-  --splashBackgroundColor '#0f1115' --splashBackgroundColorDark '#0f1115' || echo "⚠️ تخطّي توليد الأيقونات"
+  --iconBackgroundColor '#19181c' --iconBackgroundColorDark '#19181c' \
+  --splashBackgroundColor '#f3efe7' --splashBackgroundColorDark '#0f1115' || echo "⚠️ تخطّي توليد الأيقونات"
 
 # أيقونة الإشعار الصغيرة
 mkdir -p android/app/src/main/res/drawable
