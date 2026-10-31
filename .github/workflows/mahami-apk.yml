@@ -1,0 +1,69 @@
+name: بناء تطبيق مهامي (APK)
+
+on:
+  push:
+    paths:
+      - 'tasks-app/**'
+      - '.github/workflows/mahami-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tasks-app
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: قبول تراخيص أدوات أندرويد (موجودة مسبقاً على السيرفر)
+        working-directory: .
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          SDKM=$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | sort -V | tail -1)
+          yes | "$SDKM" --licenses > /dev/null || true
+
+      - name: تثبيت الحزم
+        run: npm ci --no-audit --no-fund
+
+      - name: تجهيز مشروع الأندرويد
+        run: ./scripts/prepare-android.sh
+
+      - name: مفتاح توقيع ثابت (حتى التحديثات تنزل فوق النسخة القديمة بدون مسح البيانات)
+        run: mkdir -p ~/.android && cp keystore/debug.keystore ~/.android/debug.keystore
+
+      - name: بناء الـ APK
+        working-directory: tasks-app/android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: تسمية الملف
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk ../mahami.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mahami-apk
+          path: mahami.apk
+
+      - name: نشر كإصدار للتحميل من التلفون
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="mahami-latest"
+          gh release delete "$TAG" --yes --cleanup-tag || true
+          gh release create "$TAG" mahami.apk \
+            --title "مهامي — آخر نسخة" \
+            --notes "نزّل ملف mahami.apk على تلفونك الأندرويد وثبّته. (بُني من ${GITHUB_SHA::7})" \
+            --target "$GITHUB_SHA" --prerelease
