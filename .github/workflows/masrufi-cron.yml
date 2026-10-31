@@ -1,0 +1,23 @@
+name: مصروفي — منبّه التقرير اليومي
+
+# كل ربع ساعة ينادي دالة الإرسال على Vercel؛ هي تقرر منو وصل وقت إشعاره.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: expenses-app/deploy-url.txt
+          sparse-checkout-cone-mode: false
+      - name: نداء /api/cron
+        run: |
+          URL="${{ vars.MASRUFI_URL }}"
+          [ -z "$URL" ] && URL="$(tr -d '[:space:]' < expenses-app/deploy-url.txt)"
+          if [ -z "$URL" ]; then echo "رابط التطبيق على Vercel مو محدد بعد (expenses-app/deploy-url.txt)"; exit 0; fi
+          curl -sS --max-time 60 --retry 2 "${URL%/}/api/cron"

@@ -570,7 +570,10 @@
       if (perm === 'default' && askPermission) perm = await Notification.requestPermission();
       if (perm !== 'granted') { lastNotifyState = perm === 'denied' ? 'web-denied' : 'web-noperm'; updateNotifyStatus(); return null; }
       var reg = await navigator.serviceWorker.ready;
-      var keyRes = await fetch(API + 'vapid').then(function (r) { if (!r.ok) throw new Error('no-server'); return r.json(); });
+      var keyRes = await fetch(API + 'vapid').then(function (r) {
+        if (r.status === 503) { var e = new Error('no-storage'); e.noStorage = true; throw e; }
+        if (!r.ok) throw new Error('no-server'); return r.json();
+      });
       var appKey = keyRes.publicKey;
       var sub = await reg.pushManager.getSubscription();
       if (sub && sub.options && sub.options.applicationServerKey && keyToB64(sub.options.applicationServerKey) !== appKey) {
@@ -585,7 +588,7 @@
       return sub;
     } catch (e) {
       console.error(e);
-      lastNotifyState = 'web-error'; updateNotifyStatus();
+      lastNotifyState = e && e.noStorage ? 'no-storage' : 'web-error'; updateNotifyStatus();
       return null;
     }
   }
@@ -610,6 +613,7 @@
       'ios-install': '📲 حتى توصلك الإشعارات على الآيفون: اضغط زر المشاركة ⬆️ بـ Safari ← "إضافة إلى الشاشة الرئيسية"، وافتح مصروفي من أيقونته.',
       'web-noperm': '🔔 اضغط "فعّل التنبيه" حتى تسمح بالإشعارات.',
       'web-denied': '⚠️ الإشعارات مرفوضة. فعّلها من الإعدادات ← الإشعارات ← مصروفي.',
+      'no-storage': '⚠️ قاعدة بيانات الإشعارات مو مربوطة بـ Vercel بعد (Storage ← Upstash Redis).',
       'web-error': '⚠️ ما گدرنا نفعّل التنبيه (تأكد من الإنترنت) — جرّب مرة ثانية.',
       'web-unsupported': 'ℹ️ هذا المتصفح ما يدعم الإشعارات. على الآيفون لازم iOS 16.4 أو أحدث وتضيف التطبيق للشاشة الرئيسية.'
     }[lastNotifyState] || '';

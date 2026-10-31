@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "echo static",
+  "outputDirectory": "web",
+  "installCommand": "npm install --omit=dev --ignore-scripts --no-audit --no-fund",
+  "crons": [{ "path": "/api/cron", "schedule": "0 20 * * *" }],
+  "headers": [
+    { "source": "/(.*)\\.(html|js|css|webmanifest)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+    { "source": "/", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+  ]
+}
