@@ -775,25 +775,89 @@
     updateNotifyStatus();
   }
 
-  // نسخة الويب: التنبيه يوصل بس والتطبيق مفتوح أو بالخلفية بنفس الجلسة
-  var webTimers = [];
-  function scheduleWeb() {
-    webTimers.forEach(clearTimeout); webTimers = [];
-    if (!('Notification' in window)) { lastNotifyState = 'web-unsupported'; updateNotifyStatus(); return; }
-    if (!settings.notify && !settings.taskAlerts) { lastNotifyState = 'off'; updateNotifyStatus(); return; }
-    if (Notification.permission !== 'granted') { lastNotifyState = Notification.permission === 'denied' ? 'web-denied' : 'web-noperm'; updateNotifyStatus(); return; }
-    var horizon = Date.now() + 24 * 3600 * 1000;
-    buildSchedule().forEach(function (n) {
-      var ms = n.at - Date.now();
-      if (ms > 0 && n.at.getTime() < horizon) webTimers.push(setTimeout(function () { webNotify(n.title, n.body); }, ms));
-    });
-    lastNotifyState = 'web-ok'; updateNotifyStatus();
+  // ---------- نسخة الويب (الآيفون والمتصفح): Web Push من السيرفر ----------
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  var pushSupported = !isNative && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  var API = 'api/';
+
+  // نسخة من البيانات بـ IndexedDB حتى الـ Service Worker يكتب نص التذكير وقت وصوله
+  function idbMirror() {
+    if (isNative || !('indexedDB' in window)) return;
+    try {
+      var req = indexedDB.open('mahami', 1);
+      req.onupgradeneeded = function () { req.result.createObjectStore('kv'); };
+      req.onsuccess = function () {
+        try {
+          var tx = req.result.transaction('kv', 'readwrite'), st = tx.objectStore('kv');
+          st.put({ tasks: tasks, orders: orders, clients: clients }, 'data');
+          tx.oncomplete = function () { req.result.close(); };
+        } catch (e) { }
+      };
+    } catch (e) { }
   }
-  function webNotify(title, body) {
-    var opts = { body: body, icon: 'apple-touch-icon.png', dir: 'rtl', lang: 'ar', tag: 'mahami-' + title };
-    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-      navigator.serviceWorker.ready.then(function (r) { r.showNotification(title, opts); }).catch(function () { try { new Notification(title, opts); } catch (e) { } });
-    } else { try { new Notification(title, opts); } catch (e) { } }
+
+  function b64ToUint8(b64) {
+    var p = '='.repeat((4 - b64.length % 4) % 4);
+    var raw = atob((b64 + p).replace(/-/g, '+').replace(/_/g, '/'));
+    var out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+  function keyToB64(buf) {
+    if (!buf) return '';
+    return btoa(String.fromCharCode.apply(null, new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function postJSON(url, data) {
+    return fetch(API + url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); });
+  }
+  // أوقات المهام القادمة فقط (أرقام) — عناوين المهام ما تطلع من التلفون
+  function alertTimes() {
+    if (!settings.taskAlerts) return [];
+    return buildSchedule().filter(function (n) { return n.extra && n.extra.task; }).map(function (n) { return n.at.getTime(); });
+  }
+
+  async function syncPush(askPermission) {
+    if (!pushSupported) return null;
+    if (isIOS && !isStandalone) { lastNotifyState = 'ios-install'; updateNotifyStatus(); return null; }
+    try {
+      var perm = Notification.permission;
+      if (perm === 'default' && askPermission) perm = await Notification.requestPermission();
+      if (perm !== 'granted') { lastNotifyState = perm === 'denied' ? 'web-denied' : 'web-noperm'; updateNotifyStatus(); return null; }
+      var reg = await navigator.serviceWorker.ready;
+      var keyRes = await fetch(API + 'vapid').then(function (r) {
+        if (r.status === 503) { var e = new Error('no-storage'); e.noStorage = true; throw e; }
+        if (!r.ok) throw new Error('no-server'); return r.json();
+      });
+      var appKey = keyRes.publicKey;
+      var sub = await reg.pushManager.getSubscription();
+      if (sub && sub.options && sub.options.applicationServerKey && keyToB64(sub.options.applicationServerKey) !== appKey) {
+        await sub.unsubscribe(); sub = null;
+      }
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToUint8(appKey) });
+      var tz = 'Asia/Baghdad';
+      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch (e) { }
+      await postJSON('subscribe', { subscription: sub.toJSON(), time: settings.notifyTime, tz: tz, enabled: !!settings.notify, alerts: alertTimes() });
+      lastNotifyState = (settings.notify || settings.taskAlerts) ? 'ok' : 'off';
+      updateNotifyStatus();
+      return sub;
+    } catch (e) {
+      console.error(e);
+      lastNotifyState = e && e.noStorage ? 'no-storage' : 'web-error'; updateNotifyStatus();
+      return null;
+    }
+  }
+
+  var syncedKey = '', syncTimer;
+  function scheduleWeb() {
+    idbMirror();
+    if (isIOS && !isStandalone) { lastNotifyState = 'ios-install'; updateNotifyStatus(); return; }
+    if (!pushSupported) { lastNotifyState = 'web-unsupported'; updateNotifyStatus(); return; }
+    var k = settings.notifyTime + '|' + settings.notify + '|' + alertTimes().join(',');
+    if (k === syncedKey) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function () { syncPush(false).then(function (sub) { if (sub) syncedKey = k; }); }, 800);
   }
 
   function updateNotifyStatus() {
@@ -803,14 +867,20 @@
       off: '🔕 التذكير متوقف',
       denied: '⚠️ صلاحية الإشعارات مرفوضة. فعّلها من إعدادات التلفون ← التطبيقات ← مهامي ← الإشعارات',
       error: '⚠️ صار خطأ بجدولة التذكير، جرّب مرة ثانية',
-      'web-ok': 'ℹ️ بنسخة المتصفح التذكير يوصل بس والتطبيق مفتوح. للتذكير الكامل ثبّت نسخة الأندرويد (APK).',
-      'web-noperm': '🔔 اضغط «جرّب التذكير» حتى تسمح بالإشعارات.',
-      'web-denied': '⚠️ الإشعارات مرفوضة بهذا المتصفح.',
-      'web-unsupported': 'ℹ️ هذا المتصفح ما يدعم الإشعارات.'
+      'ios-install': '📲 حتى توصلك الإشعارات على الآيفون: اضغط زر المشاركة ⬆️ بـ Safari ← «إضافة إلى الشاشة الرئيسية»، وافتح مهامي من أيقونته.',
+      'web-noperm': '🔔 اضغط «فعّل التذكير» حتى تسمح بالإشعارات.',
+      'web-denied': '⚠️ الإشعارات مرفوضة. فعّلها من إعدادات الآيفون ← الإشعارات ← مهامي.',
+      'no-storage': '⚠️ قاعدة بيانات الإشعارات مو مربوطة بـ Vercel بعد (Storage ← Upstash Redis).',
+      'web-error': '⚠️ ما گدرنا نفعّل التذكير (تأكد من الإنترنت) — جرّب مرة ثانية.',
+      'web-unsupported': 'ℹ️ هذا المتصفح ما يدعم الإشعارات. على الآيفون لازم iOS 16.4 أو أحدث وتضيف التطبيق للشاشة الرئيسية.'
     }[lastNotifyState] || '';
     if (!settings.notify && !settings.taskAlerts) msg = '🔕 التذكير متوقف';
     else if (!settings.notify && lastNotifyState === 'ok') msg = '✅ تذكير المهام اللي إلها وقت مفعّل (الملخص الصباحي متوقف)';
     el.textContent = msg;
+    var tb = $('testNotify');
+    if (tb) tb.textContent = (isNative || lastNotifyState === 'ok') ? '🔔 جرّب التذكير' : '🔔 فعّل التذكير';
+    var ib = $('iosInstall');
+    if (ib) ib.hidden = !(isIOS && !isStandalone && !isNative);
   }
 
   async function testNotification() {
@@ -825,11 +895,17 @@
       } catch (e) { toast('تعذّر إرسال الإشعار'); }
       return;
     }
-    if (!('Notification' in window)) { toast('الإشعارات غير مدعومة هنا'); return; }
-    var p = Notification.permission;
-    if (p === 'default') p = await Notification.requestPermission();
-    if (p !== 'granted') { toast('لازم تسمح بالإشعارات'); scheduleWeb(); return; }
-    webNotify(title, body); scheduleWeb();
+    if (isIOS && !isStandalone) { lastNotifyState = 'ios-install'; updateNotifyStatus(); toast('أضف التطبيق للشاشة الرئيسية أولاً'); return; }
+    if (!pushSupported) { lastNotifyState = 'web-unsupported'; updateNotifyStatus(); toast('الإشعارات غير مدعومة هنا'); return; }
+    if (!settings.notify) { settings.notify = true; save(KEY.settings, settings); $('sNotify').checked = true; }
+    idbMirror();
+    var sub = await syncPush(true);
+    if (!sub) { toast('ما تفعّل التذكير'); return; }
+    syncedKey = '';
+    try {
+      await postJSON('test', { endpoint: sub.endpoint });
+      toast('✓ راح يوصلك إشعار تجريبي خلال ثواني');
+    } catch (e) { toast('تفعّل التذكير ✓ بس التجربة ما وصلت، جرّب بعد شوية'); }
   }
 
   async function setupNative() {
@@ -1017,6 +1093,7 @@
   bind();
   render();
   setupNative().then(scheduleNotifications);
+  if (!isNative && /[?&]day=(\d{4}-\d{2}-\d{2})/.test(location.search)) { selDay = RegExp.$1; renderHome(); }
   if ('serviceWorker' in navigator && !isNative && location.protocol.indexOf('http') === 0) {
     navigator.serviceWorker.register('sw.js').catch(function () { });
   }
