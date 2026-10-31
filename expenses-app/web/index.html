@@ -7,6 +7,11 @@
   <title>مصروفي</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="مصروفي">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,6 +26,14 @@
   <main id="views">
     <!-- الرئيسية -->
     <section class="view active" id="view-home">
+      <div class="install-tip" id="iosInstall" hidden>
+        <b>📲 ثبّت مصروفي على الآيفون</b>
+        <ol>
+          <li>اضغط زر المشاركة <span class="share-ic">⬆️</span> بأسفل Safari</li>
+          <li>اختار <b>«إضافة إلى الشاشة الرئيسية»</b></li>
+          <li>افتح مصروفي من الأيقونة، وروح للإعدادات ← <b>فعّل التنبيه</b></li>
+        </ol>
+      </div>
       <div class="balance-card">
         <div class="muted-sm">الرصيد الكلي</div>
         <div class="balance" id="balance">0</div>

@@ -520,28 +520,84 @@
     } catch (e) { }
   }
 
-  // بديل للمتصفح: يشتغل فقط إذا كانت الصفحة مفتوحة
-  var webTimer = null;
-  function scheduleWebFallback() {
-    clearTimeout(webTimer);
-    if (!settings.notify || !('Notification' in window)) { updateNotifyStatus(); return; }
-    var hm = settings.notifyTime.split(':');
-    var now = new Date();
-    var at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), +hm[0], +hm[1], 0);
-    if (at <= now) at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, +hm[0], +hm[1], 0);
-    webTimer = setTimeout(function () {
-      showWebNotification('📊 تقريرك اليومي', notifyBody(ymd(new Date())));
-      scheduleWebFallback();
-    }, Math.min(at - now, 2147483000));
-    lastNotifyState = Notification.permission === 'granted' ? 'web' : 'web-noperm';
-    updateNotifyStatus();
+  // ---------- إشعارات نسخة الويب (آيفون/المتصفح) عبر Web Push من السيرفر ----------
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  var pushSupported = !isNative && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  var API = 'api/';
+
+  // نسخة من البيانات بـ IndexedDB حتى الـ Service Worker يحسب التقرير وقت الإشعار
+  function idbMirror() {
+    if (isNative || !('indexedDB' in window)) return;
+    try {
+      var req = indexedDB.open('masrufi', 1);
+      req.onupgradeneeded = function () { req.result.createObjectStore('kv'); };
+      req.onsuccess = function () {
+        try {
+          var tx = req.result.transaction('kv', 'readwrite');
+          var st = tx.objectStore('kv');
+          st.put(txs, 'txs');
+          st.put({ currency: settings.currency, cats: settings.cats, weekStart: settings.weekStart }, 'settings');
+          tx.oncomplete = function () { req.result.close(); };
+        } catch (e) { }
+      };
+    } catch (e) { }
   }
-  function showWebNotification(title, body) {
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
-    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-      navigator.serviceWorker.ready.then(function (reg) { reg.showNotification(title, { body: body, icon: 'icon.svg', dir: 'rtl', lang: 'ar' }); })
-        .catch(function () { new Notification(title, { body: body }); });
-    } else new Notification(title, { body: body });
+
+  function b64ToUint8(b64) {
+    var pad = '='.repeat((4 - b64.length % 4) % 4);
+    var raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+    var out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+  function keyToB64(buf) {
+    if (!buf) return '';
+    var s = String.fromCharCode.apply(null, new Uint8Array(buf));
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function postJSON(url, data) {
+    return fetch(API + url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); });
+  }
+
+  // يتأكد إن الاشتراك موجود ومحدّث بالسيرفر (askPermission = true فقط عند ضغطة المستخدم)
+  async function syncPush(askPermission) {
+    if (!pushSupported) return null;
+    if (isIOS && !isStandalone) { lastNotifyState = 'ios-install'; updateNotifyStatus(); return null; }
+    try {
+      var perm = Notification.permission;
+      if (perm === 'default' && askPermission) perm = await Notification.requestPermission();
+      if (perm !== 'granted') { lastNotifyState = perm === 'denied' ? 'web-denied' : 'web-noperm'; updateNotifyStatus(); return null; }
+      var reg = await navigator.serviceWorker.ready;
+      var keyRes = await fetch(API + 'vapid').then(function (r) { if (!r.ok) throw new Error('no-server'); return r.json(); });
+      var appKey = keyRes.publicKey;
+      var sub = await reg.pushManager.getSubscription();
+      if (sub && sub.options && sub.options.applicationServerKey && keyToB64(sub.options.applicationServerKey) !== appKey) {
+        await sub.unsubscribe(); sub = null; // مفتاح السيرفر تغيّر
+      }
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToUint8(appKey) });
+      var tz = 'Asia/Baghdad';
+      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch (e) { }
+      await postJSON('subscribe', { subscription: sub.toJSON(), time: settings.notifyTime, tz: tz, enabled: !!settings.notify });
+      lastNotifyState = settings.notify ? 'ok' : 'off';
+      updateNotifyStatus();
+      return sub;
+    } catch (e) {
+      console.error(e);
+      lastNotifyState = 'web-error'; updateNotifyStatus();
+      return null;
+    }
+  }
+
+  var syncedKey = '';
+  function scheduleWebFallback() {
+    idbMirror();
+    if (isIOS && !isStandalone) { lastNotifyState = 'ios-install'; updateNotifyStatus(); return; }
+    if (!pushSupported) { lastNotifyState = 'web-unsupported'; updateNotifyStatus(); return; }
+    var k = settings.notifyTime + '|' + settings.notify;
+    if (k === syncedKey) return; // ماكو تغيير بالإعدادات، الاشتراك محدّث
+    syncPush(false).then(function (sub) { if (sub) syncedKey = k; });
   }
 
   function updateNotifyStatus() {
@@ -551,11 +607,18 @@
       off: '🔕 التنبيه متوقف',
       denied: '⚠️ صلاحية الإشعارات مرفوضة. فعّلها من إعدادات التلفون ← التطبيقات ← مصروفي ← الإشعارات',
       error: '⚠️ صار خطأ بجدولة التنبيه، جرّب مرة ثانية',
-      web: 'ℹ️ أنت تستخدم نسخة المتصفح: التنبيه يوصل فقط إذا كان التطبيق مفتوح. للتنبيه الكامل ثبّت نسخة الأندرويد (APK).',
-      'web-noperm': 'ℹ️ اضغط "جرّب التنبيه" حتى تسمح بالإشعارات. (بالمتصفح التنبيه يوصل فقط والتطبيق مفتوح)'
+      'ios-install': '📲 حتى توصلك الإشعارات على الآيفون: اضغط زر المشاركة ⬆️ بـ Safari ← "إضافة إلى الشاشة الرئيسية"، وافتح مصروفي من أيقونته.',
+      'web-noperm': '🔔 اضغط "فعّل التنبيه" حتى تسمح بالإشعارات.',
+      'web-denied': '⚠️ الإشعارات مرفوضة. فعّلها من الإعدادات ← الإشعارات ← مصروفي.',
+      'web-error': '⚠️ ما گدرنا نفعّل التنبيه (تأكد من الإنترنت) — جرّب مرة ثانية.',
+      'web-unsupported': 'ℹ️ هذا المتصفح ما يدعم الإشعارات. على الآيفون لازم iOS 16.4 أو أحدث وتضيف التطبيق للشاشة الرئيسية.'
     }[lastNotifyState] || '';
-    if (!settings.notify) msg = msg || '🔕 التنبيه متوقف';
+    if (!settings.notify) msg = '🔕 التنبيه متوقف';
     el.textContent = msg;
+    var tb = $('testNotify');
+    if (tb && !isNative) tb.textContent = (lastNotifyState === 'ok') ? '🔔 جرّب التنبيه' : '🔔 فعّل التنبيه';
+    var ib = $('iosInstall');
+    if (ib) ib.hidden = !(isIOS && !isStandalone && !isNative);
   }
   function timeLabel(t) {
     var hm = t.split(':'), h = +hm[0];
@@ -576,11 +639,18 @@
         }] });
         toast('راح يوصلك إشعار تجريبي خلال ثواني');
       } catch (e) { toast('تعذّر إرسال الإشعار'); }
-    } else if ('Notification' in window) {
-      var p = await Notification.requestPermission();
-      if (p === 'granted') { showWebNotification('📊 تقريرك اليومي (تجربة)', body); scheduleWebFallback(); }
-      else toast('لازم تسمح بالإشعارات');
-    } else toast('المتصفح ما يدعم الإشعارات');
+      return;
+    }
+    if (isIOS && !isStandalone) { lastNotifyState = 'ios-install'; updateNotifyStatus(); toast('أضف التطبيق للشاشة الرئيسية أولاً'); return; }
+    if (!pushSupported) { lastNotifyState = 'web-unsupported'; updateNotifyStatus(); toast('الإشعارات غير مدعومة هنا'); return; }
+    if (!settings.notify) { settings.notify = true; save(KEY_SET, settings); $('sNotify').checked = true; }
+    idbMirror();
+    var sub = await syncPush(true);
+    if (!sub) { toast('ما تفعّل التنبيه'); return; }
+    try {
+      await postJSON('test', { endpoint: sub.endpoint });
+      toast('✓ راح يوصلك إشعار تجريبي خلال ثواني');
+    } catch (e) { toast('تفعّل التنبيه ✓ بس التجربة ما وصلت، جرّب بعد شوية'); }
   }
 
   // ---------- مشاركة ونسخ احتياطي ----------
@@ -744,6 +814,7 @@
   bind();
   render();
   setupNative().then(scheduleNotifications);
+  if (!isNative && /[?&]report=day/.test(location.search)) { rKind = 'day'; rAnchor = ymd(new Date()); showTab('reports'); }
   if ('serviceWorker' in navigator && !isNative && location.protocol.indexOf('http') === 0) {
     navigator.serviceWorker.register('sw.js').catch(function () { });
   }

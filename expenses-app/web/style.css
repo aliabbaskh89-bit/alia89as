@@ -277,3 +277,10 @@ input:focus, select:focus { border-color: var(--accent); }
   background: var(--text); color: var(--bg); padding: 10px 18px; border-radius: 99px; font-size: 13.5px;
   z-index: 60; max-width: calc(100% - 32px); text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,.3);
 }
+
+.install-tip {
+  background: var(--accent-soft); border: 1px solid var(--accent); border-radius: var(--radius);
+  padding: 12px 14px; margin-bottom: 14px; font-size: 13.5px;
+}
+.install-tip ol { margin: 6px 0 0; padding-inline-start: 20px; }
+.install-tip li { margin: 2px 0; }
