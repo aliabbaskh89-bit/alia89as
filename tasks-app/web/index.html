@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f0f11" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#050b1f">
   <title>مهامي</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -13,10 +12,12 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="مهامي">
-  <link rel="preload" href="fonts/readex-arabic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/plex-arabic-300.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/plex-arabic-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="bg" aria-hidden="true"><i class="leak"></i><i class="ring r2"></i><i class="ring r1"></i><i class="ring r4"></i><i class="ring r3"></i><i class="dome"></i></div>
   <header class="topbar">
     <div>
       <div class="today-label" id="todayLabel"></div>
@@ -40,8 +41,8 @@
       </div>
       <div class="hero">
         <div class="hero-main">
-          <div class="hero-label">أنجزت من مهام اليوم</div>
-          <div class="hero-num" id="heroNum">0 / 0</div>
+          <div class="hero-label">أنجزت من <b>مهام اليوم</b></div>
+          <div class="hero-num gold" id="heroNum">0 / 0</div>
           <div class="hero-foot">
             <div class="hero-bar" id="heroRing"></div>
             <div class="hero-pct" id="heroPct">0%</div>
@@ -65,13 +66,13 @@
       </div>
 
       <div class="card" id="overdueCard" hidden>
-        <div class="card-head"><h3>متأخرة من قبل</h3></div>
+        <div class="card-head"><h3>مهام <b>متأخرة</b></h3></div>
         <ul class="list" id="overdueList"></ul>
       </div>
 
       <div class="card">
         <div class="card-head">
-          <h3>أقرب التسليمات</h3>
+          <h3>أقرب <b>التسليمات</b></h3>
           <button class="link" data-goto="orders">الكل ←</button>
         </div>
         <ul class="list" id="deadlineList"></ul>
@@ -124,17 +125,17 @@
       <div class="card insights" id="insights"></div>
 
       <div class="card" id="chartCard">
-        <div class="card-head"><h3>المهام المنجزة حسب الأيام</h3></div>
+        <div class="card-head"><h3>المهام المنجزة حسب <b>الأيام</b></h3></div>
         <div class="chart" id="chart"></div>
       </div>
 
       <div class="card">
-        <div class="card-head"><h3>الوارد حسب نوع الشغل</h3></div>
+        <div class="card-head"><h3>الوارد حسب نوع <b>الشغل</b></h3></div>
         <div id="svcBreak"></div>
       </div>
 
       <div class="card">
-        <div class="card-head"><h3>الوارد حسب العميل</h3></div>
+        <div class="card-head"><h3>الوارد حسب <b>العميل</b></h3></div>
         <div id="clientBreak"></div>
       </div>
 
@@ -144,7 +145,7 @@
     <!-- الإعدادات -->
     <section class="view" id="view-settings">
       <div class="card form">
-        <h3>عام</h3>
+        <h3><b>عام</b></h3>
         <label>اسمك <input id="sName" placeholder="اختياري"></label>
         <label>العملة <input id="sCurrency" maxlength="8"></label>
         <label>بداية الأسبوع
@@ -157,7 +158,7 @@
       </div>
 
       <div class="card form">
-        <h3>التذكير اليومي</h3>
+        <h3>التذكير <b>اليومي</b></h3>
         <label class="switch-row">تذكير صباحي بمهام اليوم والتسليمات
           <input type="checkbox" id="sNotify" class="switch">
         </label>
@@ -173,7 +174,7 @@
       </div>
 
       <div class="card form">
-        <h3>أنواع الشغل</h3>
+        <h3>أنواع <b>الشغل</b></h3>
         <div class="chips" id="svcChips"></div>
         <div class="add-cat">
           <input id="newSvcIcon" maxlength="4" placeholder="🎨" class="emoji-in">
@@ -183,7 +184,7 @@
       </div>
 
       <div class="card form">
-        <h3>النسخ الاحتياطي</h3>
+        <h3>النسخ <b>الاحتياطي</b></h3>
         <p class="muted-sm">بياناتك محفوظة على تلفونك فقط. خذ نسخة احتياطية بين فترة وفترة.</p>
         <div class="row-btns">
           <button class="btn ghost" id="exportBtn">⬆️ تصدير نسخة</button>

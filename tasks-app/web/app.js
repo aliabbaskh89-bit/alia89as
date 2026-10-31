@@ -151,8 +151,9 @@
   function render() {
     var now = new Date();
     $('todayLabel').textContent = dayTitle(now) + ' ' + now.getFullYear();
-    var h = now.getHours(), greet = h < 12 ? 'صباح الخير' : h < 18 ? 'نهارك سعيد' : 'مساء الخير';
-    $('hello').textContent = greet + (settings.name ? '، ' + settings.name : '');
+    var h = now.getHours(), g = h < 12 ? ['صباح', 'الخير'] : h < 18 ? ['نهارك', 'سعيد'] : ['مساء', 'الخير'];
+    var hello = '<span class="thin">' + g[0] + '</span> <b class="gold">' + g[1] + '</b>' + (settings.name ? ' <span class="name">' + esc(settings.name) + '</span>' : '');
+    if ($('hello').innerHTML !== hello) $('hello').innerHTML = hello;
     if (currentTab === 'home') renderHome();
     else if (currentTab === 'orders') renderOrders();
     else if (currentTab === 'clients') renderClients();
@@ -215,7 +216,7 @@
 
     var sel = parseYmd(selDay);
     var diff = daysBetween(t0, selDay);
-    $('tasksTitle').textContent = diff === 0 ? 'مهام اليوم' : diff === 1 ? 'مهام باچر' : diff === -1 ? 'مهام البارحة' : 'مهام ' + dayTitle(sel);
+    $('tasksTitle').innerHTML = 'مهام <b>' + (diff === 0 ? 'اليوم' : diff === 1 ? 'باچر' : diff === -1 ? 'البارحة' : dayTitle(sel)) + '</b>';
     var dayTasks = sortTasks(tasksOn(selDay));
     var dueOrders = orders.filter(function (o) { return isActive(o) && o.deadline === selDay; });
     var dueHtml = dueOrders.map(function (o) {
