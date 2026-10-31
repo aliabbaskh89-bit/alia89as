@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0f1115">
+  <title>مصروفي</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="hello" id="hello">أهلاً 👋</div>
+      <div class="today-label" id="todayLabel"></div>
+    </div>
+    <div class="brand">مصروفي</div>
+  </header>
+
+  <main id="views">
+    <!-- الرئيسية -->
+    <section class="view active" id="view-home">
+      <div class="balance-card">
+        <div class="muted-sm">الرصيد الكلي</div>
+        <div class="balance" id="balance">0</div>
+        <div class="balance-row">
+          <div><span class="dot in"></span> وارد الشهر <b id="monthIn">0</b></div>
+          <div><span class="dot out"></span> مصروف الشهر <b id="monthOut">0</b></div>
+        </div>
+        <div class="budget" id="budgetBox" hidden>
+          <div class="budget-head"><span>الميزانية الشهرية</span><span id="budgetText"></span></div>
+          <div class="bar"><i id="budgetBar"></i></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>تقرير اليوم</h3>
+          <button class="link" data-goto="reports" data-period="day">التفاصيل ←</button>
+        </div>
+        <div class="stats3">
+          <div class="stat in"><span>الوارد</span><b id="dayIn">0</b></div>
+          <div class="stat out"><span>المصروف</span><b id="dayOut">0</b></div>
+          <div class="stat net"><span>الصافي</span><b id="dayNet">0</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>آخر العمليات</h3>
+          <button class="link" data-goto="history">الكل ←</button>
+        </div>
+        <ul class="tx-list" id="recentList"></ul>
+      </div>
+    </section>
+
+    <!-- التقارير -->
+    <section class="view" id="view-reports">
+      <div class="segmented" id="periodSeg">
+        <button data-p="day">يومي</button>
+        <button data-p="week" class="on">أسبوعي</button>
+        <button data-p="month">شهري</button>
+      </div>
+      <div class="period-nav">
+        <button class="icon-btn" id="prevPeriod" aria-label="السابق">›</button>
+        <div class="period-title" id="periodTitle"></div>
+        <button class="icon-btn" id="nextPeriod" aria-label="التالي">‹</button>
+      </div>
+
+      <div class="stats3 big">
+        <div class="stat in"><span>الوارد</span><b id="rIn">0</b></div>
+        <div class="stat out"><span>المصروف</span><b id="rOut">0</b></div>
+        <div class="stat net"><span>الصافي</span><b id="rNet">0</b></div>
+      </div>
+
+      <div class="card insights" id="insights"></div>
+
+      <div class="card" id="chartCard">
+        <div class="card-head"><h3 id="chartTitle">المصروف حسب الأيام</h3></div>
+        <div class="chart" id="chart"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>المصروف حسب الفئة</h3></div>
+        <div id="catBreak"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>الوارد حسب المصدر</h3></div>
+        <div id="incBreak"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>عمليات الفترة</h3></div>
+        <ul class="tx-list" id="periodList"></ul>
+      </div>
+
+      <button class="btn wide ghost" id="shareReport">📤 مشاركة التقرير</button>
+    </section>
+
+    <!-- السجل -->
+    <section class="view" id="view-history">
+      <div class="search-row">
+        <input type="search" id="search" placeholder="ابحث بالملاحظة أو الفئة…">
+        <select id="filterType">
+          <option value="all">الكل</option>
+          <option value="out">مصروف</option>
+          <option value="in">وارد</option>
+        </select>
+      </div>
+      <div id="historyGroups"></div>
+    </section>
+
+    <!-- الإعدادات -->
+    <section class="view" id="view-settings">
+      <div class="card form">
+        <h3>عام</h3>
+        <label>اسمك <input id="sName" placeholder="اختياري"></label>
+        <label>العملة <input id="sCurrency" maxlength="8"></label>
+        <label>الميزانية الشهرية للمصروف <input id="sBudget" inputmode="numeric" placeholder="0 = بدون"></label>
+        <label>بداية الأسبوع
+          <select id="sWeekStart">
+            <option value="6">السبت</option>
+            <option value="0">الأحد</option>
+            <option value="1">الاثنين</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="card form">
+        <h3>التنبيه اليومي</h3>
+        <label class="switch-row">تفعيل تنبيه التقرير اليومي
+          <input type="checkbox" id="sNotify" class="switch">
+        </label>
+        <label>وقت التنبيه <input type="time" id="sTime"></label>
+        <p class="muted-sm" id="notifyStatus"></p>
+        <div class="row-btns">
+          <button class="btn ghost" id="testNotify">🔔 جرّب التنبيه</button>
+          <button class="btn ghost" id="exactAlarm" hidden>⏰ السماح بالتوقيت الدقيق</button>
+        </div>
+      </div>
+
+      <div class="card form">
+        <h3>الفئات</h3>
+        <div class="chips" id="catChips"></div>
+        <div class="add-cat">
+          <input id="newCatIcon" maxlength="4" placeholder="🙂" class="emoji-in">
+          <input id="newCatName" placeholder="اسم فئة جديدة">
+          <select id="newCatType">
+            <option value="out">مصروف</option>
+            <option value="in">وارد</option>
+          </select>
+          <button class="btn" id="addCat">إضافة</button>
+        </div>
+      </div>
+
+      <div class="card form">
+        <h3>النسخ الاحتياطي</h3>
+        <p class="muted-sm">بياناتك محفوظة على تلفونك فقط. خذ نسخة احتياطية بين فترة وفترة.</p>
+        <div class="row-btns">
+          <button class="btn ghost" id="exportBtn">⬆️ تصدير نسخة</button>
+          <label class="btn ghost file-btn">⬇️ استيراد نسخة<input type="file" id="importFile" accept=".json,application/json,text/plain" hidden></label>
+        </div>
+        <button class="btn danger wide" id="wipeBtn">🗑️ حذف كل البيانات</button>
+      </div>
+      <p class="muted-sm center">مصروفي • الإصدار 1.0</p>
+    </section>
+  </main>
+
+  <button class="fab" id="fab" aria-label="إضافة عملية">+</button>
+
+  <nav class="tabbar">
+    <button data-tab="home" class="on"><span>🏠</span>الرئيسية</button>
+    <button data-tab="reports"><span>📊</span>التقارير</button>
+    <button data-tab="history"><span>🧾</span>السجل</button>
+    <button data-tab="settings"><span>⚙️</span>الإعدادات</button>
+  </nav>
+
+  <!-- نافذة الإضافة/التعديل -->
+  <div class="sheet-backdrop" id="sheetBackdrop" hidden>
+    <form class="sheet" id="txForm" autocomplete="off">
+      <div class="grabber"></div>
+      <div class="segmented type-seg" id="typeSeg">
+        <button type="button" data-t="out" class="on out">مصروف</button>
+        <button type="button" data-t="in" class="in">وارد</button>
+      </div>
+      <div class="amount-wrap">
+        <input id="amount" inputmode="decimal" placeholder="0" required>
+        <span class="cur" id="amountCur"></span>
+      </div>
+      <div class="quick" id="quickAmounts"></div>
+      <div class="cat-grid" id="catGrid"></div>
+      <input id="note" placeholder="ملاحظة (اختياري)" maxlength="120">
+      <div class="dt-row">
+        <input type="date" id="txDate" required>
+        <input type="time" id="txTime" required>
+      </div>
+      <div class="row-btns">
+        <button type="button" class="btn danger" id="deleteTx" hidden>حذف</button>
+        <button type="button" class="btn ghost" id="cancelTx">إلغاء</button>
+        <button type="submit" class="btn primary grow">حفظ</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
