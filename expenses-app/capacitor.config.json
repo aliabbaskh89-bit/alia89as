@@ -1,0 +1,14 @@
+{
+  "appId": "com.aliabbas.masrufi",
+  "appName": "مصروفي",
+  "webDir": "web",
+  "android": {
+    "backgroundColor": "#0f1115"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#7c3aed"
+    }
+  }
+}
