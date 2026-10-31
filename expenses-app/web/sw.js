@@ -1,6 +1,6 @@
 // Service worker لمصروفي: يشغّل التطبيق بدون إنترنت، ويعرض إشعار التقرير اليومي
 // لما يوصل تنبيه (push) من السيرفر. التقرير يُحسب هنا من بيانات التلفون نفسه.
-var CACHE = 'masrufi-v2';
+var CACHE = 'masrufi-v3';
 var FILES = ['./', './index.html', './style.css', './app.js', './manifest.webmanifest', './icon.svg', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', function (e) {
