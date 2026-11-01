@@ -1,5 +1,5 @@
 // Service worker لمهامي: يشغّل التطبيق بدون إنترنت
-var CACHE = 'mahami-v4';
+var CACHE = 'mahami-v5';
 var FILES = ['./', './index.html', './style.css', './app.js', './manifest.webmanifest', './icon.svg', './icon-512.png', './apple-touch-icon.png', './fonts/plex-arabic-300.woff2', './fonts/plex-arabic-500.woff2', './fonts/plex-arabic-700.woff2', './fonts/plex-latin-300.woff2', './fonts/plex-latin-500.woff2', './fonts/plex-latin-700.woff2'];
 
 self.addEventListener('install', function (e) {

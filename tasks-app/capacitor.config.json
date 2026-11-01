@@ -3,7 +3,7 @@
   "appName": "مهامي",
   "webDir": "web",
   "android": {
-    "backgroundColor": "#050b1f"
+    "backgroundColor": "#000000"
   },
   "plugins": {
     "LocalNotifications": {
