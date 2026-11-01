@@ -1,0 +1,14 @@
+{
+  "appId": "com.aliabbas.mahami",
+  "appName": "مهامي",
+  "webDir": "web",
+  "android": {
+    "backgroundColor": "#000000"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#f4ba48"
+    }
+  }
+}

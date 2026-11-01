@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <title>مهامي</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="مهامي">
+  <link rel="preload" href="fonts/plex-arabic-300.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/plex-arabic-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><i class="leak"></i><i class="ring r2"></i><i class="ring r1"></i><i class="ring r4"></i><i class="ring r3"></i></div>
+  <header class="topbar">
+    <div>
+      <div class="today-label" id="todayLabel"></div>
+      <div class="hello" id="hello">أهلاً</div>
+    </div>
+    <button class="avatar" data-tab-btn="settings" aria-label="الإعدادات">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+    </button>
+  </header>
+
+  <main id="views">
+    <!-- الرئيسية -->
+    <section class="view active" id="view-home">
+      <div class="install-tip" id="iosInstall" hidden>
+        <b>📲 ثبّت مهامي على الآيفون</b>
+        <ol>
+          <li>اضغط زر المشاركة <span class="share-ic">⬆️</span> بأسفل Safari</li>
+          <li>اختار <b>«إضافة إلى الشاشة الرئيسية»</b></li>
+          <li>افتح مهامي من الأيقونة، وروح للإعدادات ⚙️ ← <b>فعّل التذكير</b></li>
+        </ol>
+      </div>
+      <div class="hero">
+        <div class="hero-main">
+          <div class="hero-label">أنجزت من <b>مهام اليوم</b></div>
+          <div class="hero-num gold" id="heroNum">0 / 0</div>
+          <div class="hero-foot">
+            <div class="hero-bar" id="heroRing"></div>
+            <div class="hero-pct" id="heroPct">0%</div>
+          </div>
+        </div>
+        <div class="tiles">
+          <div class="tile t1"><span>أوردرات شغّالة</span><b id="hActive">0</b></div>
+          <div class="tile t2"><span>تسليم بالأسبوع</span><b id="hWeek">0</b></div>
+          <div class="tile t3"><span>فلوس باقية</span><b id="hDue">0</b></div>
+        </div>
+      </div>
+
+      <div class="day-strip" id="dayStrip"></div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3 id="tasksTitle">مهام اليوم</h3>
+          <button class="link" id="addTaskQuick">+ مهمة</button>
+        </div>
+        <ul class="list" id="taskList"></ul>
+      </div>
+
+      <div class="card" id="overdueCard" hidden>
+        <div class="card-head"><h3>مهام <b>متأخرة</b></h3></div>
+        <ul class="list" id="overdueList"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>أقرب <b>التسليمات</b></h3>
+          <button class="link" data-goto="orders">الكل ←</button>
+        </div>
+        <ul class="list" id="deadlineList"></ul>
+      </div>
+    </section>
+
+    <!-- الأوردرات -->
+    <section class="view" id="view-orders">
+      <div class="segmented" id="orderSeg">
+        <button data-f="active" class="on">الحالية</button>
+        <button data-f="late">المتأخرة</button>
+        <button data-f="unpaid">غير مدفوعة</button>
+        <button data-f="done">المسلّمة</button>
+      </div>
+      <div class="search-row">
+        <input type="search" id="orderSearch" placeholder="ابحث باسم الأوردر أو العميل…">
+      </div>
+      <div class="sum-row" id="orderSum"></div>
+      <ul class="list cards" id="orderList"></ul>
+    </section>
+
+    <!-- العملاء -->
+    <section class="view" id="view-clients">
+      <div class="search-row">
+        <input type="search" id="clientSearch" placeholder="ابحث عن عميل…">
+        <button class="btn" id="addClientBtn">+ عميل</button>
+      </div>
+      <ul class="list cards" id="clientList"></ul>
+    </section>
+
+    <!-- التقارير -->
+    <section class="view" id="view-reports">
+      <div class="segmented" id="periodSeg">
+        <button data-p="day">يومي</button>
+        <button data-p="week" class="on">أسبوعي</button>
+        <button data-p="month">شهري</button>
+      </div>
+      <div class="period-nav">
+        <button class="icon-btn" id="prevPeriod" aria-label="السابق">›</button>
+        <div class="period-title" id="periodTitle"></div>
+        <button class="icon-btn" id="nextPeriod" aria-label="التالي">‹</button>
+      </div>
+
+      <div class="stats3 big">
+        <div class="stat t"><span>مهام منجزة</span><b id="rTasks">0</b></div>
+        <div class="stat o"><span>أوردرات مسلّمة</span><b id="rOrders">0</b></div>
+        <div class="stat in"><span>الوارد</span><b id="rIncome">0</b></div>
+      </div>
+
+      <div class="card insights" id="insights"></div>
+
+      <div class="card" id="chartCard">
+        <div class="card-head"><h3>المهام المنجزة حسب <b>الأيام</b></h3></div>
+        <div class="chart" id="chart"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>الوارد حسب نوع <b>الشغل</b></h3></div>
+        <div id="svcBreak"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>الوارد حسب <b>العميل</b></h3></div>
+        <div id="clientBreak"></div>
+      </div>
+
+      <button class="btn wide ghost" id="shareReport">📤 مشاركة التقرير</button>
+    </section>
+
+    <!-- الإعدادات -->
+    <section class="view" id="view-settings">
+      <div class="card form">
+        <h3><b>عام</b></h3>
+        <label>اسمك <input id="sName" placeholder="اختياري"></label>
+        <label>العملة <input id="sCurrency" maxlength="8"></label>
+        <label>بداية الأسبوع
+          <select id="sWeekStart">
+            <option value="6">السبت</option>
+            <option value="0">الأحد</option>
+            <option value="1">الاثنين</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="card form">
+        <h3>التذكير <b>اليومي</b></h3>
+        <label class="switch-row">تذكير صباحي بمهام اليوم والتسليمات
+          <input type="checkbox" id="sNotify" class="switch">
+        </label>
+        <label>وقت التذكير <input type="time" id="sTime"></label>
+        <label class="switch-row">تذكير قبل موعد كل مهمة لها وقت
+          <input type="checkbox" id="sTaskAlerts" class="switch">
+        </label>
+        <p class="muted-sm" id="notifyStatus"></p>
+        <div class="row-btns">
+          <button class="btn ghost" id="testNotify">🔔 فعّل التذكير</button>
+          <button class="btn ghost" id="exactAlarm" hidden>⏰ السماح بالتوقيت الدقيق</button>
+        </div>
+      </div>
+
+      <div class="card form">
+        <h3>أنواع <b>الشغل</b></h3>
+        <div class="chips" id="svcChips"></div>
+        <div class="add-cat">
+          <input id="newSvcIcon" maxlength="4" placeholder="🎨" class="emoji-in">
+          <input id="newSvcName" placeholder="نوع جديد (مثلاً: موشن)">
+          <button class="btn" id="addSvc" style="grid-column: span 2">إضافة</button>
+        </div>
+      </div>
+
+      <div class="card form">
+        <h3>النسخ <b>الاحتياطي</b></h3>
+        <p class="muted-sm">بياناتك محفوظة على تلفونك فقط. خذ نسخة احتياطية بين فترة وفترة.</p>
+        <div class="row-btns">
+          <button class="btn ghost" id="exportBtn">⬆️ تصدير نسخة</button>
+          <label class="btn ghost file-btn">⬇️ استيراد نسخة<input type="file" id="importFile" accept=".json,application/json,text/plain" hidden></label>
+        </div>
+        <button class="btn danger wide" id="wipeBtn">🗑️ حذف كل البيانات</button>
+      </div>
+      <p class="muted-sm center">مهامي • الإصدار 1.0</p>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button data-tab="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span></button>
+    <button data-tab="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5z"/><path d="M4 7.5 12 11l8-3.5M12 11v9"/></svg><span>الأوردرات</span></button>
+    <button class="fab" id="fab" aria-label="إضافة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button data-tab="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5c.8-3.2 3.2-5 6-5s5.2 1.8 6 5"/><path d="M15.5 5.2a3.3 3.3 0 0 1 0 6.6M17.5 14.6c1.8.6 3 2.2 3.5 4.9"/></svg><span>العملاء</span></button>
+    <button data-tab="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/></svg><span>التقارير</span></button>
+  </nav>
+
+  <!-- النافذة السفلية -->
+  <div class="sheet-backdrop" id="sheetBackdrop" hidden>
+    <div class="sheet" id="sheet">
+      <div class="grabber"></div>
+      <div id="sheetBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
