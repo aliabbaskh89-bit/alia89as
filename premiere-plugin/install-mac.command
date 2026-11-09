@@ -25,7 +25,7 @@ if command -v brew >/dev/null 2>&1; then
   for pkg in ffmpeg yt-dlp; do
     if ! command -v "$pkg" >/dev/null 2>&1 && [ ! -x "/opt/homebrew/bin/$pkg" ] && [ ! -x "/usr/local/bin/$pkg" ]; then
       echo "… تنصيب $pkg"
-      brew install "$pkg"
+      yes | brew install "$pkg" || brew install "$pkg"
     fi
   done
   echo "✓ ffmpeg و yt-dlp جاهزين"
