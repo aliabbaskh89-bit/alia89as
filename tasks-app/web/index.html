@@ -184,8 +184,30 @@
       </div>
 
       <div class="card form">
+        <h3>المزامنة <b>بين أجهزتك</b></h3>
+        <div id="syncOff">
+          <p class="muted-sm">خلّي مهامك وأوردراتك نفسها على الآيفون والماك. سوّي رمز بجهاز واحد، واكتبه بالجهاز الثاني. بياناتك تنشفّر بالرمز قبل ما تطلع من جهازك.</p>
+          <button class="btn wide" id="syncCreate">🔗 سوّي رمز مزامنة جديد</button>
+          <label>عندك رمز من جهاز ثاني؟
+            <input id="syncCodeIn" placeholder="XXXX-XXXX-XXXX-XXXX" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" dir="ltr">
+          </label>
+          <button class="btn ghost wide" id="syncJoin">ربط هذا الجهاز</button>
+        </div>
+        <div id="syncOn" hidden>
+          <p class="muted-sm">رمز المزامنة. اكتبه بجهازك الثاني، ولا تنطيه لأحد:</p>
+          <div class="sync-code" id="syncCodeOut" dir="ltr"></div>
+          <p class="muted-sm" id="syncStatus"></p>
+          <div class="row-btns">
+            <button class="btn ghost" id="syncNowBtn">🔄 زامن هسه</button>
+            <button class="btn ghost" id="syncCopy">📋 نسخ الرمز</button>
+            <button class="btn ghost" id="syncOffBtn">فصل الجهاز</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card form">
         <h3>النسخ <b>الاحتياطي</b></h3>
-        <p class="muted-sm">بياناتك محفوظة على تلفونك فقط. خذ نسخة احتياطية بين فترة وفترة.</p>
+        <p class="muted-sm">بياناتك محفوظة على جهازك. خذ نسخة احتياطية بين فترة وفترة.</p>
         <div class="row-btns">
           <button class="btn ghost" id="exportBtn">⬆️ تصدير نسخة</button>
           <label class="btn ghost file-btn">⬇️ استيراد نسخة<input type="file" id="importFile" accept=".json,application/json,text/plain" hidden></label>

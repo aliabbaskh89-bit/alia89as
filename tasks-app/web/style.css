@@ -387,3 +387,6 @@ input[type="search"] { padding-inline-start: 40px; background-repeat: no-repeat;
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* المزامنة */
+.sync-code { font: 600 20px/1.4 ui-monospace, Menlo, Consolas, monospace; letter-spacing: 1px; text-align: center; padding: 12px; border-radius: 12px; background: rgba(255,255,255,.08); color: #fff; user-select: all; -webkit-user-select: all; margin: 6px 0; }

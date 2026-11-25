@@ -52,11 +52,40 @@
   var settings = Object.assign({}, DEFAULT_SETTINGS, load(KEY.settings, {}));
   if (!Array.isArray(settings.services) || !settings.services.length) settings.services = DEFAULT_SERVICES.slice();
 
+  // ---------- بيانات المزامنة: ختم وقت لكل عنصر + قائمة المحذوفات ----------
+  var SYNC_KEY = 'mahami.sync.v1';
+  var SYNCED_SETTINGS = ['name', 'currency', 'weekStart', 'notifyTime', 'taskAlerts', 'services'];
+  var syncMeta = Object.assign({ code: '', stamp: {}, del: {}, sHash: '', sTs: 0, last: 0 }, load(SYNC_KEY, {}));
+  function hashStr(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+  function settingsPart() { var o = {}; SYNCED_SETTINGS.forEach(function (k) { o[k] = settings[k]; }); return o; }
+  // يقارن كل عنصر بآخر نسخة محفوظة: المتغيّر ياخذ وقت جديد، والمختفي ينحسب محذوف
+  function stampChanges() {
+    var now = Date.now(), first = !syncMeta.init, seen = {};
+    [clients, orders, tasks].forEach(function (list) {
+      list.forEach(function (x) {
+        if (!x || !x.id) return;
+        seen[x.id] = 1;
+        var h = hashStr(JSON.stringify(x)), s = syncMeta.stamp[x.id];
+        if (!s) syncMeta.stamp[x.id] = [h, first ? (x.created || 1) : now];
+        else if (s[0] !== h) syncMeta.stamp[x.id] = [h, now];
+      });
+    });
+    Object.keys(syncMeta.stamp).forEach(function (id) {
+      if (!seen[id]) { syncMeta.del[id] = now; delete syncMeta.stamp[id]; }
+    });
+    var sh = hashStr(JSON.stringify(settingsPart()));
+    if (sh !== syncMeta.sHash) { syncMeta.sHash = sh; syncMeta.sTs = first ? 1 : now; }
+    syncMeta.init = 1;
+    save(SYNC_KEY, syncMeta);
+  }
+  stampChanges();
+
   function persist() {
     save(KEY.clients, clients); save(KEY.orders, orders); save(KEY.tasks, tasks);
+    stampChanges(); scheduleSync();
     scheduleNotifications();
   }
-  function persistSettings() { save(KEY.settings, settings); scheduleNotifications(); }
+  function persistSettings() { save(KEY.settings, settings); stampChanges(); scheduleSync(); scheduleNotifications(); }
 
   // ---------- أدوات ----------
   function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -930,6 +959,211 @@
     } catch (e) { }
   }
 
+  // ---------- المزامنة بين الأجهزة (مشفّرة بالرمز، والدمج على الجهاز) ----------
+  var SYNC_API = (isNative ? 'https://mahami-alpha.vercel.app/' : '') + 'api/sync';
+  var cryptoOk = !!(window.crypto && crypto.subtle && window.TextEncoder);
+  var syncBusy = false, syncAgain = false, syncTimer = null, syncState = '', syncErr = null, syncKeys = null;
+
+  function newSyncCode() {
+    var A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', b = new Uint8Array(16), s = '';
+    crypto.getRandomValues(b);
+    for (var i = 0; i < 16; i++) { s += A[b[i] % A.length]; if (i % 4 === 3 && i < 15) s += '-'; }
+    return s;
+  }
+  function normCode(s) {
+    var c = String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    return c.length === 16 ? c.replace(/(.{4})(?=.)/g, '$1-') : '';
+  }
+  function b64(buf) {
+    var s = '', b = new Uint8Array(buf);
+    for (var i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000));
+    return btoa(s);
+  }
+  function unb64(s) { var bin = atob(s), b = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); return b; }
+  function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (x) { return (x < 16 ? '0' : '') + x.toString(16); }).join(''); }
+  async function keysFor(code) {
+    if (syncKeys && syncKeys.code === code) return syncKeys;
+    var enc = new TextEncoder();
+    var id = hex(await crypto.subtle.digest('SHA-256', enc.encode('mahami-sync-id:' + code)));
+    var raw = await crypto.subtle.digest('SHA-256', enc.encode('mahami-sync-key:' + code));
+    var key = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
+    syncKeys = { code: code, id: id, key: key };
+    return syncKeys;
+  }
+  async function seal(k, obj) {
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    var ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k.key, new TextEncoder().encode(JSON.stringify(obj)));
+    var out = new Uint8Array(12 + ct.byteLength); out.set(iv); out.set(new Uint8Array(ct), 12);
+    return b64(out);
+  }
+  async function unseal(k, s) {
+    var b = unb64(s);
+    try {
+      var pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(0, 12) }, k.key, b.slice(12));
+      return JSON.parse(new TextDecoder().decode(pt));
+    } catch (e) { var er = new Error('decrypt'); er.decrypt = true; throw er; }
+  }
+  async function syncCall(body) {
+    var r = await fetch(SYNC_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store' });
+    var j = await r.json().catch(function () { return {}; });
+    if (r.status === 409) return { conflict: true };
+    if (!r.ok) { var e = new Error(j.error || ('http ' + r.status)); e.status = r.status; throw e; }
+    return j;
+  }
+
+  function localDoc() {
+    var st = {};
+    Object.keys(syncMeta.stamp).forEach(function (id) { st[id] = syncMeta.stamp[id][1]; });
+    return { app: 'mahami', c: clients, o: orders, t: tasks, s: settingsPart(), sTs: syncMeta.sTs, st: st, del: syncMeta.del };
+  }
+  // دمج عنصر بعنصر: الأحدث يغلب، والمحذوف يبقى محذوف إلا إذا انعدّل بعد الحذف
+  function mergeDocs(a, b) {
+    if (!b) return a;
+    var del = {}, cut = Date.now() - 120 * 86400000, st = {};
+    [a.del || {}, b.del || {}].forEach(function (d) {
+      Object.keys(d).forEach(function (id) { if (d[id] > cut && !(del[id] >= d[id])) del[id] = d[id]; });
+    });
+    function list(x, y) {
+      var out = [], idx = {};
+      function take(arr, stamps) {
+        (arr || []).forEach(function (it) {
+          if (!it || !it.id) return;
+          var ts = (stamps && stamps[it.id]) || 0;
+          if (idx[it.id] == null) { idx[it.id] = out.length; out.push(it); st[it.id] = ts; }
+          else if (ts > st[it.id]) { out[idx[it.id]] = it; st[it.id] = ts; }
+        });
+      }
+      take(x, a.st); take(y, b.st);
+      return out.filter(function (it) {
+        if (del[it.id] >= st[it.id]) { delete st[it.id]; return false; }
+        return true;
+      });
+    }
+    var bNewer = (b.sTs || 0) > (a.sTs || 0);
+    return {
+      app: 'mahami', c: list(a.c, b.c), o: list(a.o, b.o), t: list(a.t, b.t),
+      s: bNewer ? b.s : a.s, sTs: Math.max(a.sTs || 0, b.sTs || 0), st: st, del: del
+    };
+  }
+  function needsPush(m, r) {
+    if (!r) return true;
+    var rst = r.st || {}, rdel = r.del || {};
+    if ((m.sTs || 0) > (r.sTs || 0)) return true;
+    for (var id in m.st) if (!(rst[id] >= m.st[id])) return true;
+    for (var d in m.del) if (!(rdel[d] >= m.del[d])) return true;
+    return false;
+  }
+  function applyDoc(m) {
+    clients = m.c; orders = m.o; tasks = m.t;
+    if (m.s) {
+      SYNCED_SETTINGS.forEach(function (k) { if (m.s[k] !== undefined) settings[k] = m.s[k]; });
+      if (!Array.isArray(settings.services) || !settings.services.length) settings.services = DEFAULT_SERVICES.slice();
+    }
+    var stamp = {};
+    [clients, orders, tasks].forEach(function (list) {
+      list.forEach(function (x) { stamp[x.id] = [hashStr(JSON.stringify(x)), (m.st && m.st[x.id]) || 1]; });
+    });
+    syncMeta.stamp = stamp; syncMeta.del = m.del || {};
+    syncMeta.sHash = hashStr(JSON.stringify(settingsPart())); syncMeta.sTs = m.sTs || 0;
+    save(KEY.clients, clients); save(KEY.orders, orders); save(KEY.tasks, tasks); save(KEY.settings, settings);
+    save(SYNC_KEY, syncMeta);
+    scheduleNotifications();
+    render();
+    if (currentTab === 'settings') renderSettings();
+  }
+  function sheetOpen() { var b = $('sheetBackdrop'); return b && !b.hidden; }
+
+  function scheduleSync(ms) {
+    if (!syncMeta.code || !cryptoOk) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function () { syncNow(); }, ms || 1500);
+  }
+  async function syncNow(manual) {
+    if (!syncMeta.code || !cryptoOk) return;
+    if (syncBusy) { syncAgain = true; return; }
+    if (navigator.onLine === false) { setSyncState('offline'); return; }
+    syncBusy = true; setSyncState('busy');
+    try {
+      var k = await keysFor(syncMeta.code);
+      for (var i = 0; i < 4; i++) {
+        var got = await syncCall({ op: 'get', id: k.id });
+        var remote = got.d ? await unseal(k, got.d) : null;
+        stampChanges();
+        var local = localDoc();
+        var merged = mergeDocs(local, remote);
+        var changed = JSON.stringify([merged.c, merged.o, merged.t, merged.s]) !== JSON.stringify([local.c, local.o, local.t, local.s]);
+        if (changed) {
+          // ما نبدّل البيانات وإنت بنص تعديل؛ نرجع نحاول بعد ما تسكّر النافذة
+          if (sheetOpen()) { syncAgain = true; break; }
+          applyDoc(merged);
+        }
+        if (!needsPush(merged, remote)) break;
+        var put = await syncCall({ op: 'put', id: k.id, v: got.v || 0, d: await seal(k, merged) });
+        if (!put.conflict) break;
+      }
+      syncMeta.last = Date.now(); save(SYNC_KEY, syncMeta);
+      setSyncState('ok');
+      if (manual === true) toast('تمت المزامنة ✓');
+    } catch (e) {
+      console.error('sync', e);
+      syncErr = e; setSyncState('err');
+      if (manual === true) toast('ما گدرت أزامن');
+    } finally {
+      syncBusy = false;
+      if (syncAgain) { syncAgain = false; scheduleSync(3000); }
+    }
+  }
+  function setSyncState(s) { syncState = s; renderSyncStatus(); }
+  function renderSyncStatus() {
+    var el = $('syncStatus'); if (!el) return;
+    var t = '';
+    if (syncState === 'busy') t = '⏳ جاري المزامنة…';
+    else if (syncState === 'offline') t = '📴 بدون إنترنت. راح تتزامن لما يرجع الاتصال.';
+    else if (syncState === 'err') {
+      t = syncErr && syncErr.decrypt ? '⚠️ الرمز ما يطابق البيانات المحفوظة. تأكد من الرمز.'
+        : syncErr && syncErr.status === 503 ? '⚠️ المزامنة مو مفعّلة على السيرفر.'
+          : '⚠️ ما گدرت أزامن. راح أحاول مرة ثانية.';
+    } else if (syncMeta.last) {
+      var d = new Date(syncMeta.last);
+      t = '✓ متزامن. آخر مزامنة ' + (ymd(d) === today() ? 'اليوم' : shortDate(d)) + ' ' + timeLabel(pad(d.getHours()) + ':' + pad(d.getMinutes()));
+    }
+    el.textContent = t;
+  }
+  function renderSync() {
+    var on = !!syncMeta.code;
+    $('syncOff').hidden = on; $('syncOn').hidden = !on;
+    $('syncCodeOut').textContent = syncMeta.code || '';
+    renderSyncStatus();
+  }
+  function bindSync() {
+    $('syncCreate').addEventListener('click', function () {
+      if (!cryptoOk) { toast('هذا المتصفح ما يدعم المزامنة'); return; }
+      syncMeta.code = newSyncCode(); syncKeys = null; save(SYNC_KEY, syncMeta);
+      renderSync(); syncNow(true);
+    });
+    $('syncJoin').addEventListener('click', function () {
+      if (!cryptoOk) { toast('هذا المتصفح ما يدعم المزامنة'); return; }
+      var c = normCode($('syncCodeIn').value);
+      if (!c) { toast('الرمز لازم يكون 16 حرف ورقم'); return; }
+      syncMeta.code = c; syncKeys = null; save(SYNC_KEY, syncMeta);
+      $('syncCodeIn').value = '';
+      renderSync(); syncNow(true);
+    });
+    $('syncNowBtn').addEventListener('click', function () { syncNow(true); });
+    $('syncCopy').addEventListener('click', async function () {
+      try { await navigator.clipboard.writeText(syncMeta.code); toast('تم نسخ الرمز ✓'); }
+      catch (e) { prompt('انسخ الرمز:', syncMeta.code); }
+    });
+    $('syncOffBtn').addEventListener('click', function () {
+      if (!confirm('تفصل هذا الجهاز عن المزامنة؟ بياناته تبقى عليه، بس ما تتزامن بعد.')) return;
+      syncMeta.code = ''; syncMeta.last = 0; syncKeys = null; save(SYNC_KEY, syncMeta);
+      syncState = ''; renderSync();
+    });
+    window.addEventListener('online', function () { syncNow(); });
+    setInterval(function () { if (!document.hidden) syncNow(); }, 30000);
+    renderSync();
+  }
+
   // ---------- مشاركة ونسخ احتياطي ----------
   async function shareText(text, title) {
     var Share = isNative ? plugin('Share') : null;
@@ -1067,7 +1301,7 @@
     $('exportBtn').addEventListener('click', exportBackup);
     $('importFile').addEventListener('change', function () { if (this.files[0]) importBackup(this.files[0]); this.value = ''; });
     $('wipeBtn').addEventListener('click', function () {
-      if (!confirm('راح تنحذف كل العملاء والأوردرات والمهام نهائياً. متأكد؟')) return;
+      if (!confirm('راح تنحذف كل العملاء والأوردرات والمهام نهائياً' + (syncMeta.code ? '، ومن كل أجهزتك المربوطة بالمزامنة' : '') + '. متأكد؟')) return;
       if (!confirm('تأكيد أخير: حذف كل البيانات؟')) return;
       clients = []; orders = []; tasks = []; persist(); render(); toast('تم حذف البيانات');
     });
@@ -1076,7 +1310,7 @@
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) return;
       if (lastDay !== today()) { if (selDay === lastDay) selDay = today(); lastDay = today(); }
-      render(); scheduleNotifications();
+      render(); scheduleNotifications(); syncNow();
     });
     var App = isNative ? plugin('App') : null;
     if (App) {
@@ -1086,14 +1320,16 @@
           else if (currentTab !== 'home') showTab('home');
           else App.exitApp();
         });
-        App.addListener('resume', function () { render(); scheduleNotifications(); });
+        App.addListener('resume', function () { render(); scheduleNotifications(); syncNow(); });
       } catch (e) { }
     }
   }
 
   // ---------- تشغيل ----------
   bind();
+  bindSync();
   render();
+  syncNow();
   setupNative().then(scheduleNotifications);
   if (!isNative && /[?&]day=(\d{4}-\d{2}-\d{2})/.test(location.search)) { selDay = RegExp.$1; renderHome(); }
   if ('serviceWorker' in navigator && !isNative && location.protocol.indexOf('http') === 0) {
